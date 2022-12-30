@@ -1,0 +1,16 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": false,
+    "version": "1.14.0",
+    "libraryName": "phazemos-client-dossier",
+    "libraryId": "d701b3c0-1a0b-4005-8fa9-a9a4abc3712e",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "phazemosClientDossier",
+    "solutionShortDescription": "phazemosClientDossier description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}

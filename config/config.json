@@ -1,0 +1,27 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "client-dossier-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/clientDossier/ClientDossierWebPart.js",
+          "manifest": "./src/webparts/clientDossier/ClientDossierWebPart.manifest.json"
+        }
+      ]
+    },
+    "invite-user-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/inviteUser/InviteUserWebPart.js",
+          "manifest": "./src/webparts/inviteUser/InviteUserWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "ClientDossierWebPartStrings": "lib/webparts/clientDossier/loc/{locale}.js",
+    "InviteUserWebPartStrings": "lib/webparts/inviteUser/loc/{locale}.js"
+  }
+}

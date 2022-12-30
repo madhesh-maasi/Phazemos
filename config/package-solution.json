@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "phazemos-client-dossier-client-side-solution",
+    "id": "d701b3c0-1a0b-4005-8fa9-a9a4abc3712e",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.14.0"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "phazemosClientDossier description"
+      },
+      "longDescription": {
+        "default": "phazemosClientDossier description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "phazemos-client-dossier Feature",
+        "description": "The feature that activates elements of the phazemos-client-dossier solution.",
+        "id": "9c8d3b6f-d7ae-46c2-bb77-cfd2c7221e61",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/phazemos-client-dossier.sppkg"
+  }
+}
