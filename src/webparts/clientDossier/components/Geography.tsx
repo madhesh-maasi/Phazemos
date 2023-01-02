@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import classes from "./Geography.module.scss";
 import TextField from "@material-ui/core/TextField";
 import Icon from "@material-ui/core/Icon";
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import Button from "@material-ui/core/Button";
 import { green } from "@material-ui/core/colors";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
@@ -25,7 +26,7 @@ export const Geography: React.FunctionComponent<IGeography> = (
       <h3 className={classes.headerTitle}>Company Profile</h3>
       <div className={classes.companyDetails}>
         <TextField
-          style={{ width: "40%", margin: 16 }}
+          style={{ width: "40%", marginRight: 30 }}
           id="outlined-basic"
           label="Company Name"
           variant="outlined"
@@ -34,41 +35,40 @@ export const Geography: React.FunctionComponent<IGeography> = (
           id="outlined-basic"
           label="ID"
           variant="outlined"
-          style={{ width: 100, margin: 16 }}
+          style={{ width: 100 }}
         />
       </div>
       <div>
         <h4 className={classes.headerTitle}>
           Number and Type of Resource by Geography
         </h4>
-        <div className={classes.NumberType}>
+        <div className={classes.NumberTypeSection}>
           <TextField
-            style={{ width: "23%", margin: 16 }}
+            className={classes.NTItem}
             id="outlined-basic"
             label="Employee Title"
             variant="outlined"
           />
           <TextField
-            style={{ width: "23%", margin: 16 }}
+            className={classes.NTItem}
             id="outlined-basic"
             label="Country of Residence"
             variant="outlined"
           />
           <TextField
-            style={{ width: "10%", margin: 16 }}
+            className={classes.NTItem}
             id="outlined-basic"
             label="#"
             variant="outlined"
           />
           <TextField
-            style={{ width: "23%", margin: 16 }}
+            className={classes.NTItem}
             id="outlined-basic"
             label="Countries Worked"
             variant="outlined"
           />
-          <Icon
-            className="fa fa-plus-circle"
-            style={{ color: green[500], fontSize: 30 }}
+          <AddCircleOutlineIcon
+            style={{ fontSize: 40, color: theme.palette.primary.main }}
           />
         </div>
       </div>

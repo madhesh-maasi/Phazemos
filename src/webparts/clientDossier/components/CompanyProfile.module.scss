@@ -9,6 +9,13 @@
 
 .CompanyContactInfo {
     margin: 12px 0;
+    .CompanyContact {
+        width: 23%;
+        margin: 16px;
+        &:nth-child(1) {
+            margin-left: 0;
+        }
+    }
 }
 
 .PrimaryServices {

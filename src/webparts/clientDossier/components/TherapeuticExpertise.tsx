@@ -132,12 +132,17 @@ const TherapeuticExpertise = () => {
       <h3 className={classes.headerTitle}>Expertise - Therapeutic </h3>
       <div className={classes.companyDetails}>
         <TextField
-          style={{ width: 600, marginRight: 30 }}
+          style={{ width: "40%", marginRight: 30 }}
           id="outlined-basic"
           label="Company Name"
           variant="outlined"
         />
-        <TextField id="outlined-basic" label="ID" variant="outlined" />
+        <TextField
+          id="outlined-basic"
+          label="ID"
+          variant="outlined"
+          style={{ width: 100 }}
+        />
       </div>
       <div className={classes.AreaExperience}>
         <p>Therapeutic Area Experience (check "x" all that apply)</p>

@@ -27,7 +27,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
       <h3 className={classes.headerTitle}>Company Profile</h3>
       <div className={classes.companyDetails}>
         <TextField
-          style={{ width: "40%", margin: 16 }}
+          style={{ width: "40%", marginRight: 30 }}
           id="outlined-basic"
           label="Company Name"
           variant="outlined"
@@ -36,30 +36,30 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
           id="outlined-basic"
           label="ID"
           variant="outlined"
-          style={{ width: 100, margin: 16 }}
+          style={{ width: 100 }}
         />
       </div>
       <div className={classes.CompanyContactInfo}>
         <TextField
-          style={{ width: "23%", margin: 16 }}
+          className={classes.CompanyContact}
           id="outlined-basic"
           label="RFP Contact"
           variant="outlined"
         />
         <TextField
-          style={{ width: "23%", margin: 16 }}
+          className={classes.CompanyContact}
           id="outlined-basic"
           label="Email"
           variant="outlined"
         />
         <TextField
-          style={{ width: "23%", margin: 16 }}
+          className={classes.CompanyContact}
           id="outlined-basic"
           label="Invoicing Contact"
           variant="outlined"
         />
         <TextField
-          style={{ width: "23%", margin: 16 }}
+          className={classes.CompanyContact}
           id="outlined-basic"
           label="Email"
           variant="outlined"
@@ -68,25 +68,25 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
       <h4 className={classes.headerTitle}>Digital Media Links</h4>
       <div className={classes.CompanyContactInfo}>
         <TextField
-          style={{ width: "23%", margin: 16 }}
+          className={classes.CompanyContact}
           id="outlined-basic"
           label="Website URL"
           variant="outlined"
         />
         <TextField
-          style={{ width: "23%", margin: 16 }}
+          className={classes.CompanyContact}
           id="outlined-basic"
           label="LinkedIN"
           variant="outlined"
         />
         <TextField
-          style={{ width: "23%", margin: 16 }}
+          className={classes.CompanyContact}
           id="outlined-basic"
           label="Facebook"
           variant="outlined"
         />
         <TextField
-          style={{ width: "23%", margin: 16 }}
+          className={classes.CompanyContact}
           id="outlined-basic"
           label="Twitter"
           variant="outlined"

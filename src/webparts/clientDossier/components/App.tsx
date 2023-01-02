@@ -11,6 +11,7 @@ import { CompanyProfile } from "./CompanyProfile";
 import TherapeuticExpertise from "./TherapeuticExpertise";
 import { RegulatoryExpertise } from "./RegulatoryExpertise";
 import { Geography } from "./Geography";
+import { ProjectWork } from "./ProjectWork";
 import Upload from "./Upload";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 
@@ -85,7 +86,7 @@ const App = () => {
         <Geography CompanyName={""} CompanyID={""} />
       </TabPanel>
       <TabPanel value={value} index={4}>
-        Item Five
+        <ProjectWork CompanyName={""} CompanyID={""} />
       </TabPanel>
       <TabPanel value={value} index={5}>
         <Upload />

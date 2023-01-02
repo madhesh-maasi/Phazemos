@@ -3,7 +3,18 @@ import TextField from "@material-ui/core/TextField";
 import classes from "./Upload.module.scss";
 import Button from "@material-ui/core/Button";
 import { useState, useEffect, useRef } from "react";
+import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 let arrSelectedFile = [];
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#00589A",
+    },
+    secondary: {
+      main: "#64748B",
+    },
+  },
+});
 const Upload = () => {
   const [fileSelected, setFileSelected] = useState(arrSelectedFile);
   const handleFileSelected = (e) => {
@@ -13,16 +24,21 @@ const Upload = () => {
     setFileSelected([...arrSelectedFile]);
   };
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <h3 className={classes.headerTitle}>Uploads</h3>
       <div className={classes.companyDetails}>
         <TextField
-          style={{ width: 600, marginRight: 30 }}
+          style={{ width: "40%", marginRight: 30 }}
           id="outlined-basic"
           label="Company Name"
           variant="outlined"
         />
-        <TextField id="outlined-basic" label="ID" variant="outlined" />
+        <TextField
+          id="outlined-basic"
+          label="ID"
+          variant="outlined"
+          style={{ width: 100 }}
+        />
       </div>
       <div className={classes.uploadSection}>
         <p className={classes.infoTitleSection}>
@@ -182,7 +198,40 @@ const Upload = () => {
         </div>
         {/* Item 6 */}
       </div>
-    </>
+      <div className={classes.uploadSection}>
+        <p className={classes.infoTitleSection}>
+          Here is a space to upload any forms or documents so we can assist with
+          the intake process
+        </p>
+        <div className={classes.upload}>
+          <div className={classes.uploadItem}>
+            <label htmlFor="upload-photo">
+              <input
+                style={{ display: "none" }}
+                id="upload-photo"
+                name="upload-photo"
+                type="file"
+                multiple
+                onChange={(e) => {
+                  handleFileSelected(e);
+                }}
+              />
+              <Button color="secondary" variant="contained" component="span">
+                Upload File
+              </Button>
+            </label>
+            <div className={classes.SelectedFiles}>
+              <div>selected file.png</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className={classes.bottomBtnSection}>
+        <Button variant="contained" color="primary">
+          Submit
+        </Button>
+      </div>
+    </ThemeProvider>
   );
 };
 export default Upload;

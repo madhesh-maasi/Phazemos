@@ -137,7 +137,7 @@ export const RegulatoryExpertise: React.FunctionComponent<
       <h3 className={classes.headerTitle}>Regulatory - Therapeutic </h3>
       <div className={classes.companyDetails}>
         <TextField
-          style={{ width: "40%", margin: 16 }}
+          style={{ width: "40%", marginRight: 30 }}
           id="outlined-basic"
           label="Company Name"
           variant="outlined"
@@ -146,7 +146,7 @@ export const RegulatoryExpertise: React.FunctionComponent<
           id="outlined-basic"
           label="ID"
           variant="outlined"
-          style={{ width: 100, margin: 16 }}
+          style={{ width: 100 }}
         />
       </div>
       <div className={classes.Regulatory}>

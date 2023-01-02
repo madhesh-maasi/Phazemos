@@ -7,8 +7,16 @@
     margin: 20px 0;
 }
 
-.NumberType {
+.NumberTypeSection {
     display: flex;
+    align-items: center;
+    .NTItem {
+        width: 23%;
+        margin: 16px;
+        &:nth-child(1) {
+            margin-left: 0;
+        }
+    }
 }
 
 .bottomBtnSection {
