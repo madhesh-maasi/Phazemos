@@ -7,8 +7,20 @@ import Tab from "@material-ui/core/Tab";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
+import { CompanyProfile } from "./CompanyProfile";
 import TherapeuticExpertise from "./TherapeuticExpertise";
+import { RegulatoryExpertise } from "./RegulatoryExpertise";
+import { Geography } from "./Geography";
 import Upload from "./Upload";
+import { createTheme, ThemeProvider } from "@material-ui/core/styles";
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#00589A",
+    },
+  },
+});
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -34,19 +46,14 @@ function a11yProps(index) {
     "aria-controls": `scrollable-force-tabpanel-${index}`,
   };
 }
-const useStyles = makeStyles({
-  root: {
-    flexGrow: 1,
-  },
-});
+
 const App = () => {
-  const classes = useStyles();
   const [value, setValue] = useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
   return (
-    <div className={classes.root}>
+    <ThemeProvider theme={theme}>
       <AppBar position="static" color="default">
         <Tabs
           value={value}
@@ -57,25 +64,25 @@ const App = () => {
           textColor="primary"
           aria-label="scrollable force tabs example"
         >
-          <Tab label="Expertise - Therapeutic" {...a11yProps(0)} />
-          <Tab label="Company Profile" {...a11yProps(1)} />
+          <Tab label="Company Profile" {...a11yProps(0)} />
+          <Tab label="Expertise - Therapeutic" {...a11yProps(1)} />
           <Tab label="Expertise - Regulatory" {...a11yProps(2)} />
           <Tab label="Geography" {...a11yProps(3)} />
           <Tab label="Project Work" {...a11yProps(4)} />
           <Tab label="Uploads" {...a11yProps(5)} />
         </Tabs>
       </AppBar>
-      <TabPanel value={value} index={1}>
-        Company Profile comes here
-      </TabPanel>
       <TabPanel value={value} index={0}>
+        <CompanyProfile CompanyName={""} CompanyID={""} />
+      </TabPanel>
+      <TabPanel value={value} index={1}>
         <TherapeuticExpertise />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Item Three
+        <RegulatoryExpertise CompanyName={""} CompanyID={""} />
       </TabPanel>
       <TabPanel value={value} index={3}>
-        Item Four
+        <Geography CompanyName={""} CompanyID={""} />
       </TabPanel>
       <TabPanel value={value} index={4}>
         Item Five
@@ -83,7 +90,7 @@ const App = () => {
       <TabPanel value={value} index={5}>
         <Upload />
       </TabPanel>
-    </div>
+    </ThemeProvider>
   );
 };
 export default App;

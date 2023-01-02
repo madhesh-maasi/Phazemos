@@ -7,29 +7,21 @@
     margin: 20px 0;
 }
 
-.AreaExperience {
+.Regulatory {
     p {
         color: #00589A;
-        font-weight: 700;
-        margin: 12px 0;
     }
-    .CheckBoxSection {
+    .RegulatorySection {
         display: flex;
+        margin: 6px 0;
         .CheckBox {
-            width: 24%;
+            width: 48%;
         }
-    }
-}
-
-.AreaDisease {
-    p {
-        color: #00589A;
-        font-weight: 700;
-        margin: 12px 0;
     }
 }
 
 .bottomBtnSection {
     display: flex;
     justify-content: flex-end;
+    margin: 20px 0;
 }

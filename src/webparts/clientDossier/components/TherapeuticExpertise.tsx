@@ -1,15 +1,15 @@
 import * as React from "react";
 import TextField from "@material-ui/core/TextField";
 import classes from "./TherapeuticExpertise.module.scss";
+import { useState, useEffect, useRef } from "react";
 import Button from "@material-ui/core/Button";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import { useState, useEffect, useRef } from "react";
 import Checkbox from "@material-ui/core/Checkbox";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
-
+import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 // Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
 const top100Films = [
   { title: "The Shawshank Redemption", year: 1994 },
@@ -117,11 +117,18 @@ const top100Films = [
   { title: "3 Idiots", year: 2009 },
   { title: "Monty Python and the Holy Grail", year: 1975 },
 ];
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#00589A",
+    },
+  },
+});
 const TherapeuticExpertise = () => {
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <h3 className={classes.headerTitle}>Expertise - Therapeutic </h3>
       <div className={classes.companyDetails}>
         <TextField
@@ -504,7 +511,12 @@ const TherapeuticExpertise = () => {
           )}
         />
       </div>
-    </>
+      <div className={classes.bottomBtnSection} style={{ marginTop: 20 }}>
+        <Button variant="contained" color="primary">
+          Submit
+        </Button>
+      </div>
+    </ThemeProvider>
   );
 };
 export default TherapeuticExpertise;

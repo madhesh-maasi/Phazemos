@@ -7,25 +7,21 @@
     margin: 20px 0;
 }
 
-.AreaExperience {
-    p {
-        color: #00589A;
-        font-weight: 700;
-        margin: 12px 0;
-    }
-    .CheckBoxSection {
-        display: flex;
-        .CheckBox {
-            width: 24%;
-        }
-    }
+.CompanyContactInfo {
+    margin: 12px 0;
 }
 
-.AreaDisease {
+.PrimaryServices {
     p {
         color: #00589A;
-        font-weight: 700;
-        margin: 12px 0;
+    }
+    .CheckboxSection {
+        display: flex;
+        margin: 6px;
+        .Checkbox {
+            width: 23%;
+            margin: 16px;
+        }
     }
 }
 
