@@ -3,12 +3,12 @@ import { useEffect, useState } from "react";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Select from "@material-ui/core/Select";
-import classes from "./ProjectWork.module.scss";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import { Button } from "@material-ui/core";
+import classes from "./ProjectWork.module.scss";
 export interface IProjectWork {
   CompanyName: string;
   CompanyID: string;
@@ -79,7 +79,7 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
           variant="outlined"
           multiline
           rows={4}
-          style={{ width: "60%", margin: 8 }}
+          style={{ width: "30%", margin: 8 }}
         />
         <AddCircleOutlineIcon
           style={{

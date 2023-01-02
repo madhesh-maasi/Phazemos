@@ -64,7 +64,22 @@ const Upload = () => {
               </Button>
             </label>
             <div className={classes.SelectedFiles}>
-              <div>selected file.png</div>
+              <div className={classes.File}>
+                <span>selected file.png</span>
+                <span className={classes.fileDelete}>x</span>
+              </div>
+            </div>
+            <div className={classes.SelectedFiles}>
+              <div className={classes.File}>
+                <span>selected file.png</span>
+                <span className={classes.fileDelete}>x</span>
+              </div>
+            </div>
+            <div className={classes.SelectedFiles}>
+              <div className={classes.File}>
+                <span>selected file.png</span>
+                <span className={classes.fileDelete}>x</span>
+              </div>
             </div>
           </div>
         </div>

@@ -1,0 +1,44 @@
+.App {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    .AppSection {
+        margin: 12px 16px;
+        width: 50%;
+        .headerSection {
+            display: flex;
+            justify-content: space-between;
+            margin: 12px 0;
+            .headerBtn {
+                display: flex;
+                align-items: center;
+            }
+        }
+    }
+    img {
+        width: 600px;
+        height: 600px;
+    }
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.EmailEntries {
+    display: flex;
+    align-items: center;
+}
+
+.modalTextbox {
+    width: 300px;
+    margin: 8px !important;
+}
+
+.btnSubmit {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
