@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
-export interface IDataGrid {}
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -14,6 +13,14 @@ import EditIcon from "@material-ui/icons/Edit";
 import Checkbox from "@material-ui/core/Checkbox";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
+
+import CommonService from "../services/CommonService";
+
+import { CustomAlert } from "./CustomAlert";
+
+export interface IDataGrid {
+  ListName: string;
+}
 
 // Styles for the Table
 const theme = createTheme({
@@ -41,31 +48,21 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-// Styles for the Table
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
-
 export const DataGrid: React.FunctionComponent<IDataGrid> = (
   props: IDataGrid
 ) => {
+  var _commonService: CommonService = new CommonService();
+
   const [open, setOpen] = React.useState(false);
+
+  const [masterData, setMasterData] = useState([]);
+
+  const [cusalert, setAlert] = useState({
+    open: false,
+    message: "Success",
+    severity: "error",
+  });
+
   const handleClick = () => {
     setOpen(true);
   };
@@ -77,6 +74,43 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
 
     setOpen(false);
   };
+
+  function init() {
+    let customProperty = {
+      listName: props.ListName,
+      properties: "*,Author/Title",
+      expand: "Author",
+    };
+    _commonService.getList(customProperty, (res: any) => {
+      setMasterData([...res]);
+    });
+  }
+
+  function changeActive(index: number, event: any) {
+    let locMasterData = masterData;
+    locMasterData[index].IsActive = event.target.checked;
+    updateStatus(locMasterData[index]);
+    setMasterData([...locMasterData]);
+  }
+
+  function updateStatus(editData: any) {
+    _commonService.updateList(
+      { listName: props.ListName, ID: editData.ID },
+      { IsActive: editData.IsActive },
+      (res: any) => {
+        setAlert({
+          open: true,
+          severity: "success",
+          message: "Updated successfully",
+        });
+      }
+    );
+  }
+
+  useEffect((): any => {
+    init();
+  }, [props.ListName]);
+
   return (
     <>
       <TableContainer component={Paper}>
@@ -85,25 +119,30 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
             <TableRow>
               <StyledTableCell>Title</StyledTableCell>
               <StyledTableCell>IsActive</StyledTableCell>
-              <StyledTableCell>Created</StyledTableCell>
+              <StyledTableCell>Created By</StyledTableCell>
+              <StyledTableCell>Created On</StyledTableCell>
               <StyledTableCell>Action</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
-              <StyledTableRow key={row.name}>
+            {masterData.map((master: any, index: number) => (
+              <StyledTableRow key={master.ID}>
                 <StyledTableCell component="th" scope="row">
-                  {row.name}
+                  {master.Title}
                 </StyledTableCell>
                 <StyledTableCell>
                   {" "}
                   <Checkbox
-                    defaultChecked
+                    checked={master.IsActive}
+                    onChange={(e) => changeActive(index, e)}
                     color="primary"
                     inputProps={{ "aria-label": "secondary checkbox" }}
                   />
                 </StyledTableCell>
-                <StyledTableCell>{row.calories}</StyledTableCell>
+                <StyledTableCell>{master.Author.Title}</StyledTableCell>
+                <StyledTableCell>
+                  {new Date(master.Created).toISOString().slice(0, 10)}
+                </StyledTableCell>
                 <StyledTableCell>
                   <EditIcon
                     style={{ color: theme.palette.primary.main, fontSize: 32 }}
@@ -115,11 +154,19 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
           </TableBody>
         </Table>
       </TableContainer>
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="success">
-          This is a success message!
-        </Alert>
-      </Snackbar>
+
+      <CustomAlert
+        open={cusalert.open}
+        message={cusalert.message}
+        severity={cusalert.severity}
+        handleClose={(e) => {
+          setAlert({
+            open: false,
+            severity: "",
+            message: "",
+          });
+        }}
+      ></CustomAlert>
     </>
   );
 };

@@ -28,6 +28,8 @@ export default class PhazemosMastersWebPart extends BaseClientSideWebPart<IPhaze
   }
 
   public render(): void {
+    var currentContext = this.context;
+
     const element: React.ReactElement<IPhazemosMastersProps> = React.createElement(
       PhazemosMasters,
       {
@@ -35,11 +37,17 @@ export default class PhazemosMastersWebPart extends BaseClientSideWebPart<IPhaze
         isDarkTheme: this._isDarkTheme,
         environmentMessage: this._environmentMessage,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
-        userDisplayName: this.context.pageContext.user.displayName
+        userDisplayName: this.context.pageContext.user.displayName,
+
+        
+        currentContext: currentContext,
+        siteUrl: this.context.pageContext.web.absoluteUrl,
+
       }
     );
 
     ReactDom.render(element, this.domElement);
+
   }
 
   private _getEnvironmentMessage(): string {

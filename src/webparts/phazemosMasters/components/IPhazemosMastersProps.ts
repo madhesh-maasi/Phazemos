@@ -4,4 +4,9 @@ export interface IPhazemosMastersProps {
   environmentMessage: string;
   hasTeamsContext: boolean;
   userDisplayName: string;
+
+  
+  siteUrl: string;
+  currentContext: any;
+  
 }
