@@ -22,6 +22,8 @@ import Checkbox from "@material-ui/core/Checkbox";
 import CommonService from "../services/CommonService";
 import { IInviteUserProps } from "./IInviteUserProps";
 
+import { CustomAlert } from "./CustomAlert";
+
 const UserInviteBG = require("../../../ExternalRef/IMG/NewUserBG.png");
 
 // Styles
@@ -68,6 +70,12 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
     users: [""],
   });
 
+  const [cusalert, setAlert] = useState({
+    open: false,
+    message: "Success",
+    severity: "error",
+  });
+
   function addUser() {
     let data = formData;
     data.users.push("");
@@ -94,14 +102,22 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
     };
 
     if (!companyData.Title) {
-      alert("Company name is mandatory");
+      setAlert({
+        open: true,
+        severity: "warning",
+        message: "Company name is mandatory",
+      });
       return;
     }
 
     for (let index = 0; index < data.users.length; index++) {
       const user = data.users[index];
       if (!user) {
-        alert(user + " is not a valid user");
+        setAlert({
+          open: true,
+          severity: "warning",
+          message: user + " is not a valid user",
+        });
         return;
       }
     }
@@ -150,7 +166,11 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
             }
           );
         }
-        alert("User invitation sent successfully");
+        setAlert({
+          open: true,
+          severity: "success",
+          message: "User invitation sent successfully",
+        });
         handleClose();
         init();
       }
@@ -426,7 +446,22 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
           </Fade>
         </Modal>
       )}
-      {/* Modal Section */}
+      
+      
+      <CustomAlert
+        open={cusalert.open}
+        message={cusalert.message}
+        severity={cusalert.severity}
+        handleClose={(e) => {
+          setAlert({
+            open: false,
+            severity: "",
+            message: "",
+          });
+        }}
+      ></CustomAlert>
+
+      
     </ThemeProvider>
   );
 };

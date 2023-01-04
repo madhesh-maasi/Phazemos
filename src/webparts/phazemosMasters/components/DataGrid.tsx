@@ -21,6 +21,7 @@ import { CustomAlert } from "./CustomAlert";
 export interface IDataGrid {
   ListName: string;
   EditRecord: any;
+  Refresh: boolean;
 }
 
 // Styles for the Table
@@ -96,7 +97,7 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
 
   useEffect((): any => {
     init();
-  }, [props.ListName]);
+  }, [props.ListName, props.Refresh]);
 
   return (
     <>
@@ -133,7 +134,7 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
                 <StyledTableCell>
                   <EditIcon
                     style={{ color: theme.palette.primary.main, fontSize: 32 }}
-                    onClick={props.EditRecord(master)}
+                    onClick={(e) => props.EditRecord(master)}
                   />
                 </StyledTableCell>
               </StyledTableRow>

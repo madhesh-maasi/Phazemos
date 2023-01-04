@@ -99,6 +99,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
   };
 
   const [currentMaster, setCurrentMaster] = useState(initialMaster.title);
+  const [refresh, setRefresh] = useState(true);
 
   const [masters, setMasters] = useState([
     initialMaster,
@@ -158,6 +159,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
             severity: "success",
             message: "Inserted successfully",
           });
+          setOpen(false);
         }
       );
     } else {
@@ -174,6 +176,8 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
             severity: "success",
             message: "Updated successfully",
           });
+          setOpen(false);
+          setRefresh(!refresh);
         }
       );
     }
@@ -218,7 +222,11 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
               </Button>
             </div>
           </div>
-          <DataGrid ListName={currentMaster} EditRecord={editRecord} />
+          <DataGrid
+            ListName={currentMaster}
+            EditRecord={editRecord}
+            Refresh={refresh}
+          />
         </div>
         {/* App Section */}
       </div>
