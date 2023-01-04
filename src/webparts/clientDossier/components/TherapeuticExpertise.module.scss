@@ -13,10 +13,13 @@
         font-weight: 700;
         margin: 12px 0;
     }
-    .CheckBoxSection {
+    .CheckboxSection {
         display: flex;
-        .CheckBox {
-            width: 24%;
+        flex-wrap: wrap;
+        margin: 6px;
+        .Checkbox {
+            width: 18%;
+            margin: 16px;
         }
     }
 }

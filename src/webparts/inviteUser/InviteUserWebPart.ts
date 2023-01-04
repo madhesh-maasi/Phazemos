@@ -12,6 +12,10 @@ import * as strings from 'InviteUserWebPartStrings';
 import InviteUser from './components/InviteUser';
 import { IInviteUserProps } from './components/IInviteUserProps';
 
+
+import { MSGraphClientV3 } from '@microsoft/sp-http';
+
+
 export interface IInviteUserWebPartProps {
   description: string;
 }
@@ -28,18 +32,29 @@ export default class InviteUserWebPart extends BaseClientSideWebPart<IInviteUser
   }
 
   public render(): void {
-    const element: React.ReactElement<IInviteUserProps> = React.createElement(
-      InviteUser,
-      {
-        description: this.properties.description,
-        isDarkTheme: this._isDarkTheme,
-        environmentMessage: this._environmentMessage,
-        hasTeamsContext: !!this.context.sdks.microsoftTeams,
-        userDisplayName: this.context.pageContext.user.displayName
-      }
-    );
+    var currentContext = this.context;
 
-    ReactDom.render(element, this.domElement);
+    this.context.msGraphClientFactory.getClient('3')
+      .then((_graphClient: MSGraphClientV3): void => {
+
+        const element: React.ReactElement<IInviteUserProps> = React.createElement(
+          InviteUser,
+          {
+            description: this.properties.description,
+            isDarkTheme: this._isDarkTheme,
+            environmentMessage: this._environmentMessage,
+            hasTeamsContext: !!this.context.sdks.microsoftTeams,
+            userDisplayName: this.context.pageContext.user.displayName,
+
+            currentContext: currentContext,
+            siteUrl: this.context.pageContext.web.absoluteUrl,
+            graphClient: _graphClient,
+
+          }
+        );
+        ReactDom.render(element, this.domElement);
+
+      });
   }
 
   private _getEnvironmentMessage(): string {

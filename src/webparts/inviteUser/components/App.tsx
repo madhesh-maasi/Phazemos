@@ -15,8 +15,15 @@ import Modal from "@material-ui/core/Modal";
 import Fade from "@material-ui/core/Fade";
 import { makeStyles } from "@material-ui/core/styles";
 import classes from "./App.module.scss";
+
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+
+import CommonService from "../services/CommonService";
+import { IInviteUserProps } from "./IInviteUserProps";
+
 const UserInviteBG = require("../../../ExternalRef/IMG/NewUserBG.png");
-export interface IApp {}
+
 // Styles
 const theme = createTheme({
   palette: {
@@ -39,35 +46,179 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 // Styles
-export const App: React.FunctionComponent<IApp> = (props: IApp) => {
-  const styles = useStyles();
-  const [age, setAge] = React.useState("");
-  const [open, setOpen] = React.useState(false);
+export const App: React.FunctionComponent<IInviteUserProps> = (
+  props: IInviteUserProps
+) => {
+  var _commonService: CommonService;
 
-  const handleChange = (event) => {
-    setAge(event.target.value);
-  };
+  const _companyRegistration: string = "Company Registration";
+  const _userDetails: string = "User Details";
+
+  const _acceptInviteUrl: string =
+    "https://douglas-phazemos.azurewebsites.net/Phazemos/Index?id=";
+
+  const [formData, setFormData] = useState({
+    companyName: null,
+    CompanyProfile: true,
+    TherapeuticExpertise: true,
+    RegulatoryExpertise: true,
+    Geography: true,
+    ProjectWork: true,
+    Uploads: true,
+    users: [""],
+  });
+
+  function addUser() {
+    let data = formData;
+    data.users.push("");
+    setFormData({ ...data });
+  }
+
+  function removeUser(index: number) {
+    let data = formData;
+    data.users.splice(index, 1);
+    setFormData({ ...data });
+  }
+
+  function inviteNewUser() {
+    let data = formData;
+    var companyData = {
+      Title: data.companyName,
+      CompanyID: "",
+      CompanyProfile: data.CompanyProfile,
+      TherapeuticExpertise: data.TherapeuticExpertise,
+      RegulatoryExpertise: data.RegulatoryExpertise,
+      Geography: data.Geography,
+      ProjectWork: data.ProjectWork,
+      Uploads: data.Uploads,
+    };
+
+    if (!companyData.Title) {
+      alert("Company name is mandatory");
+      return;
+    }
+
+    for (let index = 0; index < data.users.length; index++) {
+      const user = data.users[index];
+      if (!user) {
+        alert(user + " is not a valid user");
+        return;
+      }
+    }
+
+    let customProperty = {
+      listName: _companyRegistration,
+      ID: 0,
+    };
+
+    _commonService = new CommonService();
+
+    _commonService.insertIntoList(
+      customProperty,
+      companyData,
+      (companyres: any) => {
+        customProperty.ID = companyres.data.Id;
+        companyData.CompanyID = generateCompanyID(companyres.data.Id);
+        _commonService.updateList(customProperty, companyData);
+
+        customProperty.listName = _userDetails;
+
+        let users = data.users.slice();
+        for (let index = 0; index < users.length; index++) {
+          let userData = {
+            UserEmailID: users[index],
+            CompanyIDId: companyres.data.Id,
+          };
+          _commonService.insertIntoList(
+            customProperty,
+            userData,
+            (userres: any) => {
+              var graphProperty = {
+                UserEmailID: users[index],
+                InviteRedirectUrl:
+                  _acceptInviteUrl +
+                  btoa(userres.data.Id + "-" + companyData.Title),
+              };
+
+              setRender(!render);
+
+              _commonService.graphCallToInviteUser(
+                props,
+                graphProperty,
+                (graphres: any) => {}
+              );
+            }
+          );
+        }
+        alert("User invitation sent successfully");
+        handleClose();
+        init();
+      }
+    );
+  }
+
+  function generateCompanyID(id: number) {
+    let strId = id + "";
+    let prefix = "COM";
+    switch (strId.length) {
+      case 1:
+        return prefix + "00" + strId;
+      case 2:
+        return prefix + "0" + strId;
+      default:
+        return prefix + strId;
+    }
+  }
+
+  function inputChangeHandler(event: any) {
+    let data = formData;
+    data[event.target.name] = event.target.value;
+    setFormData({ ...data });
+  }
+
+  function userChangeHandler(event: any, index: number) {
+    let data = formData;
+    data.users[index] = event.target.value;
+    setFormData({ ...data });
+  }
+
+  function init() {
+    let data = formData;
+    formData.companyName = null;
+    formData.users = [""];
+    setFormData({ ...data });
+  }
+
+  function checkboxChangeHandler(event: any) {
+    let data = formData;
+    formData[event.target.name] = event.target.checked;
+    setFormData({ ...data });
+  }
+
+  useEffect((): any => {
+    _commonService = new CommonService();
+  }, []);
+
+  const styles = useStyles();
+  const [open, setOpen] = React.useState(false);
+  const [render, setRender] = useState(true);
+
   const handleClose = () => {
     setOpen(false);
   };
   const handleOpen = () => {
     setOpen(true);
+    let data = formData;
+    formData.companyName = null;
+    formData.users = [""];
+    setFormData({ ...data });
   };
 
-  const body = (
-    <div>
-      <h2 id="simple-modal-title">Text in a modal</h2>
-      <p id="simple-modal-description">
-        Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-      </p>
-      {/* <SimpleModal /> */}
-    </div>
-  );
   return (
     <ThemeProvider theme={theme}>
       <div className={classes.App}>
         {/* Illus Section */}
-        <img src={`${UserInviteBG}`} />
+        {/* <img src={`${UserInviteBG}`} /> */}
         {/* Illus Section */}
         {/* App Section */}
         <div className={classes.AppSection}>
@@ -86,7 +237,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
               </Button>
             </div>
           </div>
-          <DataGrid />
+          <DataGrid render={render} />
         </div>
         {/* App Section */}
       </div>
@@ -111,32 +262,163 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
                 id="outlined-basic"
                 label="Company Name"
                 variant="outlined"
+                name="companyName"
+                value={formData.companyName}
+                onChange={(e) => inputChangeHandler(e)}
               />
-              <div className={classes.EmailEntries}>
-                <TextField
-                  size="small"
-                  className={classes.modalTextbox}
-                  id="outlined-basic"
-                  label="Email ID"
-                  variant="outlined"
-                />
-                <AddIcon
-                  style={{
-                    cursor: "pointer",
-                    fontSize: 32,
-                    color: theme.palette.success.main,
-                  }}
-                />
-                <ClearIcon
-                  style={{
-                    cursor: "pointer",
-                    fontSize: 32,
-                    color: theme.palette.error.main,
-                  }}
-                />
+
+              {formData.users.map((user: any, index: number) => {
+                return (
+                  (formData.users.length == 1 && (
+                    <div className={classes.EmailEntries}>
+                      <TextField
+                        size="small"
+                        className={classes.modalTextbox}
+                        id="outlined-basic"
+                        label="Email ID"
+                        variant="outlined"
+                        name="user"
+                        value={user}
+                        onChange={(e) => userChangeHandler(e, index)}
+                      />
+                      <AddIcon
+                        style={{
+                          cursor: "pointer",
+                          fontSize: 32,
+                          color: theme.palette.success.main,
+                        }}
+                        onClick={(e) => addUser()}
+                      />
+                    </div>
+                  )) ||
+                  (formData.users.length > 1 && (
+                    <div className={classes.EmailEntries}>
+                      <TextField
+                        size="small"
+                        className={classes.modalTextbox}
+                        id="outlined-basic"
+                        label="Email ID"
+                        variant="outlined"
+                        name="user"
+                        value={user}
+                        onChange={(e) => userChangeHandler(e, index)}
+                      />
+                      <AddIcon
+                        style={{
+                          cursor: "pointer",
+                          fontSize: 32,
+                          color: theme.palette.success.main,
+                        }}
+                        onClick={(e) => addUser()}
+                      />
+                      <ClearIcon
+                        style={{
+                          cursor: "pointer",
+                          fontSize: 32,
+                          color: theme.palette.error.main,
+                        }}
+                        onClick={(e) => removeUser(index)}
+                      />
+                    </div>
+                  ))
+                );
+              })}
+
+              <div className={classes.AreaExperience}>
+                <p>List of Modules</p>
+                <div className={classes.CheckBoxSection}>
+                  <div className={classes.CheckBox}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={formData.CompanyProfile}
+                          name="CompanyProfile"
+                          color="primary"
+                          onChange={(e) => checkboxChangeHandler(e)}
+                        />
+                      }
+                      label="Company Profile"
+                    />
+                  </div>
+
+                  <div className={classes.CheckBox}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={formData.TherapeuticExpertise}
+                          name="TherapeuticExpertise"
+                          color="primary"
+                          onChange={(e) => checkboxChangeHandler(e)}
+                        />
+                      }
+                      label="Expertise - Therapeutic"
+                    />
+                  </div>
+
+                  <div className={classes.CheckBox}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={formData.RegulatoryExpertise}
+                          name="RegulatoryExpertise"
+                          color="primary"
+                          onChange={(e) => checkboxChangeHandler(e)}
+                        />
+                      }
+                      label="Expertise - Regulatory"
+                    />
+                  </div>
+
+                  <div className={classes.CheckBox}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={formData.Geography}
+                          name="Geography"
+                          color="primary"
+                          onChange={(e) => checkboxChangeHandler(e)}
+                        />
+                      }
+                      label="Geography"
+                    />
+                  </div>
+
+                  <div className={classes.CheckBox}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={formData.ProjectWork}
+                          name="ProjectWork"
+                          color="primary"
+                          onChange={(e) => checkboxChangeHandler(e)}
+                        />
+                      }
+                      label="Project Work"
+                    />
+                  </div>
+
+                  <div className={classes.CheckBox}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={formData.Uploads}
+                          name="Uploads"
+                          color="primary"
+                          onChange={(e) => checkboxChangeHandler(e)}
+                        />
+                      }
+                      label="Uploads"
+                    />
+                  </div>
+                </div>
               </div>
+
               <div className={classes.btnSubmit}>
-                <Button variant="contained" color="primary">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={(e) => inviteNewUser()}
+                >
                   Submit
                 </Button>
               </div>

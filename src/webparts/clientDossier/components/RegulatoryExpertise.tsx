@@ -9,8 +9,14 @@ import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Button from "@material-ui/core/Button";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
+
+import CommonService from "../services/CommonService";
+
+import { CustomAlert } from "./CustomAlert";
+
 export interface IRegulatoryExpertise {
   CompanyName: string;
+  CompanyCode: string;
   CompanyID: string;
 }
 
@@ -21,210 +27,327 @@ const theme = createTheme({
     },
   },
 });
-const top100Films = [
-  { title: "The Shawshank Redemption", year: 1994 },
-  { title: "The Godfather", year: 1972 },
-  { title: "The Godfather: Part II", year: 1974 },
-  { title: "The Dark Knight", year: 2008 },
-  { title: "12 Angry Men", year: 1957 },
-  { title: "Schindler's List", year: 1993 },
-  { title: "Pulp Fiction", year: 1994 },
-  { title: "The Lord of the Rings: The Return of the King", year: 2003 },
-  { title: "The Good, the Bad and the Ugly", year: 1966 },
-  { title: "Fight Club", year: 1999 },
-  { title: "The Lord of the Rings: The Fellowship of the Ring", year: 2001 },
-  { title: "Star Wars: Episode V - The Empire Strikes Back", year: 1980 },
-  { title: "Forrest Gump", year: 1994 },
-  { title: "Inception", year: 2010 },
-  { title: "The Lord of the Rings: The Two Towers", year: 2002 },
-  { title: "One Flew Over the Cuckoo's Nest", year: 1975 },
-  { title: "Goodfellas", year: 1990 },
-  { title: "The Matrix", year: 1999 },
-  { title: "Seven Samurai", year: 1954 },
-  { title: "Star Wars: Episode IV - A New Hope", year: 1977 },
-  { title: "City of God", year: 2002 },
-  { title: "Se7en", year: 1995 },
-  { title: "The Silence of the Lambs", year: 1991 },
-  { title: "It's a Wonderful Life", year: 1946 },
-  { title: "Life Is Beautiful", year: 1997 },
-  { title: "The Usual Suspects", year: 1995 },
-  { title: "Léon: The Professional", year: 1994 },
-  { title: "Spirited Away", year: 2001 },
-  { title: "Saving Private Ryan", year: 1998 },
-  { title: "Once Upon a Time in the West", year: 1968 },
-  { title: "American History X", year: 1998 },
-  { title: "Interstellar", year: 2014 },
-  { title: "Casablanca", year: 1942 },
-  { title: "City Lights", year: 1931 },
-  { title: "Psycho", year: 1960 },
-  { title: "The Green Mile", year: 1999 },
-  { title: "The Intouchables", year: 2011 },
-  { title: "Modern Times", year: 1936 },
-  { title: "Raiders of the Lost Ark", year: 1981 },
-  { title: "Rear Window", year: 1954 },
-  { title: "The Pianist", year: 2002 },
-  { title: "The Departed", year: 2006 },
-  { title: "Terminator 2: Judgment Day", year: 1991 },
-  { title: "Back to the Future", year: 1985 },
-  { title: "Whiplash", year: 2014 },
-  { title: "Gladiator", year: 2000 },
-  { title: "Memento", year: 2000 },
-  { title: "The Prestige", year: 2006 },
-  { title: "The Lion King", year: 1994 },
-  { title: "Apocalypse Now", year: 1979 },
-  { title: "Alien", year: 1979 },
-  { title: "Sunset Boulevard", year: 1950 },
-  {
-    title:
-      "Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb",
-    year: 1964,
-  },
-  { title: "The Great Dictator", year: 1940 },
-  { title: "Cinema Paradiso", year: 1988 },
-  { title: "The Lives of Others", year: 2006 },
-  { title: "Grave of the Fireflies", year: 1988 },
-  { title: "Paths of Glory", year: 1957 },
-  { title: "Django Unchained", year: 2012 },
-  { title: "The Shining", year: 1980 },
-  { title: "WALL·E", year: 2008 },
-  { title: "American Beauty", year: 1999 },
-  { title: "The Dark Knight Rises", year: 2012 },
-  { title: "Princess Mononoke", year: 1997 },
-  { title: "Aliens", year: 1986 },
-  { title: "Oldboy", year: 2003 },
-  { title: "Once Upon a Time in America", year: 1984 },
-  { title: "Witness for the Prosecution", year: 1957 },
-  { title: "Das Boot", year: 1981 },
-  { title: "Citizen Kane", year: 1941 },
-  { title: "North by Northwest", year: 1959 },
-  { title: "Vertigo", year: 1958 },
-  { title: "Star Wars: Episode VI - Return of the Jedi", year: 1983 },
-  { title: "Reservoir Dogs", year: 1992 },
-  { title: "Braveheart", year: 1995 },
-  { title: "M", year: 1931 },
-  { title: "Requiem for a Dream", year: 2000 },
-  { title: "Amélie", year: 2001 },
-  { title: "A Clockwork Orange", year: 1971 },
-  { title: "Like Stars on Earth", year: 2007 },
-  { title: "Taxi Driver", year: 1976 },
-  { title: "Lawrence of Arabia", year: 1962 },
-  { title: "Double Indemnity", year: 1944 },
-  { title: "Eternal Sunshine of the Spotless Mind", year: 2004 },
-  { title: "Amadeus", year: 1984 },
-  { title: "To Kill a Mockingbird", year: 1962 },
-  { title: "Toy Story 3", year: 2010 },
-  { title: "Logan", year: 2017 },
-  { title: "Full Metal Jacket", year: 1987 },
-  { title: "Dangal", year: 2016 },
-  { title: "The Sting", year: 1973 },
-  { title: "2001: A Space Odyssey", year: 1968 },
-  { title: "Singin' in the Rain", year: 1952 },
-  { title: "Toy Story", year: 1995 },
-  { title: "Bicycle Thieves", year: 1948 },
-  { title: "The Kid", year: 1921 },
-  { title: "Inglourious Basterds", year: 2009 },
-  { title: "Snatch", year: 2000 },
-  { title: "3 Idiots", year: 2009 },
-  { title: "Monty Python and the Holy Grail", year: 1975 },
-];
+
 export const RegulatoryExpertise: React.FunctionComponent<
   IRegulatoryExpertise
 > = (props: IRegulatoryExpertise) => {
+  const [cusalert, setAlert] = useState({
+    open: false,
+    message: "Success",
+    severity: "error",
+  });
+
+  var _commonService: any = {};
+  const _regulatoryExpertise: string = "Regulatory Expertise";
+  const _regulatoryExpertiseMap: string =
+    "In House Regulatory Regime Experience Mapping";
+  const _regulatoryExpertiseMaster: string =
+    "In House Regulatory Regime Experience Master";
+
+  const [regulatoryExpertises, setRegulatoryExpertises] = useState([]);
+
+  const [selExpertises, setSelRegulatoryExpertises] = useState([]);
+  const [editRegulatoryExpertises, setEditRegulatoryExpertises] = useState([]);
+
+  const [othersComment, setOthersComment] = useState({
+    isChecked: false,
+    comments: "",
+  });
+
+  const [companyRegulatoryExpertise, setcompanyRegulatoryExpertise] = useState({
+    regulatoryExpertise: null,
+    regimeExperienceMapping: [],
+  });
+
+  function init() {
+    let customProperty = {
+      listName: _regulatoryExpertise,
+      filter: "CompanyIDId eq '" + props.CompanyID + "'",
+    };
+    _commonService.getList(customProperty, (res: any) => {
+      if (res && res.length > 0) {
+        loadCompanyRegimeExperienceMapping(res[0]);
+      } else {
+        setRegulatoryExpertises([]);
+        setOthersComment({
+          isChecked: false,
+          comments: "",
+        });
+        setcompanyRegulatoryExpertise({
+          regulatoryExpertise: null,
+          regimeExperienceMapping: [],
+        });
+        loadRegulatoryExpertise({
+          regulatoryExpertise: null,
+          regimeExperienceMapping: [],
+        });
+      }
+    });
+  }
+
+  function loadCompanyRegimeExperienceMapping(res: any) {
+    if (res.OtherComments) {
+      let comment = othersComment;
+      othersComment.comments = res.OtherComments;
+      othersComment.isChecked = true;
+      setOthersComment(comment);
+    }
+    let customProperty = {
+      listName: _regulatoryExpertiseMap,
+      filter: "RegulatoryExpertiseIDId eq '" + res.ID + "' and IsDeleted eq 0",
+      expand: "InHouseRegulatoryRegimeExperienc",
+      properties: "*,InHouseRegulatoryRegimeExperienc/Title",
+    };
+    _commonService.getList(customProperty, (mapres: any) => {
+      let editData: any = {};
+      editData.regulatoryExpertise = res;
+      editData.regimeExperienceMapping = [...mapres];
+      setcompanyRegulatoryExpertise(editData);
+      loadRegulatoryExpertise(editData);
+    });
+  }
+
+  function loadRegulatoryExpertise(editData: any) {
+    let customProperty = {
+      listName: _regulatoryExpertiseMaster,
+      properties: "ID,Title,IsActive",
+      // filter: "IsActive eq '1'",
+      orderby: "OrderNo",
+      orderbyAsc: true,
+    };
+    _commonService.getList(customProperty, (res: any[]) => {
+      let regulatoryExpertises: any[] = [];
+      let editRegulatoryExpertises: any[] = [];
+      for (let index = 0; index < res.length; index++) {
+        let editMap = editData.regimeExperienceMapping.filter(
+          (c) => c.InHouseRegulatoryRegimeExperiencId == res[index].Id
+        );
+        if (editMap.length || res[index].IsActive) {
+          let data = {
+            InHouseRegulatoryRegimeExperiencId: res[index].Id,
+            Title: res[index].Title,
+            IsChecked: false,
+            RegulatoryExpertiseIDId: 0,
+            RegulatoryExperienceMappingID: 0,
+          };
+          if (editMap.length) {
+            data.RegulatoryExpertiseIDId = editMap[0].RegulatoryExpertiseIDId;
+            data.RegulatoryExperienceMappingID = editMap[0].ID;
+            data.IsChecked = true;
+            editRegulatoryExpertises.push(data);
+          }
+          regulatoryExpertises.push(data);
+        }
+      }
+      setRegulatoryExpertises([...regulatoryExpertises]);
+      setSelRegulatoryExpertises([...editRegulatoryExpertises]);
+      setEditRegulatoryExpertises([...editRegulatoryExpertises]);
+    });
+  }
+
+  function changeHandler(event: any): any {
+    let comment = othersComment;
+    comment.comments = event.target.value;
+    setOthersComment({ ...comment });
+  }
+
+  function submitData() {
+    let checkedDatas = regulatoryExpertises.filter((d) => d.IsChecked == true);
+    if (checkedDatas.length == 0) {
+      setAlert({
+        open: true,
+        severity: "warning",
+        message: "Select any once expertise",
+      });
+      return;
+    }
+    if (othersComment.isChecked) {
+      if (!othersComment.comments) {
+        setAlert({
+          open: true,
+          severity: "warning",
+          message: "Please give comments",
+        });
+        return;
+      }
+    }
+    if (!companyRegulatoryExpertise.regulatoryExpertise) {
+      insertNewRegulatoryExpertise();
+    } else {
+      updateRegulatoryExpertise();
+    }
+  }
+
+  function insertNewRegulatoryExpertise() {
+    _commonService = new CommonService();
+    let expertisePostData = {
+      CompanyIDId: props.CompanyID,
+      OtherComments: null as any,
+    };
+    if (othersComment.isChecked) {
+      expertisePostData.OtherComments = othersComment.comments;
+    }
+
+    let locRegulatoryExpertises = selExpertises.slice();
+
+    _commonService.insertIntoList(
+      {
+        listName: _regulatoryExpertise,
+      },
+      expertisePostData,
+      (res: any) => {
+        let regulatoryExpertisePostData: any[] = [];
+        locRegulatoryExpertises.forEach((regulatoryExpertise: any) => {
+          if (regulatoryExpertise.IsChecked) {
+            regulatoryExpertisePostData.push({
+              RegulatoryExpertiseIDId: res.data.Id,
+              InHouseRegulatoryRegimeExperiencId:
+                regulatoryExpertise.InHouseRegulatoryRegimeExperiencId,
+            });
+          }
+        });
+        if (regulatoryExpertisePostData.length) {
+          _commonService.bulkInsert(
+            { listName: _regulatoryExpertiseMap },
+            regulatoryExpertisePostData,
+            (bulkres: any) => {
+              init();
+            }
+          );
+        }
+      }
+    );
+    setAlert({
+      open: true,
+      severity: "success",
+      message: "Inserted successfully",
+    });
+  }
+
+  function updateRegulatoryExpertise() {
+    _commonService = new CommonService();
+
+    _commonService.updateList(
+      {
+        listName: _regulatoryExpertise,
+        ID: companyRegulatoryExpertise.regulatoryExpertise.ID,
+      },
+      { OtherComments: othersComment.comments }
+    );
+
+    let locRegulatoryExpertises = selExpertises.slice();
+    let newRegulatoryExpertises = locRegulatoryExpertises.filter(
+      (c) => c.RegulatoryExpertiseIDId == 0 && c.IsChecked == true
+    );
+    if (newRegulatoryExpertises.length) {
+      newRegulatoryExpertises.forEach(function (v) {
+        v.RegulatoryExpertiseIDId =
+          companyRegulatoryExpertise.regulatoryExpertise.ID;
+        delete v.Title;
+        delete v.IsChecked;
+        delete v.RegulatoryExperienceMappingID;
+      });
+
+      _commonService.bulkInsert(
+        { listName: _regulatoryExpertiseMap },
+        newRegulatoryExpertises,
+        (bulkres: any) => {
+          init();
+        }
+      );
+    }
+
+    var removedRegulatoryExpertises = editRegulatoryExpertises.filter(
+      (edit) =>
+        !locRegulatoryExpertises.some(
+          (loc) =>
+            edit.RegulatoryExperienceMappingID ===
+              loc.RegulatoryExperienceMappingID &&
+            loc.RegulatoryExperienceMappingID != 0
+        )
+    );
+
+    if (removedRegulatoryExpertises.length) {
+      removedRegulatoryExpertises.forEach(function (v) {
+        v.IsDeleted = true;
+        v.ID = v.RegulatoryExperienceMappingID;
+        delete v.Title;
+        delete v.IsChecked;
+        delete v.RegulatoryExperienceMappingID;
+      });
+
+      _commonService.bulkUpdate(
+        { listName: _regulatoryExpertiseMap },
+        removedRegulatoryExpertises,
+        (bulkres: any) => {
+          init();
+        }
+      );
+    }
+    setAlert({
+      open: true,
+      severity: "success",
+      message: "Updated successfully",
+    });
+  }
+
+  useEffect((): any => {
+    _commonService = new CommonService();
+    init();
+  }, []);
+
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
   return (
     <ThemeProvider theme={theme}>
-      <h3 className={classes.headerTitle}>Regulatory - Therapeutic </h3>
+      <h3 className={classes.headerTitle}>Expertise - Regulatory </h3>
       <div className={classes.companyDetails}>
         <TextField
           style={{ width: "40%", marginRight: 30 }}
           id="outlined-basic"
           label="Company Name"
           variant="outlined"
+          aria-readonly={true}
+          name="CompanyName"
+          value={props.CompanyName}
         />
         <TextField
           id="outlined-basic"
           label="ID"
           variant="outlined"
           style={{ width: 100 }}
+          aria-readonly={true}
+          value={props.CompanyCode}
         />
       </div>
-      <div className={classes.Regulatory}>
-        <p>In House Regulatory Regime Experience (check "x" all that apply)</p>
-        <div className={classes.RegulatorySection}>
-          {/* CheckBox*/}
-          <div className={classes.CheckBox}>
-            <FormControlLabel
-              control={
-                <Checkbox checked={false} name="checkedB" color="primary" />
-              }
-              label="Australia - Therapeutic Goods Administration (TGA)"
-            />
-          </div>
-          {/* CheckBox */}
-          {/* CheckBox*/}
-          <div className={classes.CheckBox}>
-            <FormControlLabel
-              control={
-                <Checkbox checked={false} name="checkedB" color="primary" />
-              }
-              label="New Zealand - Medsafe - Medicines and Medical Devices Safety Authority"
-            />
-          </div>
-          {/* CheckBox */}
-        </div>
-        <div className={classes.RegulatorySection}>
-          {/* CheckBox*/}
-          <div className={classes.CheckBox}>
-            <FormControlLabel
-              control={
-                <Checkbox checked={false} name="checkedB" color="primary" />
-              }
-              label="Brazil - Agencia Nacional de Vigiloncia Sanitaria (ANVISA )"
-            />
-          </div>
-          {/* CheckBox */}
-          {/* CheckBox*/}
-          <div className={classes.CheckBox}>
-            <FormControlLabel
-              control={
-                <Checkbox checked={false} name="checkedB" color="primary" />
-              }
-              label="Nigeria - National Agency for Food and Drug Administration and Control (NAFDAC)"
-            />
-          </div>
-          {/* CheckBox */}
-        </div>
-        <div className={classes.RegulatorySection}>
-          {/* CheckBox*/}
-          <div className={classes.CheckBox}>
-            <FormControlLabel
-              control={
-                <Checkbox checked={false} name="checkedB" color="primary" />
-              }
-              label="Canada - Health Canada"
-            />
-          </div>
-          {/* CheckBox */}
-          {/* CheckBox*/}
-          <div className={classes.CheckBox}>
-            <FormControlLabel
-              control={
-                <Checkbox checked={false} name="checkedB" color="primary" />
-              }
-              label="Pakistan - Drugs Control Organization, Ministry of Health"
-            />
-          </div>
-          {/* CheckBox */}
-        </div>
-      </div>
+
       <div style={{ marginTop: 12 }}>
+
         <Autocomplete
           multiple
           id="checkboxes-tags-demo"
-          options={top100Films}
+          options={regulatoryExpertises}
           disableCloseOnSelect
-          getOptionLabel={(option) => option.title}
+          getOptionLabel={(option) => option.Title}
+          value={selExpertises}
+          onChange={(event: any, newValue: any[]) => {
+            let othersChecked = false;
+            newValue.map((d) => {
+              if (d.Title == "Other") {
+                othersChecked = true;
+              }
+              d.IsChecked = true;
+            });
+            let otherComment = {
+              isChecked: othersChecked,
+              comments: othersComment.comments,
+            };
+            if (!othersChecked) {
+              otherComment.comments = null;
+            }
+            setOthersComment({ ...otherComment });
+            setSelRegulatoryExpertises([...newValue]);
+          }}
           renderOption={(option, { selected }) => (
             <React.Fragment>
               <Checkbox
@@ -233,7 +356,7 @@ export const RegulatoryExpertise: React.FunctionComponent<
                 style={{ marginRight: 8 }}
                 checked={selected}
               />
-              {option.title}
+              {option.Title}
             </React.Fragment>
           )}
           //   style={{ width: 500 }}
@@ -241,17 +364,45 @@ export const RegulatoryExpertise: React.FunctionComponent<
             <TextField
               {...params}
               variant="outlined"
-              label="Please Specify"
+              label="In House Regulatory Regime Experience"
               placeholder=""
             />
           )}
         />
       </div>
+
+      {othersComment.isChecked && (
+        <div className={classes.companyDetails}>
+          <TextField
+            style={{ width: "40%", marginRight: 30 }}
+            id="outlined-basic"
+            label="Company Name"
+            variant="outlined"
+            name="Comments"
+            value={othersComment.comments}
+            onChange={(e) => changeHandler(e)}
+          />
+        </div>
+      )}
+
       <div className={classes.bottomBtnSection}>
-        <Button variant="contained" color="primary">
+        <Button variant="contained" color="primary" onClick={submitData}>
           Submit
         </Button>
       </div>
+
+      <CustomAlert
+        open={cusalert.open}
+        message={cusalert.message}
+        severity={cusalert.severity}
+        handleClose={(e) => {
+          setAlert({
+            open: false,
+            severity: "",
+            message: "",
+          });
+        }}
+      ></CustomAlert>
     </ThemeProvider>
   );
 };

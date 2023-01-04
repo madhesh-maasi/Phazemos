@@ -8,15 +8,15 @@ import {
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { IReadonlyTheme } from '@microsoft/sp-component-base';
 
-import * as strings from 'ClientDossierWebPartStrings';
-import ClientDossier from './components/ClientDossier';
-import { IClientDossierProps } from './components/IClientDossierProps';
+import * as strings from 'PhazemosMastersWebPartStrings';
+import PhazemosMasters from './components/PhazemosMasters';
+import { IPhazemosMastersProps } from './components/IPhazemosMastersProps';
 
-export interface IClientDossierWebPartProps {
+export interface IPhazemosMastersWebPartProps {
   description: string;
 }
 
-export default class ClientDossierWebPart extends BaseClientSideWebPart<IClientDossierWebPartProps> {
+export default class PhazemosMastersWebPart extends BaseClientSideWebPart<IPhazemosMastersWebPartProps> {
 
   private _isDarkTheme: boolean = false;
   private _environmentMessage: string = '';
@@ -28,22 +28,14 @@ export default class ClientDossierWebPart extends BaseClientSideWebPart<IClientD
   }
 
   public render(): void {
-
-    var currentContext = this.context;
-
-    const element: React.ReactElement<IClientDossierProps> = React.createElement(
-      ClientDossier,
+    const element: React.ReactElement<IPhazemosMastersProps> = React.createElement(
+      PhazemosMasters,
       {
         description: this.properties.description,
         isDarkTheme: this._isDarkTheme,
         environmentMessage: this._environmentMessage,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
-        userDisplayName: this.context.pageContext.user.displayName,
-
-        
-        currentContext: currentContext,
-        siteUrl: this.context.pageContext.web.absoluteUrl,
-
+        userDisplayName: this.context.pageContext.user.displayName
       }
     );
 
