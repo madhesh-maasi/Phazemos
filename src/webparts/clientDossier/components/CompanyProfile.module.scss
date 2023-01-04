@@ -12,9 +12,7 @@
     .CompanyContact {
         width: 23%;
         margin: 16px;
-        &:nth-child(1) {
-            margin-left: 0;
-        }
+        margin-left: 0;
     }
 }
 
@@ -24,6 +22,7 @@
     }
     .CheckboxSection {
         display: flex;
+        flex-wrap: wrap;
         margin: 6px;
         .Checkbox {
             width: 23%;

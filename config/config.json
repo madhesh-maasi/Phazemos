@@ -17,11 +17,20 @@
           "manifest": "./src/webparts/inviteUser/InviteUserWebPart.manifest.json"
         }
       ]
+    },
+    "phazemos-masters-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/phazemosMasters/PhazemosMastersWebPart.js",
+          "manifest": "./src/webparts/phazemosMasters/PhazemosMastersWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
   "localizedResources": {
     "ClientDossierWebPartStrings": "lib/webparts/clientDossier/loc/{locale}.js",
-    "InviteUserWebPartStrings": "lib/webparts/inviteUser/loc/{locale}.js"
+    "InviteUserWebPartStrings": "lib/webparts/inviteUser/loc/{locale}.js",
+    "PhazemosMastersWebPartStrings": "lib/webparts/phazemosMasters/loc/{locale}.js"
   }
 }

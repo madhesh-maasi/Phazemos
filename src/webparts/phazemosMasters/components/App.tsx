@@ -15,9 +15,13 @@ import Modal from "@material-ui/core/Modal";
 import Fade from "@material-ui/core/Fade";
 import { makeStyles } from "@material-ui/core/styles";
 import classes from "./App.module.scss";
+import Checkbox from "@material-ui/core/Checkbox";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
 const UserInviteBG = require("../../../ExternalRef/IMG/NewUserBG.png");
+
 export interface IApp {}
-// Styles
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -38,7 +42,9 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2, 4, 3),
   },
 }));
-// Styles
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 export const App: React.FunctionComponent<IApp> = (props: IApp) => {
   const styles = useStyles();
   const [age, setAge] = React.useState("");
@@ -53,18 +59,16 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
   const handleOpen = () => {
     setOpen(true);
   };
-
   return (
     <ThemeProvider theme={theme}>
       <div className={classes.App}>
         {/* Illus Section */}
-        <img src={`${UserInviteBG}`} />
         {/* Illus Section */}
         {/* App Section */}
         <div className={classes.AppSection}>
           <div className={classes.headerSection}>
             <Typography variant="h5" color="primary">
-              Invite User
+              Masters
             </Typography>
             <div className={classes.headerBtn}>
               <Button
@@ -89,7 +93,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
               <div className={classes.modalHeader}>
                 {" "}
                 <Typography variant="h6" color="primary">
-                  New User
+                  New Entry
                 </Typography>
                 <ClearIcon
                   onClick={handleClose}
@@ -100,32 +104,9 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
                 size="small"
                 className={classes.modalTextbox}
                 id="outlined-basic"
-                label="Company Name"
+                label="Title"
                 variant="outlined"
               />
-              <div className={classes.EmailEntries}>
-                <TextField
-                  size="small"
-                  className={classes.modalTextbox}
-                  id="outlined-basic"
-                  label="Email ID"
-                  variant="outlined"
-                />
-                <AddIcon
-                  style={{
-                    cursor: "pointer",
-                    fontSize: 32,
-                    color: theme.palette.success.main,
-                  }}
-                />
-                <ClearIcon
-                  style={{
-                    cursor: "pointer",
-                    fontSize: 32,
-                    color: theme.palette.error.main,
-                  }}
-                />
-              </div>
               <div className={classes.btnSubmit}>
                 <Button variant="contained" color="primary">
                   Submit
@@ -136,6 +117,11 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
         </Modal>
       )}
       {/* Modal Section */}
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error">
+          This is a success message!
+        </Alert>
+      </Snackbar>
     </ThemeProvider>
   );
 };

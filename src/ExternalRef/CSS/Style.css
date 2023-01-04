@@ -12,3 +12,15 @@
     padding: 0 !important;
     max-width: 100% !important;
 }
+
+tbody .MuiTableCell-root {
+    padding: 6px !important;
+}
+
+.MuiSnackbar-anchorOriginBottomCenter {
+    left: unset !important;
+    right: 0px !important;
+    top: 100px !important;
+    bottom: unset !important;
+    transform: translateX(-20%) !important;
+}
