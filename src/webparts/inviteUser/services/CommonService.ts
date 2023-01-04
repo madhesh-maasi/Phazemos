@@ -180,5 +180,16 @@ export default class CommonService {
             });
     };
 
+    validateEmail(input) {
+        var validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        if(!input){
+            return false;
+        }
+        if (!input.match(validRegex)) {
+            return false;
+        }
+        return true;
+    }
+
 
 }

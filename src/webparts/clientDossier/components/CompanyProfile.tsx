@@ -35,14 +35,14 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
   var _requiredCompanyDetails = ["RFPContact", "InvoicingContact"];
 
   const [companyProfile, setCompanyProfile] = useState({
-    RFPContact: null,
-    InvoicingContact: null,
-    RFPContactEmail: null,
-    InvoicingContactEmail: null,
-    WebsiteURL: null,
-    LinkedIn: null,
-    Facebook: null,
-    Twitter: null,
+    RFPContact: "",
+    InvoicingContact: "",
+    RFPContactEmail: "",
+    InvoicingContactEmail: "",
+    WebsiteURL: "",
+    LinkedIn: "",
+    Facebook: "",
+    Twitter: "",
   });
   const [primaryServices, setPrimaryServices] = useState([]);
 
@@ -110,18 +110,18 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
         formData.LinkedIn = res[0].LinkedIn;
         formData.Facebook = res[0].Facebook;
         formData.Twitter = res[0].Twitter;
-        setCompanyProfile({ ...formData });
+        setCompanyProfile(formData);
         loadCompanyProfileMapping(res[0]);
       } else {
         setCompanyProfile({
-          RFPContact: null,
-          InvoicingContact: null,
-          RFPContactEmail: null,
-          InvoicingContactEmail: null,
-          WebsiteURL: null,
-          LinkedIn: null,
-          Facebook: null,
-          Twitter: null,
+          RFPContact: "",
+          InvoicingContact: "",
+          RFPContactEmail: "",
+          InvoicingContactEmail: "",
+          WebsiteURL: "",
+          LinkedIn: "",
+          Facebook: "",
+          Twitter: "",
         });
         setPrimaryServices([]);
         setCompanyMappingEditData({

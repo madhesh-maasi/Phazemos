@@ -89,6 +89,8 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
   }
 
   function inviteNewUser() {
+    _commonService = new CommonService();
+
     let data = formData;
     var companyData = {
       Title: data.companyName,
@@ -112,11 +114,11 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
 
     for (let index = 0; index < data.users.length; index++) {
       const user = data.users[index];
-      if (!user) {
+      if (!_commonService.validateEmail(user)) {
         setAlert({
           open: true,
           severity: "warning",
-          message: user + " is not a valid user",
+          message: user + " is not a valid Email ID",
         });
         return;
       }
@@ -126,8 +128,6 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
       listName: _companyRegistration,
       ID: 0,
     };
-
-    _commonService = new CommonService();
 
     _commonService.insertIntoList(
       customProperty,
@@ -289,18 +289,18 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
 
               {formData.users.map((user: any, index: number) => {
                 return (
-                  (formData.users.length == 1 && (
-                    <div className={classes.EmailEntries}>
-                      <TextField
-                        size="small"
-                        className={classes.modalTextbox}
-                        id="outlined-basic"
-                        label="Email ID"
-                        variant="outlined"
-                        name="user"
-                        value={user}
-                        onChange={(e) => userChangeHandler(e, index)}
-                      />
+                  <div className={classes.EmailEntries}>
+                    <TextField
+                      size="small"
+                      className={classes.modalTextbox}
+                      id="outlined-basic"
+                      label="Email ID"
+                      variant="outlined"
+                      name="user"
+                      value={user}
+                      onChange={(e) => userChangeHandler(e, index)}
+                    />
+                    {formData.users.length == index + 1 && (
                       <AddIcon
                         style={{
                           cursor: "pointer",
@@ -309,28 +309,9 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
                         }}
                         onClick={(e) => addUser()}
                       />
-                    </div>
-                  )) ||
-                  (formData.users.length > 1 && (
-                    <div className={classes.EmailEntries}>
-                      <TextField
-                        size="small"
-                        className={classes.modalTextbox}
-                        id="outlined-basic"
-                        label="Email ID"
-                        variant="outlined"
-                        name="user"
-                        value={user}
-                        onChange={(e) => userChangeHandler(e, index)}
-                      />
-                      <AddIcon
-                        style={{
-                          cursor: "pointer",
-                          fontSize: 32,
-                          color: theme.palette.success.main,
-                        }}
-                        onClick={(e) => addUser()}
-                      />
+                    )}
+
+                    {formData.users.length > 1 && (
                       <ClearIcon
                         style={{
                           cursor: "pointer",
@@ -339,8 +320,8 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
                         }}
                         onClick={(e) => removeUser(index)}
                       />
-                    </div>
-                  ))
+                    )}
+                  </div>
                 );
               })}
 
@@ -446,8 +427,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
           </Fade>
         </Modal>
       )}
-      
-      
+
       <CustomAlert
         open={cusalert.open}
         message={cusalert.message}
@@ -460,8 +440,6 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
           });
         }}
       ></CustomAlert>
-
-      
     </ThemeProvider>
   );
 };
