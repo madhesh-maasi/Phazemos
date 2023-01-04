@@ -20,6 +20,7 @@ import { CustomAlert } from "./CustomAlert";
 
 export interface IDataGrid {
   ListName: string;
+  EditRecord: any;
 }
 
 // Styles for the Table
@@ -53,8 +54,6 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
 ) => {
   var _commonService: CommonService = new CommonService();
 
-  const [open, setOpen] = React.useState(false);
-
   const [masterData, setMasterData] = useState([]);
 
   const [cusalert, setAlert] = useState({
@@ -62,18 +61,6 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
     message: "Success",
     severity: "error",
   });
-
-  const handleClick = () => {
-    setOpen(true);
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpen(false);
-  };
 
   function init() {
     let customProperty = {
@@ -146,7 +133,7 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
                 <StyledTableCell>
                   <EditIcon
                     style={{ color: theme.palette.primary.main, fontSize: 32 }}
-                    onClick={handleClick}
+                    onClick={props.EditRecord(master)}
                   />
                 </StyledTableCell>
               </StyledTableRow>

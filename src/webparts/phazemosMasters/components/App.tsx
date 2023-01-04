@@ -21,6 +21,10 @@ import MuiAlert from "@material-ui/lab/Alert";
 import { initial } from "lodash";
 const UserInviteBG = require("../../../ExternalRef/IMG/NewUserBG.png");
 
+import { CustomAlert } from "./CustomAlert";
+
+import CommonService from "../services/CommonService";
+
 export interface IApp {}
 
 const theme = createTheme({
@@ -47,19 +51,33 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 export const App: React.FunctionComponent<IApp> = (props: IApp) => {
+  var _commonService: CommonService;
+
+  const [cusalert, setAlert] = useState({
+    open: false,
+    message: "Success",
+    severity: "error",
+  });
+
   const styles = useStyles();
-  const [age, setAge] = React.useState("");
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const [selOpen, setSelOpen] = React.useState(false);
 
-  const handleChange = (event) => {
-    setAge(event.target.value);
-  };
+  const [record, setRecord] = useState({
+    Title: "",
+    ID: 0,
+  });
+
   const handleClose = () => {
     setOpen(false);
   };
   const handleOpen = () => {
+    let rec = {
+      Title: "",
+      ID: 0,
+    };
+    setRecord({ ...rec });
     setOpen(true);
   };
 
@@ -79,7 +97,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
     title: "Disease Area Experience Master",
     listName: "Disease Area Experience Master",
   };
-  
+
   const [currentMaster, setCurrentMaster] = useState(initialMaster.title);
 
   const [masters, setMasters] = useState([
@@ -102,15 +120,68 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
     },
   ]);
 
+  function editRecord(editRecord: any) {
+    let rec = {
+      ID: editRecord.ID,
+      Title: editRecord.Title,
+    };
+    setRecord({ ...rec });
+    setOpen(true);
+  }
 
-  function  rerender(){
+  function inputChangeHandler(event: any) {
+    let data = record;
+    data.Title = event.target.value;
+    setRecord({ ...data });
+  }
 
+  function submitData() {
+    if (!record.Title) {
+      setAlert({
+        open: true,
+        severity: "warning",
+        message: "Invalid Title",
+      });
+      return;
+    }
+    _commonService = new CommonService();
+    if (record.ID == 0) {
+      let customProperty = {
+        listName: currentMaster,
+      };
+      _commonService.insertIntoList(
+        customProperty,
+        { Title: record.Title, IsActive: true },
+        (res: any) => {
+          setAlert({
+            open: true,
+            severity: "success",
+            message: "Inserted successfully",
+          });
+        }
+      );
+    } else {
+      let customProperty = {
+        listName: currentMaster,
+        ID: record.ID,
+      };
+      _commonService.updateList(
+        customProperty,
+        { Title: record.Title },
+        (res: any) => {
+          setAlert({
+            open: true,
+            severity: "success",
+            message: "Updated successfully",
+          });
+        }
+      );
+    }
   }
 
   return (
     <ThemeProvider theme={theme}>
       <div className={classes.App}>
-        
         <div className={classes.AppSection}>
           <div className={classes.headerSection}>
             <Typography variant="h5" color="primary">
@@ -130,7 +201,6 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
                 value={currentMaster}
                 onChange={selHandleChange}
               >
-
                 {masters.map((m) => {
                   return <MenuItem value={m.listName}>{m.title}</MenuItem>;
                 })}
@@ -148,7 +218,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
               </Button>
             </div>
           </div>
-          <DataGrid ListName={currentMaster}/>
+          <DataGrid ListName={currentMaster} EditRecord={editRecord} />
         </div>
         {/* App Section */}
       </div>
@@ -160,7 +230,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
               <div className={classes.modalHeader}>
                 {" "}
                 <Typography variant="h6" color="primary">
-                  New Entry
+                  Master
                 </Typography>
                 <ClearIcon
                   onClick={handleClose}
@@ -173,9 +243,15 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
                 id="outlined-basic"
                 label="Title"
                 variant="outlined"
+                onChange={(e) => inputChangeHandler(e)}
+                value={record.Title}
               />
               <div className={classes.btnSubmit}>
-                <Button variant="contained" color="primary">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={(e) => submitData()}
+                >
                   Submit
                 </Button>
               </div>
@@ -183,12 +259,19 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
           </Fade>
         </Modal>
       )}
-      {/* Modal Section */}
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error">
-          This is a success message!
-        </Alert>
-      </Snackbar>
+
+      <CustomAlert
+        open={cusalert.open}
+        message={cusalert.message}
+        severity={cusalert.severity}
+        handleClose={(e) => {
+          setAlert({
+            open: false,
+            severity: "",
+            message: "",
+          });
+        }}
+      ></CustomAlert>
     </ThemeProvider>
   );
 };
