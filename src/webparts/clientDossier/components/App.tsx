@@ -12,7 +12,7 @@ import TherapeuticExpertise from "./TherapeuticExpertise";
 import { RegulatoryExpertise } from "./RegulatoryExpertise";
 import { Geography } from "./Geography";
 import { ProjectWork } from "./ProjectWork";
-import Upload from "./Upload";
+import { Upload } from "./Upload";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 
 import CommonService from "../services/CommonService";
@@ -114,7 +114,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
   useEffect((): any => {
     init();
   }, []);
-
+  console.log(formData.uploads);
   return (
     <ThemeProvider theme={theme}>
       <AppBar position="static" color="default">
@@ -185,7 +185,11 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
 
       {formData.projectWork && (
         <TabPanel value={value} index={4}>
-          <ProjectWork CompanyName={""} CompanyID={""} />
+          <ProjectWork
+            CompanyName={formData.companyName}
+            CompanyID={formData.companyID}
+            CompanyCode={formData.companyCode}
+          />
         </TabPanel>
       )}
 

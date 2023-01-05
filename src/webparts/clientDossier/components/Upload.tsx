@@ -183,8 +183,11 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
   }
 
   useEffect((): any => {
+    console.log("Loaded");
     init();
   }, []);
+
+  console.log('Init');
 
   return (
     <ThemeProvider theme={theme}>
@@ -246,7 +249,10 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
                         <span
                           className={classes.fileDelete}
                           onClick={(e) =>
-                            deleteConfirmation(index, allFile[module].objectName)
+                            deleteConfirmation(
+                              index,
+                              allFile[module].objectName
+                            )
                           }
                         >
                           x
@@ -312,4 +318,3 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
     </ThemeProvider>
   );
 };
-export default Upload;
