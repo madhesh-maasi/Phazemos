@@ -31,10 +31,15 @@ const theme = createTheme({
 export const ProjectWork: React.FunctionComponent<IProjectWork> = (
   props: IProjectWork
 ) => {
-  const [age, setAge] = React.useState("");
-  const [selOpen, setSelOpen] = React.useState(false);
+  const [cusalert, setAlert] = useState({
+    open: false,
+    message: "Success",
+    severity: "error",
+  });
 
+  const [projectWorkID, setProjectWorkID] = useState(0);
   const [allCategories, setAllCategories] = useState([]);
+  const [allTicketSizes, setAllTicketSizes] = useState([]);
 
   const [keyCompanies, setKeyCompanies] = useState([]);
   const [deleteKeyCompanies, setDeleteKeyCompanies] = useState([]);
@@ -47,18 +52,45 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
   const _projectWorkMaster: string = "Project Work Master";
   const _projectWorkCategoryMaster: string = "Project Work Category Master";
 
-  const selHandleClose = () => {
-    setSelOpen(false);
-  };
-
-  const selHandleOpen = () => {
-    setSelOpen(true);
-  };
+  function loadCompanyProjectWorkMaster(editData: any) {
+    let customProperty = {
+      listName: _projectWorkMaster,
+      properties: "ID,Title,IsActive",
+      orderby: "OrderNo",
+      orderbyAsc: true,
+    };
+    _commonService.getList(customProperty, (res: any) => {
+      let ticketSizes = [];
+      for (let index = 0; index < res.length; index++) {
+        let editMap = editData.projectWorkMapping.filter(
+          (c) => c.ProjectWorkMasterIDId == res[index].Id
+        );
+        if (editMap.length || res[index].IsActive) {
+          let data = {
+            ID: 0,
+            ProjectIDId: 0,
+            ProjectWorkMasterIDId: res[index].Id,
+            Title: res[index].Title,
+            Year: "",
+            Size: "",
+          };
+          if (editMap.length) {
+            data.ProjectIDId = editMap[0].ProjectIDId;
+            data.ID = editMap[0].ID;
+            data.Year = editMap[0].Year;
+            data.Size = editMap[0].Size;
+          }
+          ticketSizes.push(data);
+        }
+      }
+      setAllTicketSizes([...ticketSizes]);
+    });
+  }
 
   function loadCompanyProjectWork(editData: any) {
     let customProperty = {
       listName: _projectWorkCompanyDetails,
-      filter: "ProjectIDId eq '" + editData.ID + "'",
+      filter: "ProjectIDId eq '" + editData.ID + "'  and IsDeleted eq 0",
     };
     _commonService.getList(customProperty, (res: any) => {
       if (res && res.length > 0) {
@@ -66,9 +98,10 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
         for (let index = 0; index < res.length; index++) {
           keyCompany.push({
             ProjectIDId: res[index].ProjectIDId,
-            CategoryIDId: res[index].CategoryID,
+            CategoryIDId: res[index].CategoryIDId,
             ID: res[index].ID,
             Description: res[index].Description,
+            IsDeleted: res[index].IsDeleted,
           });
         }
         setKeyCompanies([...keyCompany]);
@@ -79,9 +112,28 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
             CategoryIDId: 1,
             ID: 0,
             Description: "",
+            IsDeleted: false,
           },
         ];
         setKeyCompanies([...keyCompany]);
+      }
+    });
+  }
+
+  function loadCompanyProjectWorkMapping(projectWorkId: number) {
+    let customProperty = {
+      listName: _projectWorkMapping,
+      filter: "ProjectIDId eq '" + projectWorkId + "'",
+    };
+    _commonService.getList(customProperty, (res: any) => {
+      if (res && res.length > 0) {
+        loadCompanyProjectWorkMaster({
+          projectWorkMapping: res,
+        });
+      } else {
+        loadCompanyProjectWorkMaster({
+          projectWorkMapping: [],
+        });
       }
     });
   }
@@ -93,14 +145,21 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
     };
     _commonService.getList(customProperty, (res: any) => {
       if (res && res.length > 0) {
+        setProjectWorkID(res[0].ID);
         loadCompanyProjectWork(res[0]);
+        loadCompanyProjectWorkMapping(res[0].ID);
       } else {
+        setProjectWorkID(0);
         addKeyCompanies();
+        loadCompanyProjectWorkMaster({
+          projectWorkMapping: [],
+        });
       }
     });
   }
 
   function init() {
+    setDeleteKeyCompanies([]);
     _commonService = new CommonService();
     let customProperty = {
       listName: _projectWorkCategoryMaster,
@@ -111,20 +170,19 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
     });
   }
 
-  function addKeyCompanies(){
+  function addKeyCompanies() {
     let keyCompany = keyCompanies;
-    keyCompany.push([
-      {
-        ProjectIDId: 0,
-        CategoryIDId: 1,
-        ID: 0,
-        Description: "",
-      },
-    ]);
+    keyCompany.push({
+      IsDeleted: false,
+      ProjectIDId: 0,
+      CategoryIDId: 1,
+      ID: 0,
+      Description: "",
+    });
     setKeyCompanies([...keyCompany]);
   }
 
-  function removeKeyCompanies(index){
+  function removeKeyCompanies(index) {
     let allKeyCompanies = keyCompanies;
     let delData = deleteKeyCompanies;
     if (allKeyCompanies[index].ID != 0) {
@@ -140,6 +198,135 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
     let allKeyCompanies = keyCompanies;
     allKeyCompanies[index].CategoryIDId = event.target.value;
     setKeyCompanies([...allKeyCompanies]);
+  }
+
+  function inputChangeHandler(event: any, index: number): any {
+    let allKeyCompanies = keyCompanies;
+    allKeyCompanies[index][event.target.name] = event.target.value;
+    setKeyCompanies([...allKeyCompanies]);
+  }
+
+  function submitData() {
+    let formKeys = Object.keys(keyCompanies[0]);
+    let isValidForm = true;
+
+    for (let index = 0; index < keyCompanies.length; index++) {
+      for (let j = 0; j < formKeys.length; j++) {
+        if (
+          formKeys[j] != "ID" &&
+          formKeys[j] != "IsDeleted" &&
+          formKeys[j] != "ProjectIDId" &&
+          !keyCompanies[index][formKeys[j]]
+        ) {
+          console.log(formKeys[j] + " is required");
+          isValidForm = false;
+          break;
+        }
+      }
+    }
+    if (!isValidForm) {
+      setAlert({
+        open: true,
+        severity: "warning",
+        message: "Invalid form",
+      });
+      return;
+    }
+
+    _commonService = new CommonService();
+
+    if (projectWorkID == 0) {
+      _commonService.insertIntoList(
+        {
+          listName: _project,
+        },
+        { CompanyIDId: props.CompanyID },
+        (res: any) => {
+          insertOrUpdateKeyCompany(res.data.Id);
+          insertOrUpdateProjectWorkMapping(res.data.Id);
+        }
+      );
+      setAlert({
+        open: true,
+        severity: "success",
+        message: "Inserted successfully",
+      });
+    } else {
+      insertOrUpdateKeyCompany(projectWorkID);
+      insertOrUpdateProjectWorkMapping(projectWorkID);
+      setAlert({
+        open: true,
+        severity: "success",
+        message: "Updated successfully",
+      });
+    }
+  }
+
+  function insertOrUpdateKeyCompany(projectIDId: number) {
+    let locKeyCompanies = keyCompanies.slice();
+    let addData = locKeyCompanies.filter((c) => c.ID == 0);
+    let editData = locKeyCompanies.filter((c) => c.ID != 0);
+    addData.forEach((data) => {
+      data.ProjectIDId = projectIDId;
+      delete data.ID;
+    });
+
+    if (addData.length) {
+      _commonService.bulkInsert(
+        { listName: _projectWorkCompanyDetails },
+        addData,
+        (res) => {
+          init();
+        }
+      );
+    }
+
+    editData = deleteKeyCompanies.concat(editData);
+
+    if (editData.length) {
+      _commonService.bulkUpdate(
+        { listName: _projectWorkCompanyDetails },
+        editData,
+        (res) => {
+          init();
+        }
+      );
+    }
+  }
+
+  function insertOrUpdateProjectWorkMapping(projectIDId: number) {
+    let locTicketSizes = allTicketSizes.slice();
+    let addData = locTicketSizes.filter((c) => c.ID == 0);
+    let editData = locTicketSizes.filter((c) => c.ID != 0);
+    addData.forEach((data) => {
+      data.ProjectIDId = projectIDId;
+      delete data.ID;
+      delete data.Title;
+    });
+
+    editData.forEach((data) => {
+      delete data.Title;
+    });
+    
+    if (addData.length) {
+      _commonService.bulkInsert(
+        { listName: _projectWorkMapping },
+        addData,
+        (res) => {
+          init();
+        }
+      );
+    }
+
+    if (editData.length) {
+      _commonService.bulkUpdate(
+        { listName: _projectWorkMapping },
+        editData,
+        (res) => {
+          init();
+        }
+      );
+    }
   }
 
   useEffect((): any => {
@@ -187,9 +374,6 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
               <Select
                 labelId="demo-controlled-open-select-label"
                 id="demo-controlled-open-select"
-                open={selOpen}
-                onClose={selHandleClose}
-                onOpen={selHandleOpen}
                 value={company.CategoryIDId}
                 onChange={(e) => selHandleChange(e, index)}
               >
@@ -200,11 +384,13 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
             </FormControl>
             <TextField
               id="outlined-basic"
-              label="Comments"
+              label="Description"
               variant="outlined"
               multiline
-              rows={4}
               style={{ width: "30%", margin: 8 }}
+              value={company.Description}
+              name="Description"
+              onChange={(e) => inputChangeHandler(e, index)}
             />
 
             {keyCompanies.length == index + 1 && (
@@ -218,18 +404,16 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
               />
             )}
 
-{keyCompanies.length > 1 && (
-                <ClearIcon
-                  style={{
-                    cursor: "pointer",
-                    fontSize: 32,
-                    color: theme.palette.error.main,
-                  }}
-                  onClick={(e) => removeKeyCompanies(index)}
-                />
-              )}
-
-
+            {keyCompanies.length > 1 && (
+              <ClearIcon
+                style={{
+                  cursor: "pointer",
+                  fontSize: 32,
+                  color: theme.palette.error.main,
+                }}
+                onClick={(e) => removeKeyCompanies(index)}
+              />
+            )}
           </div>
         );
       })}
@@ -237,147 +421,51 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
         Fill in the number of projects in the last 3 years and select average
         ticket size range per project
       </h4>
-      {/* Pre Populate Section */}
       <div className={classes.NoAndSizeSection}>
-        {/* Manipulate from bottom */}
-        {/* Item 1*/}
-        <div className={classes.NoAndSizeItem}>
-          <p>Bioinformatics / Bioanalysis</p>
-          <div className={classes.InputSection}>
-            <TextField
-              id="outlined-basic"
-              label="#"
-              variant="outlined"
-              className={classes.TextInput}
-            />
-            <TextField
-              id="outlined-basic"
-              label="Size"
-              variant="outlined"
-              className={classes.TextInput}
-            />
-          </div>
-        </div>
-        {/* Item 1*/}
-        {/* Item 1*/}
-        <div className={classes.NoAndSizeItem}>
-          <p>Bioinformatics / Bioanalysis</p>
-          <div className={classes.InputSection}>
-            <TextField
-              id="outlined-basic"
-              label="#"
-              variant="outlined"
-              className={classes.TextInput}
-            />
-            <TextField
-              id="outlined-basic"
-              label="Size"
-              variant="outlined"
-              className={classes.TextInput}
-            />
-          </div>
-        </div>
-        {/* Item 1*/}
-        {/* Item 1*/}
-        <div className={classes.NoAndSizeItem}>
-          <p>Bioinformatics / Bioanalysis</p>
-          <div className={classes.InputSection}>
-            <TextField
-              id="outlined-basic"
-              label="#"
-              variant="outlined"
-              className={classes.TextInput}
-            />
-            <TextField
-              id="outlined-basic"
-              label="Size"
-              variant="outlined"
-              className={classes.TextInput}
-            />
-          </div>
-        </div>
-        {/* Item 1*/}
-        {/* Item 1*/}
-        <div className={classes.NoAndSizeItem}>
-          <p>Bioinformatics / Bioanalysis</p>
-          <div className={classes.InputSection}>
-            <TextField
-              id="outlined-basic"
-              label="#"
-              variant="outlined"
-              className={classes.TextInput}
-            />
-            <TextField
-              id="outlined-basic"
-              label="Size"
-              variant="outlined"
-              className={classes.TextInput}
-            />
-          </div>
-        </div>
-        {/* Item 1*/}
-        {/* Item 1*/}
-        <div className={classes.NoAndSizeItem}>
-          <p>Bioinformatics / Bioanalysis</p>
-          <div className={classes.InputSection}>
-            <TextField
-              id="outlined-basic"
-              label="#"
-              variant="outlined"
-              className={classes.TextInput}
-            />
-            <TextField
-              id="outlined-basic"
-              label="Size"
-              variant="outlined"
-              className={classes.TextInput}
-            />
-          </div>
-        </div>
-        {/* Item 1*/}
-        {/* Item 1*/}
-        <div className={classes.NoAndSizeItem}>
-          <p>Bioinformatics / Bioanalysis</p>
-          <div className={classes.InputSection}>
-            <TextField
-              id="outlined-basic"
-              label="#"
-              variant="outlined"
-              className={classes.TextInput}
-            />
-            <TextField
-              id="outlined-basic"
-              label="Size"
-              variant="outlined"
-              className={classes.TextInput}
-            />
-          </div>
-        </div>
-        {/* Item 1*/}
-        {/* Item 1*/}
-        <div className={classes.NoAndSizeItem}>
-          <p>Bioinformatics / Bioanalysis</p>
-          <div className={classes.InputSection}>
-            <TextField
-              id="outlined-basic"
-              label="#"
-              variant="outlined"
-              className={classes.TextInput}
-            />
-            <TextField
-              id="outlined-basic"
-              label="Size"
-              variant="outlined"
-              className={classes.TextInput}
-            />
-          </div>
-        </div>
+        {allTicketSizes.map((ticket: any, index: number) => {
+          return (
+            <div className={classes.NoAndSizeItem}>
+              <p>{ticket.Title}</p>
+              <div className={classes.InputSection}>
+                <TextField
+                  id="outlined-basic"
+                  label="#"
+                  variant="outlined"
+                  className={classes.TextInput}
+                  value={ticket.Year}
+                />
+                <TextField
+                  id="outlined-basic"
+                  label="Size"
+                  variant="outlined"
+                  className={ticket.Size}
+                />
+              </div>
+            </div>
+          );
+        })}
       </div>
       <div className={classes.bottomBtnSection}>
-        <Button variant="contained" color="primary">
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={(e) => submitData()}
+        >
           Submit
         </Button>
       </div>
+      <CustomAlert
+        open={cusalert.open}
+        message={cusalert.message}
+        severity={cusalert.severity}
+        handleClose={(e) => {
+          setAlert({
+            open: false,
+            severity: "",
+            message: "",
+          });
+        }}
+      ></CustomAlert>
     </ThemeProvider>
   );
 };
