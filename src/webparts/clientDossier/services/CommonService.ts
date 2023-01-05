@@ -161,7 +161,7 @@ export default class CommonService {
         }
     }
 
-    
+
     bulkUpdate(customProperty: ICustomProperty, postData: any[], callBack?: any) {
         let listName = sp.web.lists.getByTitle(customProperty.listName);
         try {
@@ -187,5 +187,22 @@ export default class CommonService {
             console.log(error);
         }
     }
+
+    getFiles = (folderPath: string, callBack: any) => {
+        sp.web.getFolderByServerRelativeUrl(folderPath).files.get().then((res) => {
+            callBack(res);
+        })
+    }
+
+    deleteFile = (folderPath: string, callBack: any) => {
+        sp.web.getFolderByServerRelativeUrl(folderPath).recycle().then((res) => {
+            callBack(res);
+        })
+    }
+
+    fileUpload = (folderPath: string, filename: string, filecontent: any) => {
+        sp.web.getFolderByServerRelativeUrl(folderPath).files.add(filename, filecontent, true);
+    }
+
 
 }

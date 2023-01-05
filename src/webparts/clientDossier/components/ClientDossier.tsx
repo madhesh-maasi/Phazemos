@@ -20,6 +20,6 @@ export default class ClientDossier extends React.Component<
   }
 
   public render(): React.ReactElement<IClientDossierProps> {
-    return <App CurrentContext={this.props.currentContext} />;
+    return <App CurrentContext={this.props.currentContext} SiteUrl={this.props.siteUrl} />;
   }
 }

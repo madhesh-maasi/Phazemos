@@ -28,6 +28,7 @@ const theme = createTheme({
 
 export interface IApp {
   CurrentContext: any;
+  SiteUrl: string;
 }
 
 export const App: React.FunctionComponent<IApp> = (props: IApp) => {
@@ -108,7 +109,6 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
         });
       }
     });
-
   }
 
   useEffect((): any => {
@@ -145,25 +145,41 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
       </AppBar>
       {formData.companyProfile && (
         <TabPanel value={value} index={0}>
-          <CompanyProfile CompanyName={formData.companyName} CompanyID={formData.companyID} CompanyCode={formData.companyCode}/>
+          <CompanyProfile
+            CompanyName={formData.companyName}
+            CompanyID={formData.companyID}
+            CompanyCode={formData.companyCode}
+          />
         </TabPanel>
       )}
 
       {formData.therapeuticExpertise && (
         <TabPanel value={value} index={1}>
-          <TherapeuticExpertise CompanyName={formData.companyName} CompanyID={formData.companyID} CompanyCode={formData.companyCode}/>
+          <TherapeuticExpertise
+            CompanyName={formData.companyName}
+            CompanyID={formData.companyID}
+            CompanyCode={formData.companyCode}
+          />
         </TabPanel>
       )}
 
       {formData.companyProfile && (
         <TabPanel value={value} index={2}>
-          <RegulatoryExpertise  CompanyName={formData.companyName} CompanyID={formData.companyID} CompanyCode={formData.companyCode} />
+          <RegulatoryExpertise
+            CompanyName={formData.companyName}
+            CompanyID={formData.companyID}
+            CompanyCode={formData.companyCode}
+          />
         </TabPanel>
       )}
 
       {formData.geography && (
         <TabPanel value={value} index={3}>
-          <Geography  CompanyName={formData.companyName} CompanyID={formData.companyID} CompanyCode={formData.companyCode}/>
+          <Geography
+            CompanyName={formData.companyName}
+            CompanyID={formData.companyID}
+            CompanyCode={formData.companyCode}
+          />
         </TabPanel>
       )}
 
@@ -175,7 +191,12 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
 
       {formData.uploads && (
         <TabPanel value={value} index={5}>
-          <Upload />
+          <Upload
+            CompanyName={formData.companyName}
+            CompanyID={formData.companyID}
+            CompanyCode={formData.companyCode}
+            SiteUrl={props.SiteUrl}
+          />
         </TabPanel>
       )}
     </ThemeProvider>

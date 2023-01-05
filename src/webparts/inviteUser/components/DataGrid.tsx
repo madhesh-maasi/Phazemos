@@ -11,6 +11,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import ClearIcon from "@material-ui/icons/Clear";
+import EditIcon from "@material-ui/icons/Edit";
 
 import DoneIcon from "@material-ui/icons/Done";
 
@@ -18,6 +19,7 @@ import CommonService from "../services/CommonService";
 
 export interface IDataGrid {
   render: any;
+  EditRecord: any;
 }
 
 // Styles for the Table
@@ -83,9 +85,11 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
             <StyledTableCell>Company Name</StyledTableCell>
             <StyledTableCell>Company Code</StyledTableCell>
             <StyledTableCell>Email</StyledTableCell>
-            <StyledTableCell>IsInvite Accepted</StyledTableCell>
+            <StyledTableCell>Invite Accepted</StyledTableCell>
             <StyledTableCell>Created By</StyledTableCell>
             <StyledTableCell>Created Date</StyledTableCell>
+            {/* <StyledTableCell>Action</StyledTableCell> */}
+
           </TableRow>
         </TableHead>
         <TableBody>
@@ -97,8 +101,8 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
               <StyledTableCell>{company.CompanyID.CompanyID}</StyledTableCell>
               <StyledTableCell>{company.UserEmailID}</StyledTableCell>
 
-                <StyledTableCell>
-                  {company.IsInviteAccepted ? 
+              <StyledTableCell>
+                {company.IsInviteAccepted ? (
                   <DoneIcon
                     style={{
                       cursor: "pointer",
@@ -106,21 +110,29 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
                       color: theme.palette.success.main,
                     }}
                   />
-                   : 
+                ) : (
                   <ClearIcon
                     style={{
                       cursor: "pointer",
                       fontSize: 32,
                       color: theme.palette.error.main,
                     }}
-                  />}
-                  
-                </StyledTableCell>
+                  />
+                )}
+              </StyledTableCell>
 
               <StyledTableCell>{company.Author.Title}</StyledTableCell>
               <StyledTableCell>
                 {new Date(company.Created).toISOString().slice(0, 10)}
               </StyledTableCell>
+
+              {/* <StyledTableCell>
+                <EditIcon
+                  style={{ color: theme.palette.primary.main, fontSize: 32 }}
+                  onClick={(e) => props.EditRecord(company)}
+                />
+              </StyledTableCell> */}
+
             </StyledTableRow>
           ))}
         </TableBody>

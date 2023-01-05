@@ -60,7 +60,8 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
     "https://douglas-phazemos.azurewebsites.net/Phazemos/Index?id=";
 
   const [formData, setFormData] = useState({
-    companyName: null,
+    ID: 0,
+    companyName: "",
     CompanyProfile: true,
     TherapeuticExpertise: true,
     RegulatoryExpertise: true,
@@ -90,91 +91,94 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
 
   function inviteNewUser() {
     _commonService = new CommonService();
+    if (formData.ID == 0) {
+      let data = formData;
+      var companyData = {
+        Title: data.companyName,
+        CompanyID: "",
+        CompanyProfile: data.CompanyProfile,
+        TherapeuticExpertise: data.TherapeuticExpertise,
+        RegulatoryExpertise: data.RegulatoryExpertise,
+        Geography: data.Geography,
+        ProjectWork: data.ProjectWork,
+        Uploads: data.Uploads,
+      };
 
-    let data = formData;
-    var companyData = {
-      Title: data.companyName,
-      CompanyID: "",
-      CompanyProfile: data.CompanyProfile,
-      TherapeuticExpertise: data.TherapeuticExpertise,
-      RegulatoryExpertise: data.RegulatoryExpertise,
-      Geography: data.Geography,
-      ProjectWork: data.ProjectWork,
-      Uploads: data.Uploads,
-    };
-
-    if (!companyData.Title) {
-      setAlert({
-        open: true,
-        severity: "warning",
-        message: "Company name is mandatory",
-      });
-      return;
-    }
-
-    for (let index = 0; index < data.users.length; index++) {
-      const user = data.users[index];
-      if (!_commonService.validateEmail(user)) {
+      if (!companyData.Title) {
         setAlert({
           open: true,
           severity: "warning",
-          message: user + " is not a valid Email ID",
+          message: "Company name is mandatory",
         });
         return;
       }
-    }
 
-    let customProperty = {
-      listName: _companyRegistration,
-      ID: 0,
-    };
-
-    _commonService.insertIntoList(
-      customProperty,
-      companyData,
-      (companyres: any) => {
-        customProperty.ID = companyres.data.Id;
-        companyData.CompanyID = generateCompanyID(companyres.data.Id);
-        _commonService.updateList(customProperty, companyData);
-
-        customProperty.listName = _userDetails;
-
-        let users = data.users.slice();
-        for (let index = 0; index < users.length; index++) {
-          let userData = {
-            UserEmailID: users[index],
-            CompanyIDId: companyres.data.Id,
-          };
-          _commonService.insertIntoList(
-            customProperty,
-            userData,
-            (userres: any) => {
-              var graphProperty = {
-                UserEmailID: users[index],
-                InviteRedirectUrl:
-                  _acceptInviteUrl +
-                  btoa(userres.data.Id + "-" + companyData.Title),
-              };
-
-              setRender(!render);
-
-              _commonService.graphCallToInviteUser(
-                props,
-                graphProperty,
-                (graphres: any) => {}
-              );
-            }
-          );
+      for (let index = 0; index < data.users.length; index++) {
+        const user = data.users[index];
+        if (!_commonService.validateEmail(user)) {
+          setAlert({
+            open: true,
+            severity: "warning",
+            message: user + " is not a valid Email ID",
+          });
+          return;
         }
-        setAlert({
-          open: true,
-          severity: "success",
-          message: "User invitation sent successfully",
-        });
-        handleClose();
-        init();
       }
-    );
+
+      let customProperty = {
+        listName: _companyRegistration,
+        ID: 0,
+      };
+
+      _commonService.insertIntoList(
+        customProperty,
+        companyData,
+        (companyres: any) => {
+          customProperty.ID = companyres.data.Id;
+          companyData.CompanyID = generateCompanyID(companyres.data.Id);
+          _commonService.updateList(customProperty, companyData);
+
+          customProperty.listName = _userDetails;
+
+          let users = data.users.slice();
+          for (let index = 0; index < users.length; index++) {
+            let userData = {
+              UserEmailID: users[index],
+              CompanyIDId: companyres.data.Id,
+            };
+            _commonService.insertIntoList(
+              customProperty,
+              userData,
+              (userres: any) => {
+                var graphProperty = {
+                  UserEmailID: users[index],
+                  InviteRedirectUrl:
+                    _acceptInviteUrl +
+                    btoa(userres.data.Id + "-" + companyData.Title),
+                };
+
+                setRender(!render);
+
+                _commonService.graphCallToInviteUser(
+                  props,
+                  graphProperty,
+                  (graphres: any) => {}
+                );
+              }
+            );
+          }
+          setAlert({
+            open: true,
+            severity: "success",
+            message: "User invitation sent successfully",
+          });
+          handleClose();
+          init();
+        }
+      );
+    } else {
+      edit();
+    }
   }
 
   function generateCompanyID(id: number) {
@@ -203,9 +207,16 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
   }
 
   function init() {
-    let data = formData;
-    formData.companyName = null;
-    formData.users = [""];
+    let data: any = {};
+    data.ID = 0;
+    data.companyName = "";
+    data.users = [""];
+    data.CompanyProfile = true;
+    data.TherapeuticExpertise = true;
+    data.RegulatoryExpertise = true;
+    data.Geography = true;
+    data.ProjectWork = true;
+    data.Uploads = true;
     setFormData({ ...data });
   }
 
@@ -213,6 +224,55 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
     let data = formData;
     formData[event.target.name] = event.target.checked;
     setFormData({ ...data });
+  }
+
+  function editRecord(company: any) {
+    _commonService = new CommonService();
+    let customProperty = {
+      listName: _userDetails,
+      properties: "*",
+      filter: "CompanyIDId eq '" + company.CompanyIDId + "'",
+    };
+    _commonService.getList(customProperty, (res: any) => {
+      let data: any = {};
+      data.ID = company.ID;
+      data.CompanyProfile = company.CompanyProfile;
+      data.TherapeuticExpertise = company.TherapeuticExpertise;
+      data.RegulatoryExpertise = company.RegulatoryExpertise;
+      data.Geography = company.Geography;
+      data.ProjectWork = company.ProjectWork;
+      data.Uploads = company.Uploads;
+      data.users = res.map((u) => {
+        return u.UserEmailID;
+      });
+      setFormData({ ...data });
+      setOpen(true);
+    });
+  }
+
+  function edit() {
+    let customProperty = {
+      listName: _companyRegistration,
+      ID: formData.ID,
+    };
+
+    let data: any = {};
+    data.CompanyProfile = formData.CompanyProfile;
+    data.TherapeuticExpertise = formData.TherapeuticExpertise;
+    data.RegulatoryExpertise = formData.RegulatoryExpertise;
+    data.Geography = formData.Geography;
+    data.ProjectWork = formData.ProjectWork;
+    data.Uploads = formData.Uploads;
+
+    _commonService.insertIntoList(customProperty, data, (companyres: any) => {
+      setAlert({
+        open: true,
+        severity: "success",
+        message: "Updated successfully",
+      });
+      setRender(!render);
+      setOpen(false);
+    });
   }
 
   useEffect((): any => {
@@ -227,11 +287,8 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
     setOpen(false);
   };
   const handleOpen = () => {
+    init();
     setOpen(true);
-    let data = formData;
-    formData.companyName = null;
-    formData.users = [""];
-    setFormData({ ...data });
   };
 
   return (
@@ -257,7 +314,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
               </Button>
             </div>
           </div>
-          <DataGrid render={render} />
+          <DataGrid render={render} EditRecord={editRecord} />
         </div>
         {/* App Section */}
       </div>

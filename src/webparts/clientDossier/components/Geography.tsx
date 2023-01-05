@@ -28,7 +28,6 @@ const theme = createTheme({
 export const Geography: React.FunctionComponent<IGeography> = (
   props: IGeography
 ) => {
-
   const [cusalert, setAlert] = useState({
     open: false,
     message: "Success",
@@ -274,7 +273,7 @@ export const Geography: React.FunctionComponent<IGeography> = (
           Submit
         </Button>
       </div>
-      
+
       <CustomAlert
         open={cusalert.open}
         message={cusalert.message}
@@ -287,8 +286,6 @@ export const Geography: React.FunctionComponent<IGeography> = (
           });
         }}
       ></CustomAlert>
-
-
     </ThemeProvider>
   );
 };

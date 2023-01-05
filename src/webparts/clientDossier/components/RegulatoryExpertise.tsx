@@ -376,7 +376,7 @@ export const RegulatoryExpertise: React.FunctionComponent<
           <TextField
             style={{ width: "40%", marginRight: 30 }}
             id="outlined-basic"
-            label="Company Name"
+            label="Comments"
             variant="outlined"
             name="Comments"
             value={othersComment.comments}
