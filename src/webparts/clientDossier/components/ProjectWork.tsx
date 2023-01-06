@@ -105,6 +105,7 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
           });
         }
         setKeyCompanies([...keyCompany]);
+        loadCategoryMaster(keyCompany);
       } else {
         let keyCompany = [
           {
@@ -116,6 +117,7 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
           },
         ];
         setKeyCompanies([...keyCompany]);
+        loadCategoryMaster(keyCompany);
       }
     });
   }
@@ -138,6 +140,35 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
     });
   }
 
+
+  
+  function loadCategoryMaster(keyCompanies: any) {
+    let customProperty = {
+      listName: _projectWorkCategoryMaster,
+      properties: "ID,Title,IsActive",
+      orderby: "OrderNo",
+      orderbyAsc: true,
+    };
+    _commonService.getList(customProperty, (res: any) => {
+      let categories = [];
+      for (let index = 0; index < res.length; index++) {
+        let editMap = keyCompanies.filter(
+          (c) => c.CategoryIDId == res[index].Id
+        );
+        if (editMap.length || res[index].IsActive) {
+          let data = {
+            ID: res[index].ID,
+            Title: res[index].Title,
+          };
+          categories.push(data);
+        }
+      }
+      setAllCategories([...categories]);
+    });
+  }
+
+
+
   function loadCompanyData() {
     let customProperty = {
       listName: _project,
@@ -154,20 +185,24 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
         loadCompanyProjectWorkMaster({
           projectWorkMapping: [],
         });
+        loadCategoryMaster([]);
       }
     });
   }
 
   function init() {
-    setDeleteKeyCompanies([]);
+    // setDeleteKeyCompanies([]);
+    // _commonService = new CommonService();
+    // let customProperty = {
+    //   listName: _projectWorkCategoryMaster,
+    // };
+    // _commonService.getList(customProperty, (res: any) => {
+    //   setAllCategories(res);
+    //   loadCompanyData();
+    // });
     _commonService = new CommonService();
-    let customProperty = {
-      listName: _projectWorkCategoryMaster,
-    };
-    _commonService.getList(customProperty, (res: any) => {
-      setAllCategories(res);
-      loadCompanyData();
-    });
+    loadCompanyData();
+
   }
 
   function addKeyCompanies() {

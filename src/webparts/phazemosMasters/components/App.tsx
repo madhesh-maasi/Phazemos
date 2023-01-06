@@ -119,6 +119,10 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
       title: "Therapeutic Area Experience Master",
       listName: "Therapeutic Area Experience Master",
     },
+    {
+      title: "Project Work Category Master",
+      listName: "Project Work Category Master",
+    }
   ]);
 
   function editRecord(editRecord: any) {

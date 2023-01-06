@@ -264,11 +264,21 @@ export const TherapeuticExpertise: React.FunctionComponent<
 
         //DiseaseArea
         if (diseaseAreaPostData.length > 0) {
-          _commonService.bulkInsert(
-            { listName: _diseaseAreaMap },
-            diseaseAreaPostData,
-            (bulkres: any) => {}
+          let newDisease = locDiseaseArea.filter(
+            (c) => c.DiseaseAreaExperienceIDId == 0
           );
+
+          if (newDisease.length > 0) {
+            insertNewDieaseMaterData(0, res.data.Id, newDisease);
+          }
+
+          let exisitingDisease = diseaseAreaPostData.filter(
+            (c) => c.DiseaseAreaExperienceIDId != 0
+          );
+
+          if (exisitingDisease.length > 0) {
+            insertDiseaseMapping(exisitingDisease);
+          }
         }
       }
     );
@@ -277,7 +287,44 @@ export const TherapeuticExpertise: React.FunctionComponent<
       severity: "success",
       message: "Inserted successfully",
     });
-    init();
+    setTimeout(() => {
+      init();
+    }, 3000);
+  }
+
+  function insertDiseaseMapping(diseaseAreaPostData) {
+    _commonService.bulkInsert(
+      { listName: _diseaseAreaMap },
+      diseaseAreaPostData,
+      (bulkres: any) => {}
+    );
+  }
+
+  function insertNewDieaseMaterData(
+    index: number,
+    therapeuticExpertiseIDId: any,
+    newDisease: any[]
+  ) {
+    _commonService.insertIntoList(
+      { listName: _diseaseAreaMaster },
+      { Title: newDisease[index].serviceName, IsActive: true },
+      (res) => {
+        var postData = {
+          TherapeuticExpertiseIDId: therapeuticExpertiseIDId,
+          DiseaseAreaExperienceIDId: res.data.Id,
+        };
+        _commonService.insertIntoList(
+          { listName: _diseaseAreaMap },
+          postData,
+          (res) => {}
+        );
+
+        index++;
+        if (index != newDisease.length) {
+          insertNewDieaseMaterData(index, therapeuticExpertiseIDId, newDisease);
+        }
+      }
+    );
   }
 
   function updateTherapeuticExpertise() {
@@ -332,8 +379,23 @@ export const TherapeuticExpertise: React.FunctionComponent<
     let locCompanyTherapeuticArea = companyTherapeuticArea;
     let locDiseaseArea = selDiseaseArea.slice();
     let addDiseaseArea = locDiseaseArea.filter(
-      (c) => c.TherapeuticExpertiseIDId == 0 && c.IsChecked == true
+      (c) =>
+        c.TherapeuticExpertiseIDId == 0 &&
+        c.DiseaseAreaExperienceIDId != 0 &&
+        c.IsChecked == true
     );
+
+    let newDiseases = locDiseaseArea.filter(
+      (c) => c.DiseaseAreaExperienceIDId == 0 && c.IsChecked == true
+    );
+
+    if (newDiseases.length > 0) {
+      insertNewDieaseMaterData(
+        0,
+        locCompanyTherapeuticArea.therapeuticExpertise.ID,
+        newDiseases
+      );
+    }
 
     var removedDiseaseArea = editDiseaseArea.filter(
       (edit) => !locDiseaseArea.some((loc) => edit.ID === loc.ID && loc.ID != 0)
@@ -424,16 +486,30 @@ export const TherapeuticExpertise: React.FunctionComponent<
         <p>Disease Area Experience</p>
         <Autocomplete
           multiple
+          freeSolo
           id="checkboxes-tags-demo"
           options={diseaseArea}
           disableCloseOnSelect
           getOptionLabel={(option) => option.serviceName}
           value={selDiseaseArea}
           onChange={(event: any, newValue: any[]) => {
+            var datas = [];
             newValue.map((d) => {
-              d.IsChecked = true;
+              if (!d.DiseaseAreaExperienceIDId) {
+                var newDisease = {
+                  DiseaseAreaExperienceIDId: 0,
+                  ID: 0,
+                  IsChecked: true,
+                  TherapeuticExpertiseIDId: 0,
+                  serviceName: d,
+                };
+                datas.push(newDisease);
+              } else {
+                d.IsChecked = true;
+                datas.push(d);
+              }
             });
-            setSelDiseaseArea([...newValue]);
+            setSelDiseaseArea([...datas]);
           }}
           renderOption={(option, { selected }) => (
             <React.Fragment>
@@ -465,12 +541,11 @@ export const TherapeuticExpertise: React.FunctionComponent<
         </Button>
       </div>
 
-
       <CustomAlert
         open={cusalert.open}
         message={cusalert.message}
         severity={cusalert.severity}
-        handleClose={(e)=>{
+        handleClose={(e) => {
           setAlert({
             open: false,
             severity: "",
@@ -478,7 +553,6 @@ export const TherapeuticExpertise: React.FunctionComponent<
           });
         }}
       ></CustomAlert>
-
     </ThemeProvider>
   );
 };
