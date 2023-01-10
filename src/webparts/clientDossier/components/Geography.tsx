@@ -188,6 +188,7 @@ export const Geography: React.FunctionComponent<IGeography> = (
           style={{ width: "40%", marginRight: 30 }}
           id="outlined-basic"
           label="Company Name"
+          size="small"
           variant="outlined"
           aria-readonly={true}
           name="CompanyName"
@@ -195,6 +196,7 @@ export const Geography: React.FunctionComponent<IGeography> = (
         />
         <TextField
           id="outlined-basic"
+          size="small"
           label="ID"
           variant="outlined"
           style={{ width: 100 }}
@@ -214,6 +216,7 @@ export const Geography: React.FunctionComponent<IGeography> = (
                 className={classes.NTItem}
                 id="outlined-basic"
                 label="Employee Title"
+                size="small"
                 variant="outlined"
                 name="Title"
                 value={details.Title}
@@ -223,6 +226,7 @@ export const Geography: React.FunctionComponent<IGeography> = (
                 className={classes.NTItem}
                 id="outlined-basic"
                 label="Country of Residence"
+                size="small"
                 variant="outlined"
                 name="CountryofResidence"
                 value={details.CountryofResidence}
@@ -233,6 +237,7 @@ export const Geography: React.FunctionComponent<IGeography> = (
                 id="outlined-basic"
                 label="#"
                 variant="outlined"
+                size="small"
                 name="Year"
                 value={details.Year}
                 onChange={(e) => inputChangeHandler(e, index)}
@@ -242,6 +247,7 @@ export const Geography: React.FunctionComponent<IGeography> = (
                 id="outlined-basic"
                 label="Countries Worked"
                 variant="outlined"
+                size="small"
                 name="CountriesWorked"
                 value={details.CountriesWorked}
                 onChange={(e) => inputChangeHandler(e, index)}
@@ -250,7 +256,7 @@ export const Geography: React.FunctionComponent<IGeography> = (
               {geographyDetails.length == index + 1 && (
                 <AddCircleOutlineIcon
                   onClick={(e) => addGeographyDetails()}
-                  style={{ fontSize: 40, color: theme.palette.primary.main }}
+                  style={{ fontSize: 40, color: theme.palette.primary.main,cursor:'pointer' }}
                 />
               )}
 
@@ -269,7 +275,9 @@ export const Geography: React.FunctionComponent<IGeography> = (
         })}
       </div>
       <div className={classes.bottomBtnSection}>
-        <Button variant="contained" color="primary" onClick={submitData}>
+        <Button variant="contained" color="primary"
+           size="large"
+        onClick={submitData}>
           Submit
         </Button>
       </div>

@@ -306,6 +306,7 @@ export const RegulatoryExpertise: React.FunctionComponent<
           style={{ width: "40%", marginRight: 30 }}
           id="outlined-basic"
           label="Company Name"
+          size="small"
           variant="outlined"
           aria-readonly={true}
           name="CompanyName"
@@ -313,6 +314,7 @@ export const RegulatoryExpertise: React.FunctionComponent<
         />
         <TextField
           id="outlined-basic"
+          size="small"
           label="ID"
           variant="outlined"
           style={{ width: 100 }}
@@ -327,6 +329,7 @@ export const RegulatoryExpertise: React.FunctionComponent<
           multiple
           id="checkboxes-tags-demo"
           options={regulatoryExpertises}
+          size="small"
           disableCloseOnSelect
           getOptionLabel={(option) => option.Title}
           value={selExpertises}
@@ -386,7 +389,10 @@ export const RegulatoryExpertise: React.FunctionComponent<
       )}
 
       <div className={classes.bottomBtnSection}>
-        <Button variant="contained" color="primary" onClick={submitData}>
+       
+        <Button variant="contained" color="primary"
+           size="large"
+        onClick={submitData}>
           Submit
         </Button>
       </div>

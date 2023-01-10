@@ -445,6 +445,7 @@ export const TherapeuticExpertise: React.FunctionComponent<
           style={{ width: "40%", marginRight: 30 }}
           id="outlined-basic"
           label="Company Name"
+          size="small"
           variant="outlined"
           aria-readonly={true}
           name="CompanyName"
@@ -452,6 +453,7 @@ export const TherapeuticExpertise: React.FunctionComponent<
         />
         <TextField
           id="outlined-basic"
+          size="small"
           label="ID"
           variant="outlined"
           style={{ width: 100 }}
@@ -488,6 +490,7 @@ export const TherapeuticExpertise: React.FunctionComponent<
           multiple
           freeSolo
           id="checkboxes-tags-demo"
+          size="small"
           options={diseaseArea}
           disableCloseOnSelect
           getOptionLabel={(option) => option.serviceName}
@@ -534,6 +537,7 @@ export const TherapeuticExpertise: React.FunctionComponent<
       <div className={classes.bottomBtnSection} style={{ marginTop: 20 }}>
         <Button
           variant="contained"
+          size="large"
           color="primary"
           onClick={(e) => submitData()}
         >

@@ -161,7 +161,7 @@ export default class CommonService {
         }
     }
 
-    
+
     bulkUpdate(customProperty: ICustomProperty, postData: any[], callBack?: any) {
         let listName = sp.web.lists.getByTitle(customProperty.listName);
         try {
@@ -186,6 +186,10 @@ export default class CommonService {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    public formattedDate(date) {
+        return ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear();
     }
 
 }

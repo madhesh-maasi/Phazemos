@@ -11,6 +11,17 @@
     display: flex;
     align-items: center;
     margin: 20px 0;
+    div{
+        height: 40px !important;
+        div{
+            div{
+                padding:0 10px;
+                display: flex;
+                align-items: center;
+            }
+        }
+    }
+
 }
 
 .bottomBtnSection {
@@ -33,6 +44,7 @@
             margin: 8px 0;
             .TextInput {
                 width: 48%;
+                margin: 0 10px 0 0;
             }
         }
     }

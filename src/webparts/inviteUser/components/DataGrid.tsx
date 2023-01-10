@@ -32,11 +32,20 @@ const theme = createTheme({
 });
 const StyledTableCell = withStyles((theme) => ({
   head: {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.common.white,
+    // backgroundColor: theme.palette.primary.main,
+    // color: theme.palette.common.white,
+    color:'#00589A',
+    fontSize:18,
+    fontWeight:600,
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important",
+
   },
   body: {
-    fontSize: 14,
+    fontSize: 16,
+    color: "#636b7a",
+    padding:"5px 15px",
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important",
+
   },
 }))(TableCell);
 
@@ -56,7 +65,7 @@ function createData(name, calories, fat, carbs, protein) {
 export const DataGrid: React.FunctionComponent<IDataGrid> = (
   props: IDataGrid
 ) => {
-  var _commonService: CommonService;
+  var _commonService: CommonService = new CommonService();
   const _userDetails: string = "User Details";
 
   const [companyDetails, setCompanyDetails] = useState([]);
@@ -123,7 +132,8 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
 
               <StyledTableCell>{company.Author.Title}</StyledTableCell>
               <StyledTableCell>
-                {new Date(company.Created).toISOString().slice(0, 10)}
+                {_commonService.formattedDate(new Date(company.Created))}
+
               </StyledTableCell>
 
               {/* <StyledTableCell>

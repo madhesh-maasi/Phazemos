@@ -295,12 +295,14 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
           label="Company Name"
           variant="outlined"
           aria-readonly={true}
+          size="small"
           name="CompanyName"
           value={props.CompanyName}
         />
         <TextField
           id="outlined-basic"
           label="ID"
+          size="small"
           variant="outlined"
           style={{ width: 100 }}
           aria-readonly={true}
@@ -311,6 +313,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
         <TextField
           className={classes.CompanyContact}
           id="outlined-basic"
+          size="small"
           label="RFP Contact"
           variant="outlined"
           name="RFPContact"
@@ -320,6 +323,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
         <TextField
           className={classes.CompanyContact}
           id="outlined-basic"
+          size="small"
           label="Email"
           variant="outlined"
           name="RFPContactEmail"
@@ -329,6 +333,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
         <TextField
           className={classes.CompanyContact}
           id="outlined-basic"
+          size="small"
           label="Invoicing Contact"
           name="InvoicingContact"
           value={companyProfile.InvoicingContact}
@@ -337,8 +342,10 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
         />
         <TextField
           className={classes.CompanyContact}
+          size="small"
           id="outlined-basic"
           label="Email"
+          style={{margin:'16px 16px 16px 0'}}
           variant="outlined"
           name="InvoicingContactEmail"
           value={companyProfile.InvoicingContactEmail}
@@ -349,6 +356,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
       <div className={classes.CompanyContactInfo}>
         <TextField
           className={classes.CompanyContact}
+          size="small"
           id="outlined-basic"
           label="Website URL"
           variant="outlined"
@@ -359,6 +367,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
         <TextField
           className={classes.CompanyContact}
           id="outlined-basic"
+          size="small"
           label="LinkedIN"
           variant="outlined"
           name="LinkedIn"
@@ -367,6 +376,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
         />
         <TextField
           className={classes.CompanyContact}
+          size="small"
           id="outlined-basic"
           label="Facebook"
           variant="outlined"
@@ -378,6 +388,8 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
           className={classes.CompanyContact}
           id="outlined-basic"
           label="Twitter"
+          style={{margin:'16px 16px 16px 0'}}
+          size="small"
           variant="outlined"
           name="Twitter"
           value={companyProfile.Twitter}
@@ -423,6 +435,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
       <div className={classes.bottomBtnSection}>
         <Button
           variant="contained"
+          size="large"
           color="primary"
           onClick={(e) => submitData()}
         >

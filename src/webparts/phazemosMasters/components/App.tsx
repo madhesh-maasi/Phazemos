@@ -67,6 +67,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
   const [record, setRecord] = useState({
     Title: "",
     ID: 0,
+    IsActive: true,
   });
 
   const handleClose = () => {
@@ -76,6 +77,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
     let rec = {
       Title: "",
       ID: 0,
+      IsActive: true,
     };
     setRecord({ ...rec });
     setOpen(true);
@@ -122,13 +124,14 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
     {
       title: "Project Work Category Master",
       listName: "Project Work Category Master",
-    }
+    },
   ]);
 
-  function editRecord(editRecord: any) {
+  function editRecord(master) {
     let rec = {
-      ID: editRecord.ID,
-      Title: editRecord.Title,
+      ID: master.ID,
+      Title: master.Title,
+      IsActive: master.IsActive,
     };
     setRecord({ ...rec });
     setOpen(true);
@@ -138,6 +141,16 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
     let data = record;
     data.Title = event.target.value;
     setRecord({ ...data });
+  }
+
+  function closeAddOrEdit() {
+    setOpen(false);
+  }
+
+  function changeActive(event: any) {
+    let locMasterData = record;
+    locMasterData.IsActive = event.target.checked;
+    setRecord({ ...record });
   }
 
   function submitData() {
@@ -164,6 +177,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
             message: "Inserted successfully",
           });
           setOpen(false);
+          setRefresh(!refresh);
         }
       );
     } else {
@@ -173,7 +187,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
       };
       _commonService.updateList(
         customProperty,
-        { Title: record.Title },
+        { Title: record.Title, IsActive: record.IsActive },
         (res: any) => {
           setAlert({
             open: true,
@@ -196,46 +210,52 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
               Masters
             </Typography>
 
-            <FormControl>
-              <InputLabel id="demo-controlled-open-select-label">
-                Masters
-              </InputLabel>
-              <Select
-                labelId="demo-controlled-open-select-label"
-                id="demo-controlled-open-select"
-                open={selOpen}
-                onClose={selHandleClose}
-                onOpen={selHandleOpen}
-                value={currentMaster}
-                onChange={selHandleChange}
-              >
-                {masters.map((m) => {
-                  return <MenuItem value={m.listName}>{m.title}</MenuItem>;
-                })}
-              </Select>
-            </FormControl>
+            <div>
+              <div className={classes.dropdownflex}>
+                <FormControl style={{ width: "250px" }} variant="outlined">
+                  <Select
+                    labelId="demo-controlled-open-select-label"
+                    id="demo-controlled-open-select"
+                    open={selOpen}
+                    onClose={selHandleClose}
+                    onOpen={selHandleOpen}
+                    value={currentMaster}
+                    onChange={selHandleChange}
+                  >
+                    {masters.map((m) => {
+                      return <MenuItem value={m.listName}>{m.title}</MenuItem>;
+                    })}
+                  </Select>
+                </FormControl>
 
-            <div className={classes.headerBtn}>
-              <Button
-                variant="contained"
-                color="primary"
-                startIcon={<AddIcon />}
-                onClick={handleOpen}
-              >
-                New
-              </Button>
+                <div className={classes.headerBtn}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<AddIcon />}
+                    onClick={handleOpen}
+                  >
+                    New
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
           <DataGrid
             ListName={currentMaster}
             EditRecord={editRecord}
             Refresh={refresh}
+            AddOrEdit={open}
+            closeAddOrEdit={closeAddOrEdit}
+            record={record}
+            inputChangeHandler={inputChangeHandler}
+            changeActive={changeActive}
+            submitData={submitData}
           />
         </div>
-        {/* App Section */}
       </div>
-      {/* Modal Section */}
-      {open && (
+
+      {/* {open && (
         <Modal open={open} onClose={handleClose} className={styles.modal}>
           <Fade in={open}>
             <div className={styles.paper}>
@@ -270,7 +290,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
             </div>
           </Fade>
         </Modal>
-      )}
+      )} */}
 
       <CustomAlert
         open={cusalert.open}

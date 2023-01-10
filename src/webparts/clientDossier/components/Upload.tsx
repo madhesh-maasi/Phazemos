@@ -198,12 +198,14 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
           id="outlined-basic"
           label="Company Name"
           variant="outlined"
+          size="small"
           aria-readonly={true}
           name="CompanyName"
           value={props.CompanyName}
         />
         <TextField
           id="outlined-basic"
+          size="small"
           label="ID"
           variant="outlined"
           style={{ width: 100 }}
@@ -270,7 +272,8 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
       <div className={classes.bottomBtnSection}>
         <Button
           variant="contained"
-          color="primary"
+          color="primary"  
+          size="large"
           onClick={(e) => submitFiles()}
         >
           Submit

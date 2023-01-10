@@ -13,15 +13,27 @@ import EditIcon from "@material-ui/icons/Edit";
 import Checkbox from "@material-ui/core/Checkbox";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
+import TextField from "@material-ui/core/TextField";
+import styles from "./App.module.scss";
+import CheckIcon from "@material-ui/icons/Check";
+import ClearIcon from "@material-ui/icons/Clear";
 
 import CommonService from "../services/CommonService";
 
 import { CustomAlert } from "./CustomAlert";
+import { Persona, PersonaSize } from "office-ui-fabric-react/lib/Persona";
+import { createFontStyles, FontWeights } from "office-ui-fabric-react";
 
 export interface IDataGrid {
   ListName: string;
   EditRecord: any;
   Refresh: boolean;
+  AddOrEdit: boolean;
+  closeAddOrEdit: any;
+  record: any;
+  inputChangeHandler: any;
+  changeActive: any;
+  submitData: any;
 }
 
 // Styles for the Table
@@ -34,11 +46,20 @@ const theme = createTheme({
 });
 const StyledTableCell = withStyles((theme) => ({
   head: {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.common.white,
+    // backgroundColor: theme.palette.primary.main,
+    // color: theme.palette.common.white,
+    backgroundColor: "#fff",
+    color: "#00589A",
+    fontSize: 18,
+    fontWeight: 600,
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important",
   },
   body: {
-    fontSize: 14,
+    fontSize: 16,
+    color: "#636b7a",
+    // background:'#ffffff !important',
+    padding: "5px 15px",
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important",
   },
 }))(TableCell);
 
@@ -47,6 +68,9 @@ const StyledTableRow = withStyles((theme) => ({
     "&:nth-of-type(odd)": {
       backgroundColor: theme.palette.action.hover,
     },
+    // "&:nth-of-type(odd)": {
+    //     backgroundColor: "#f5f8fe"
+    //   },
   },
 }))(TableRow);
 
@@ -74,12 +98,12 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
     });
   }
 
-  function changeActive(index: number, event: any) {
-    let locMasterData = masterData;
-    locMasterData[index].IsActive = event.target.checked;
-    updateStatus(locMasterData[index]);
-    setMasterData([...locMasterData]);
-  }
+  // function changeActive(index: number, event: any) {
+  //   let locMasterData = masterData;
+  //   locMasterData[index].IsActive = event.target.checked;
+  //   updateStatus(locMasterData[index]);
+  //   setMasterData([...locMasterData]);
+  // }
 
   function updateStatus(editData: any) {
     _commonService.updateList(
@@ -106,13 +130,62 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
           <TableHead>
             <TableRow>
               <StyledTableCell>Title</StyledTableCell>
-              <StyledTableCell>IsActive</StyledTableCell>
+              <StyledTableCell>Status</StyledTableCell>
               <StyledTableCell>Created By</StyledTableCell>
               <StyledTableCell>Created On</StyledTableCell>
               <StyledTableCell>Action</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
+            {props.AddOrEdit && (
+              <StyledTableRow>
+                <StyledTableCell>
+                  <TextField
+                    placeholder="Title"
+                    size="small"
+                    variant="outlined"
+                    style={{ width: "100%", backgroundColor: "#fff" }}
+                    onChange={props.inputChangeHandler}
+                    value={props.record.Title}
+                  />
+                </StyledTableCell>
+                <StyledTableCell>
+                  {" "}
+                  <Checkbox
+                    color="primary"
+                    style={{ background: "#fff" }}
+                    checked={props.record.IsActive}
+                    onChange={props.changeActive}
+                  />{" "}
+                </StyledTableCell>
+                <StyledTableCell></StyledTableCell>
+                <StyledTableCell></StyledTableCell>
+                <StyledTableCell>
+                  <div>
+                    <CheckIcon
+                      onClick={props.submitData}
+                      style={{
+                        width: 26,
+                        height: 26,
+                        marginRight: 10,
+                        color: "rgb(0, 88, 154)",
+                        cursor: "pointer",
+                      }}
+                    />
+                    <ClearIcon
+                      onClick={props.closeAddOrEdit}
+                      style={{
+                        width: 26,
+                        height: 26,
+                        color: "red",
+                        cursor: "pointer",
+                      }}
+                    />
+                  </div>
+                </StyledTableCell>
+              </StyledTableRow>
+            )}
+
             {masterData.map((master: any, index: number) => (
               <StyledTableRow key={master.ID}>
                 <StyledTableCell component="th" scope="row">
@@ -120,20 +193,49 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
                 </StyledTableCell>
                 <StyledTableCell>
                   {" "}
-                  <Checkbox
+                  {/* <Checkbox
                     checked={master.IsActive}
                     onChange={(e) => changeActive(index, e)}
                     color="primary"
                     inputProps={{ "aria-label": "secondary checkbox" }}
-                  />
+                  /> */}
+                  {master.IsActive ? (
+                    <p
+                      style={{
+                        background: "#dcffff",
+                        width: "100px",
+                        borderRadius: 10,
+                        textAlign: "center",
+                        color: "#30544f",
+                      }}
+                    >
+                      Active
+                    </p>
+                  ) : (
+                    <p
+                      style={{
+                        background: "#eaf0f6",
+                        width: "100px",
+                        borderRadius: 10,
+                        textAlign: "center",
+                        color: "#20242e",
+                      }}
+                    >
+                      InActive
+                    </p>
+                  )}
                 </StyledTableCell>
                 <StyledTableCell>{master.Author.Title}</StyledTableCell>
                 <StyledTableCell>
-                  {new Date(master.Created).toISOString().slice(0, 10)}
+                  {_commonService.formattedDate(new Date(master.Created))}
                 </StyledTableCell>
                 <StyledTableCell>
                   <EditIcon
-                    style={{ color: theme.palette.primary.main, fontSize: 32 }}
+                    style={{
+                      color: theme.palette.primary.main,
+                      fontSize: 24,
+                      cursor: "pointer",
+                    }}
                     onClick={(e) => props.EditRecord(master)}
                   />
                 </StyledTableCell>

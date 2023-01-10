@@ -377,6 +377,7 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
           style={{ width: "40%", marginRight: 30 }}
           id="outlined-basic"
           label="Company Name"
+          size="small"
           variant="outlined"
           aria-readonly={true}
           name="CompanyName"
@@ -384,6 +385,7 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
         />
         <TextField
           id="outlined-basic"
+          size="small"
           label="ID"
           variant="outlined"
           style={{ width: 100 }}
@@ -398,18 +400,19 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
       {keyCompanies.map((company: any, index: number) => {
         return (
           <div className={classes.CategorySection}>
+          
             <FormControl
               variant="outlined"
               style={{ width: "30%", margin: "8px 8px 8px 0" }}
             >
-              <InputLabel id="demo-simple-select-outlined-label">
+             <InputLabel id="demo-simple-select-outlined-label">
                 Category
               </InputLabel>
-
               <Select
                 labelId="demo-controlled-open-select-label"
                 id="demo-controlled-open-select"
-                value={company.CategoryIDId}
+                label="Category"
+                              value={company.CategoryIDId}
                 onChange={(e) => selHandleChange(e, index)}
               >
                 {allCategories.map((m) => {
@@ -417,8 +420,11 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
                 })}
               </Select>
             </FormControl>
+         
+          
             <TextField
               id="outlined-basic"
+              size="small"
               label="Description"
               variant="outlined"
               multiline
@@ -435,6 +441,7 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
                   fontSize: 40,
                   color: theme.palette.primary.main,
                   margin: 8,
+                  cursor:'pointer'
                 }}
               />
             )}
@@ -464,6 +471,7 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
               <div className={classes.InputSection}>
                 <TextField
                   id="outlined-basic"
+                  size="small"
                   label="#"
                   variant="outlined"
                   className={classes.TextInput}
@@ -472,6 +480,7 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
                 <TextField
                   id="outlined-basic"
                   label="Size"
+                  size="small"
                   variant="outlined"
                   className={ticket.Size}
                 />
@@ -484,6 +493,7 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
         <Button
           variant="contained"
           color="primary"
+          size="large"
           onClick={(e) => submitData()}
         >
           Submit

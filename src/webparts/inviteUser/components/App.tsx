@@ -45,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
     border: "0px solid #000",
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
+    // width:'500px'
   },
 }));
 // Styles
