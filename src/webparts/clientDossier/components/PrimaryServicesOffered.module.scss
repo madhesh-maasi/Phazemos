@@ -1,0 +1,51 @@
+.headerTitle {
+    color: #00589A;
+}
+
+.companyDetails {
+    display: flex;
+    margin: 20px 0;
+}
+
+.CategorySection {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+    div{
+        height: 40px !important;
+        div{
+            div{
+                padding:0 10px;
+                display: flex;
+                align-items: center;
+            }
+        }
+    }
+
+}
+
+.bottomBtnSection {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.NoAndSizeSection {
+    display: flex;
+    flex-wrap: wrap;
+    .NoAndSizeItem {
+        width: 30%;
+        margin: 16px;
+        p {
+            color: #00589A;
+        }
+        .InputSection {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            .TextInput {
+                width: 48%;
+                margin: 0 10px 0 0;
+            }
+        }
+    }
+}

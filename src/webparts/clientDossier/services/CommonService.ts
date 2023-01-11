@@ -24,13 +24,15 @@ export default class CommonService {
 
     public webUrl: string = '';
 
-    public insertIntoList = (customProperty: ICustomProperty, postData: any, callBack: any) => {
+    public insertIntoList = (customProperty: ICustomProperty, postData: any, callBack?: any) => {
         sp.web.lists
             .getByTitle(customProperty.listName)
             .items
             .add(postData)
             .then((res: any) => {
-                callBack(res);
+                if (callBack) {
+                    callBack(res);
+                }
             });
     };
 

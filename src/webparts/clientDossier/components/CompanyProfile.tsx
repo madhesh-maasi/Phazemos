@@ -27,12 +27,13 @@ const theme = createTheme({
 export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
   props: ICompanyProfile
 ) => {
-  var _commonService: any = {};
+  var _commonService: CommonService = new CommonService();
 
   var _primaryMap = "Primary Services Offered Mapping";
   var _companyProfile = "Company Profile";
   var _primaryMaster = "Primary Services Offered Master";
   var _requiredCompanyDetails = ["RFPContact", "InvoicingContact"];
+  const _projectWorkTicketDetails: string = "Project Work Ticket Details";
 
   const [companyProfile, setCompanyProfile] = useState({
     RFPContact: "",
@@ -227,6 +228,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
         );
       }
     );
+    insertOrUpdateServiceOfferTab();
   }
 
   function updateCompanyProfile() {
@@ -244,7 +246,8 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
           (c) => c.CompanyProfileIDId == 0
         );
         addItem.forEach((primaryService: any) => {
-          primaryService.CompanyProfileIDId = res.data.Id;
+          primaryService.CompanyProfileIDId =
+            companyMappingEditData.companyProfile.ID;
           delete primaryService.serviceName;
           delete primaryService.ID;
         });
@@ -252,7 +255,8 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
           (c) => c.CompanyProfileIDId != 0
         );
         editItem.forEach((primaryService: any) => {
-          primaryService.CompanyProfileIDId = res.data.Id;
+          primaryService.CompanyProfileIDId =
+            companyMappingEditData.companyProfile.ID;
           delete primaryService.serviceName;
         });
 
@@ -278,6 +282,83 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
         });
       }
     );
+    insertOrUpdateServiceOfferTab();
+  }
+
+  function insertOrUpdateServiceOfferTab() {
+    let customProperty = {
+      listName: _projectWorkTicketDetails,
+      filter: "CompanyIDId eq '" + props.CompanyID + "'  and IsDeleted eq '0'",
+    };
+    _commonService.getList(customProperty, (res: any) => {
+      let locPrimaryServices = primaryServices.slice();
+      let postData = [];
+
+      if (res.length == 0) {
+        var newDatas = locPrimaryServices.filter(
+          (c) => c.Home == true || c.Sub == true
+        );
+        if (newDatas.length) {
+          //Add new records
+          for (let index = 0; index < newDatas.length; index++) {
+            postData.push({
+              CompanyIDId: props.CompanyID,
+              PrimaryServicesMasterIDId:
+                newDatas[index].PrimaryServicesMasterIDId,
+            });
+          }
+
+          _commonService.bulkInsert(
+            { listName: _projectWorkTicketDetails },
+            postData
+          );
+        }
+      } else {
+        //Delete records
+        for (let index = 0; index < res.length; index++) {
+          let deleteDatas = locPrimaryServices.filter(
+            (c) =>
+              c.PrimaryServicesMasterIDId ==
+                res[index].PrimaryServicesMasterIDId &&
+              c.Home == false &&
+              c.Sub == false
+          );
+          if (deleteDatas.length) {
+            let delData = res[index];
+            delData.IsDeleted = true;
+            _commonService.updateList(
+              { listName: _projectWorkTicketDetails, ID: res[index].ID },
+              delData
+            );
+          }
+        }
+
+        //Add new records
+        var selDatas = locPrimaryServices.filter(
+          (c) => c.Home == true || c.Sub == true
+        );
+        for (let j = 0; j < selDatas.length; j++) {
+          let exists = res.filter(
+            (c) =>
+              c.PrimaryServicesMasterIDId ==
+              selDatas[j].PrimaryServicesMasterIDId
+          );
+          if (exists.length == 0) {
+            postData.push({
+              CompanyIDId: props.CompanyID,
+              PrimaryServicesMasterIDId: selDatas[j].PrimaryServicesMasterIDId,
+              IsDeleted: false,
+            });
+          }
+        }
+        if (postData.length) {
+          _commonService.bulkInsert(
+            { listName: _projectWorkTicketDetails },
+            postData
+          );
+        }
+      }
+    });
   }
 
   useEffect((): any => {
@@ -345,7 +426,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
           size="small"
           id="outlined-basic"
           label="Email"
-          style={{margin:'16px 16px 16px 0'}}
+          style={{ margin: "16px 16px 16px 0" }}
           variant="outlined"
           name="InvoicingContactEmail"
           value={companyProfile.InvoicingContactEmail}
@@ -388,7 +469,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
           className={classes.CompanyContact}
           id="outlined-basic"
           label="Twitter"
-          style={{margin:'16px 16px 16px 0'}}
+          style={{ margin: "16px 16px 16px 0" }}
           size="small"
           variant="outlined"
           name="Twitter"
@@ -447,7 +528,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
         open={cusalert.open}
         message={cusalert.message}
         severity={cusalert.severity}
-        handleClose={(e)=>{
+        handleClose={(e) => {
           setAlert({
             open: false,
             severity: "",
@@ -455,7 +536,6 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
           });
         }}
       ></CustomAlert>
-
     </ThemeProvider>
   );
 };

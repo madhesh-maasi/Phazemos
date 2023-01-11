@@ -12,6 +12,7 @@ import TherapeuticExpertise from "./TherapeuticExpertise";
 import { RegulatoryExpertise } from "./RegulatoryExpertise";
 import { Geography } from "./Geography";
 import { ProjectWork } from "./ProjectWork";
+import {PrimaryServicesOffered} from './PrimaryServicesOffered';
 import { Upload } from "./Upload";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 
@@ -140,7 +141,13 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
           {formData.projectWork && (
             <Tab label="Project Work" {...a11yProps(4)} />
           )}
-          {formData.uploads && <Tab label="Uploads" {...a11yProps(5)} />}
+
+{formData.companyProfile && (
+            <Tab label="Primary Services Offered" {...a11yProps(5)} />
+          )}
+
+
+          {formData.uploads && <Tab label="Uploads" {...a11yProps(6)} />}
         </Tabs>
       </AppBar>
       {formData.companyProfile && (
@@ -193,8 +200,19 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
         </TabPanel>
       )}
 
-      {formData.uploads && (
+{formData.companyProfile && (
         <TabPanel value={value} index={5}>
+          <PrimaryServicesOffered
+            CompanyName={formData.companyName}
+            CompanyID={formData.companyID}
+            CompanyCode={formData.companyCode}
+          />
+        </TabPanel>
+      )}
+
+
+      {formData.uploads && (
+        <TabPanel value={value} index={6}>
           <Upload
             CompanyName={formData.companyName}
             CompanyID={formData.companyID}

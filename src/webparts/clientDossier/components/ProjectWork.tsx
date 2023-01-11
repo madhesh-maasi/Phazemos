@@ -39,7 +39,7 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
 
   const [projectWorkID, setProjectWorkID] = useState(0);
   const [allCategories, setAllCategories] = useState([]);
-  const [allTicketSizes, setAllTicketSizes] = useState([]);
+  // const [allTicketSizes, setAllTicketSizes] = useState([]);
 
   const [keyCompanies, setKeyCompanies] = useState([]);
   const [deleteKeyCompanies, setDeleteKeyCompanies] = useState([]);
@@ -52,40 +52,40 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
   const _projectWorkMaster: string = "Project Work Master";
   const _projectWorkCategoryMaster: string = "Project Work Category Master";
 
-  function loadCompanyProjectWorkMaster(editData: any) {
-    let customProperty = {
-      listName: _projectWorkMaster,
-      properties: "ID,Title,IsActive",
-      orderby: "OrderNo",
-      orderbyAsc: true,
-    };
-    _commonService.getList(customProperty, (res: any) => {
-      let ticketSizes = [];
-      for (let index = 0; index < res.length; index++) {
-        let editMap = editData.projectWorkMapping.filter(
-          (c) => c.ProjectWorkMasterIDId == res[index].Id
-        );
-        if (editMap.length || res[index].IsActive) {
-          let data = {
-            ID: 0,
-            ProjectIDId: 0,
-            ProjectWorkMasterIDId: res[index].Id,
-            Title: res[index].Title,
-            Year: "",
-            Size: "",
-          };
-          if (editMap.length) {
-            data.ProjectIDId = editMap[0].ProjectIDId;
-            data.ID = editMap[0].ID;
-            data.Year = editMap[0].Year;
-            data.Size = editMap[0].Size;
-          }
-          ticketSizes.push(data);
-        }
-      }
-      setAllTicketSizes([...ticketSizes]);
-    });
-  }
+  // function loadCompanyProjectWorkMaster(editData: any) {
+  //   let customProperty = {
+  //     listName: _projectWorkMaster,
+  //     properties: "ID,Title,IsActive",
+  //     orderby: "OrderNo",
+  //     orderbyAsc: true,
+  //   };
+  //   _commonService.getList(customProperty, (res: any) => {
+  //     let ticketSizes = [];
+  //     for (let index = 0; index < res.length; index++) {
+  //       let editMap = editData.projectWorkMapping.filter(
+  //         (c) => c.ProjectWorkMasterIDId == res[index].Id
+  //       );
+  //       if (editMap.length || res[index].IsActive) {
+  //         let data = {
+  //           ID: 0,
+  //           ProjectIDId: 0,
+  //           ProjectWorkMasterIDId: res[index].Id,
+  //           Title: res[index].Title,
+  //           Year: "",
+  //           Size: "",
+  //         };
+  //         if (editMap.length) {
+  //           data.ProjectIDId = editMap[0].ProjectIDId;
+  //           data.ID = editMap[0].ID;
+  //           data.Year = editMap[0].Year;
+  //           data.Size = editMap[0].Size;
+  //         }
+  //         ticketSizes.push(data);
+  //       }
+  //     }
+  //     setAllTicketSizes([...ticketSizes]);
+  //   });
+  // }
 
   function loadCompanyProjectWork(editData: any) {
     let customProperty = {
@@ -122,26 +122,24 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
     });
   }
 
-  function loadCompanyProjectWorkMapping(projectWorkId: number) {
-    let customProperty = {
-      listName: _projectWorkMapping,
-      filter: "ProjectIDId eq '" + projectWorkId + "'",
-    };
-    _commonService.getList(customProperty, (res: any) => {
-      if (res && res.length > 0) {
-        loadCompanyProjectWorkMaster({
-          projectWorkMapping: res,
-        });
-      } else {
-        loadCompanyProjectWorkMaster({
-          projectWorkMapping: [],
-        });
-      }
-    });
-  }
+  // function loadCompanyProjectWorkMapping(projectWorkId: number) {
+  //   let customProperty = {
+  //     listName: _projectWorkMapping,
+  //     filter: "ProjectIDId eq '" + projectWorkId + "'",
+  //   };
+  //   _commonService.getList(customProperty, (res: any) => {
+  //     if (res && res.length > 0) {
+  //       loadCompanyProjectWorkMaster({
+  //         projectWorkMapping: res,
+  //       });
+  //     } else {
+  //       loadCompanyProjectWorkMaster({
+  //         projectWorkMapping: [],
+  //       });
+  //     }
+  //   });
+  // }
 
-
-  
   function loadCategoryMaster(keyCompanies: any) {
     let customProperty = {
       listName: _projectWorkCategoryMaster,
@@ -167,8 +165,6 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
     });
   }
 
-
-
   function loadCompanyData() {
     let customProperty = {
       listName: _project,
@@ -178,31 +174,22 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
       if (res && res.length > 0) {
         setProjectWorkID(res[0].ID);
         loadCompanyProjectWork(res[0]);
-        loadCompanyProjectWorkMapping(res[0].ID);
+        // loadCompanyProjectWorkMapping(res[0].ID);
       } else {
         setProjectWorkID(0);
         addKeyCompanies();
-        loadCompanyProjectWorkMaster({
-          projectWorkMapping: [],
-        });
+        // loadCompanyProjectWorkMaster({
+        //   projectWorkMapping: [],
+        // });
         loadCategoryMaster([]);
       }
     });
   }
 
   function init() {
-    // setDeleteKeyCompanies([]);
-    // _commonService = new CommonService();
-    // let customProperty = {
-    //   listName: _projectWorkCategoryMaster,
-    // };
-    // _commonService.getList(customProperty, (res: any) => {
-    //   setAllCategories(res);
-    //   loadCompanyData();
-    // });
+    setDeleteKeyCompanies([]);
     _commonService = new CommonService();
     loadCompanyData();
-
   }
 
   function addKeyCompanies() {
@@ -278,7 +265,7 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
         { CompanyIDId: props.CompanyID },
         (res: any) => {
           insertOrUpdateKeyCompany(res.data.Id);
-          insertOrUpdateProjectWorkMapping(res.data.Id);
+          // insertOrUpdateProjectWorkMapping(res.data.Id);
         }
       );
       setAlert({
@@ -288,7 +275,7 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
       });
     } else {
       insertOrUpdateKeyCompany(projectWorkID);
-      insertOrUpdateProjectWorkMapping(projectWorkID);
+      // insertOrUpdateProjectWorkMapping(projectWorkID);
       setAlert({
         open: true,
         severity: "success",
@@ -329,40 +316,40 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
     }
   }
 
-  function insertOrUpdateProjectWorkMapping(projectIDId: number) {
-    let locTicketSizes = allTicketSizes.slice();
-    let addData = locTicketSizes.filter((c) => c.ID == 0);
-    let editData = locTicketSizes.filter((c) => c.ID != 0);
-    addData.forEach((data) => {
-      data.ProjectIDId = projectIDId;
-      delete data.ID;
-      delete data.Title;
-    });
+  // function insertOrUpdateProjectWorkMapping(projectIDId: number) {
+  // let locTicketSizes = allTicketSizes.slice();
+  // let addData = locTicketSizes.filter((c) => c.ID == 0);
+  // let editData = locTicketSizes.filter((c) => c.ID != 0);
+  // addData.forEach((data) => {
+  //   data.ProjectIDId = projectIDId;
+  //   delete data.ID;
+  //   delete data.Title;
+  // });
 
-    editData.forEach((data) => {
-      delete data.Title;
-    });
-    
-    if (addData.length) {
-      _commonService.bulkInsert(
-        { listName: _projectWorkMapping },
-        addData,
-        (res) => {
-          init();
-        }
-      );
-    }
+  // editData.forEach((data) => {
+  //   delete data.Title;
+  // });
 
-    if (editData.length) {
-      _commonService.bulkUpdate(
-        { listName: _projectWorkMapping },
-        editData,
-        (res) => {
-          init();
-        }
-      );
-    }
-  }
+  // if (addData.length) {
+  //   _commonService.bulkInsert(
+  //     { listName: _projectWorkMapping },
+  //     addData,
+  //     (res) => {
+  //       init();
+  //     }
+  //   );
+  // }
+
+  // if (editData.length) {
+  //   _commonService.bulkUpdate(
+  //     { listName: _projectWorkMapping },
+  //     editData,
+  //     (res) => {
+  //       init();
+  //     }
+  //   );
+  // }
+  // }
 
   useEffect((): any => {
     init();
@@ -400,19 +387,18 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
       {keyCompanies.map((company: any, index: number) => {
         return (
           <div className={classes.CategorySection}>
-          
             <FormControl
               variant="outlined"
               style={{ width: "30%", margin: "8px 8px 8px 0" }}
             >
-             <InputLabel id="demo-simple-select-outlined-label">
+              <InputLabel id="demo-simple-select-outlined-label">
                 Category
               </InputLabel>
               <Select
                 labelId="demo-controlled-open-select-label"
                 id="demo-controlled-open-select"
                 label="Category"
-                              value={company.CategoryIDId}
+                value={company.CategoryIDId}
                 onChange={(e) => selHandleChange(e, index)}
               >
                 {allCategories.map((m) => {
@@ -420,8 +406,7 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
                 })}
               </Select>
             </FormControl>
-         
-          
+
             <TextField
               id="outlined-basic"
               size="small"
@@ -441,7 +426,7 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
                   fontSize: 40,
                   color: theme.palette.primary.main,
                   margin: 8,
-                  cursor:'pointer'
+                  cursor: "pointer",
                 }}
               />
             )}
@@ -459,11 +444,11 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
           </div>
         );
       })}
-      <h4 className={classes.headerTitle}>
+      {/* <h4 className={classes.headerTitle}>
         Fill in the number of projects in the last 3 years and select average
         ticket size range per project
       </h4>
-      <div className={classes.NoAndSizeSection}>
+       <div className={classes.NoAndSizeSection}>
         {allTicketSizes.map((ticket: any, index: number) => {
           return (
             <div className={classes.NoAndSizeItem}>
@@ -488,7 +473,7 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
             </div>
           );
         })}
-      </div>
+      </div> */}
       <div className={classes.bottomBtnSection}>
         <Button
           variant="contained"
