@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 export const App: React.FunctionComponent<IInviteUserProps> = (
   props: IInviteUserProps
 ) => {
-  var _commonService: CommonService;
+  var _commonService: CommonService = new CommonService();
 
   const _companyRegistration: string = "Company Registration";
   const _userDetails: string = "User Details";
@@ -93,19 +93,8 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
   function inviteNewUser() {
     _commonService = new CommonService();
     if (formData.ID == 0) {
-      let data = formData;
-      var companyData = {
-        Title: data.companyName,
-        CompanyID: "",
-        CompanyProfile: data.CompanyProfile,
-        TherapeuticExpertise: data.TherapeuticExpertise,
-        RegulatoryExpertise: data.RegulatoryExpertise,
-        Geography: data.Geography,
-        ProjectWork: data.ProjectWork,
-        Uploads: data.Uploads,
-      };
-
-      if (!companyData.Title) {
+      
+      if (!formData.companyName) {
         setAlert({
           open: true,
           severity: "warning",
@@ -114,72 +103,109 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
         return;
       }
 
-      for (let index = 0; index < data.users.length; index++) {
-        const user = data.users[index];
+      for (let index = 0; index < formData.users.length; index++) {
+        const user = formData.users[index];
         if (!_commonService.validateEmail(user)) {
           setAlert({
             open: true,
             severity: "warning",
-            message: user + " is not a valid Email ID",
+            message: "Email ID is not a valid",
           });
           return;
         }
       }
 
-      let customProperty = {
-        listName: _companyRegistration,
-        ID: 0,
-      };
+      isEmailIDAlreadyExist();
 
-      _commonService.insertIntoList(
-        customProperty,
-        companyData,
-        (companyres: any) => {
-          customProperty.ID = companyres.data.Id;
-          companyData.CompanyID = generateCompanyID(companyres.data.Id);
-          _commonService.updateList(customProperty, companyData);
-
-          customProperty.listName = _userDetails;
-
-          let users = data.users.slice();
-          for (let index = 0; index < users.length; index++) {
-            let userData = {
-              UserEmailID: users[index],
-              CompanyIDId: companyres.data.Id,
-            };
-            _commonService.insertIntoList(
-              customProperty,
-              userData,
-              (userres: any) => {
-                var graphProperty = {
-                  UserEmailID: users[index],
-                  InviteRedirectUrl:
-                    _acceptInviteUrl +
-                    btoa(userres.data.Id + "-" + companyData.Title),
-                };
-
-                setRender(!render);
-
-                _commonService.graphCallToInviteUser(
-                  props,
-                  graphProperty,
-                  (graphres: any) => {}
-                );
-              }
-            );
-          }
-          setAlert({
-            open: true,
-            severity: "success",
-            message: "User invitation sent successfully",
-          });
-          handleClose();
-          init();
-        }
-      );
     } else {
       edit();
     }
+  }
+
+  function isEmailIDAlreadyExist(){
+    let customProperty = {
+      listName: _userDetails,
+      filter: "UserEmailID eq '" + formData.users[0] + "'",
+    };
+    _commonService.getList(customProperty, (res: any) => {
+      if(res.length){
+        setAlert({
+          open: true,
+          severity: "warning",
+          message: "Company with this EmailID already registered",
+        });
+      }else{
+        registerNewCompany();
+      }
+    });
+  }
+
+  function registerNewCompany(){
+    let data = formData;
+    var companyData = {
+      Title: data.companyName,
+      CompanyID: "",
+      CompanyProfile: data.CompanyProfile,
+      TherapeuticExpertise: data.TherapeuticExpertise,
+      RegulatoryExpertise: data.RegulatoryExpertise,
+      Geography: data.Geography,
+      ProjectWork: data.ProjectWork,
+      Uploads: data.Uploads,
+    };
+
+    
+    let customProperty = {
+      listName: _companyRegistration,
+      ID: 0,
+    };
+
+    _commonService.insertIntoList(
+      customProperty,
+      companyData,
+      (companyres: any) => {
+        customProperty.ID = companyres.data.Id;
+        companyData.CompanyID = generateCompanyID(companyres.data.Id);
+        _commonService.updateList(customProperty, companyData);
+
+        customProperty.listName = _userDetails;
+
+        let users = data.users.slice();
+        for (let index = 0; index < users.length; index++) {
+          let userData = {
+            UserEmailID: users[index],
+            CompanyIDId: companyres.data.Id,
+          };
+          _commonService.insertIntoList(
+            customProperty,
+            userData,
+            (userres: any) => {
+              var graphProperty = {
+                UserEmailID: users[index],
+                InviteRedirectUrl:
+                  _acceptInviteUrl +
+                  btoa(userres.data.Id + "-" + companyData.Title),
+              };
+
+              setRender(!render);
+
+              _commonService.graphCallToInviteUser(
+                props,
+                graphProperty,
+                (graphres: any) => {}
+              );
+            }
+          );
+        }
+        setAlert({
+          open: true,
+          severity: "success",
+          message: "User invitation sent successfully",
+        });
+        handleClose();
+        init();
+      }
+    );
+
   }
 
   function generateCompanyID(id: number) {
@@ -265,7 +291,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
     data.ProjectWork = formData.ProjectWork;
     data.Uploads = formData.Uploads;
 
-    _commonService.insertIntoList(customProperty, data, (companyres: any) => {
+    _commonService.updateList(customProperty, data, (companyres: any) => {
       setAlert({
         open: true,
         severity: "success",
@@ -358,7 +384,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
                       value={user}
                       onChange={(e) => userChangeHandler(e, index)}
                     />
-                    {formData.users.length == index + 1 && (
+                    {/* {formData.users.length == index + 1 && (
                       <AddIcon
                         style={{
                           cursor: "pointer",
@@ -367,9 +393,9 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
                         }}
                         onClick={(e) => addUser()}
                       />
-                    )}
+                    )} */}
 
-                    {formData.users.length > 1 && (
+                    {/* {formData.users.length > 1 && (
                       <ClearIcon
                         style={{
                           cursor: "pointer",
@@ -378,7 +404,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
                         }}
                         onClick={(e) => removeUser(index)}
                       />
-                    )}
+                    )} */}
                   </div>
                 );
               })}

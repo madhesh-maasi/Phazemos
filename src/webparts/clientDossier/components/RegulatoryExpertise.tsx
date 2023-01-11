@@ -188,7 +188,10 @@ export const RegulatoryExpertise: React.FunctionComponent<
       expertisePostData.OtherComments = othersComment.comments;
     }
 
-    let locRegulatoryExpertises = selExpertises.slice();
+    let allLocRegulatoryExpertises = selExpertises.slice();
+    let locRegulatoryExpertises = allLocRegulatoryExpertises.filter(
+      (c) => c.InHouseRegulatoryRegimeExperiencId != 0
+    );
 
     _commonService.insertIntoList(
       {
@@ -198,6 +201,13 @@ export const RegulatoryExpertise: React.FunctionComponent<
       (res: any) => {
         let regulatoryExpertisePostData: any[] = [];
         locRegulatoryExpertises.forEach((regulatoryExpertise: any) => {
+          let newMasterData = allLocRegulatoryExpertises.filter(
+            (c) => c.InHouseRegulatoryRegimeExperiencId == 0
+          );
+          if (newMasterData.length) {
+            insertNewInHouseRegulatoryMaster(0, res.data.Id, newMasterData);
+          }
+
           if (regulatoryExpertise.IsChecked) {
             regulatoryExpertisePostData.push({
               RegulatoryExpertiseIDId: res.data.Id,
@@ -235,7 +245,22 @@ export const RegulatoryExpertise: React.FunctionComponent<
       { OtherComments: othersComment.comments }
     );
 
-    let locRegulatoryExpertises = selExpertises.slice();
+    let allLocRegulatoryExpertises = selExpertises.slice();
+    let locRegulatoryExpertises = allLocRegulatoryExpertises.filter(
+      (c) => c.InHouseRegulatoryRegimeExperiencId != 0
+    );
+
+    let newMasterData = allLocRegulatoryExpertises.filter(
+      (c) => c.InHouseRegulatoryRegimeExperiencId == 0
+    );
+    if (newMasterData.length) {
+      insertNewInHouseRegulatoryMaster(
+        0,
+        companyRegulatoryExpertise.regulatoryExpertise.ID,
+        newMasterData
+      );
+    }
+
     let newRegulatoryExpertises = locRegulatoryExpertises.filter(
       (c) => c.RegulatoryExpertiseIDId == 0 && c.IsChecked == true
     );
@@ -291,6 +316,39 @@ export const RegulatoryExpertise: React.FunctionComponent<
     });
   }
 
+  function insertNewInHouseRegulatoryMaster(
+    index: number,
+    regulatoryRegimeExperienceID: any,
+    newInHouseRegulatoryMaster: any[]
+  ) {
+    _commonService.insertIntoList(
+      { listName: _regulatoryExpertiseMaster },
+      { Title: newInHouseRegulatoryMaster[index].Title, IsActive: true },
+      (res) => {
+        var postData = {
+          RegulatoryExpertiseIDId: regulatoryRegimeExperienceID,
+          InHouseRegulatoryRegimeExperiencId: res.data.Id,
+        };
+        _commonService.insertIntoList(
+          { listName: _regulatoryExpertiseMap },
+          postData,
+          (res) => {}
+        );
+
+        index++;
+        if (index != newInHouseRegulatoryMaster.length) {
+          insertNewInHouseRegulatoryMaster(
+            index,
+            regulatoryRegimeExperienceID,
+            newInHouseRegulatoryMaster
+          );
+        } else {
+          init();
+        }
+      }
+    );
+  }
+
   useEffect((): any => {
     _commonService = new CommonService();
     init();
@@ -324,9 +382,9 @@ export const RegulatoryExpertise: React.FunctionComponent<
       </div>
 
       <div style={{ marginTop: 12 }}>
-
         <Autocomplete
           multiple
+          freeSolo
           id="checkboxes-tags-demo"
           options={regulatoryExpertises}
           size="small"
@@ -335,11 +393,25 @@ export const RegulatoryExpertise: React.FunctionComponent<
           value={selExpertises}
           onChange={(event: any, newValue: any[]) => {
             let othersChecked = false;
+            var datas = [];
             newValue.map((d) => {
-              if (d.Title == "Other") {
-                othersChecked = true;
+              let data = {};
+              if (!d.Title) {
+                data = {
+                  InHouseRegulatoryRegimeExperiencId: 0,
+                  IsChecked: true,
+                  RegulatoryExperienceMappingID: 0,
+                  RegulatoryExpertiseIDId: 0,
+                  Title: d,
+                };
+              } else {
+                if (d.Title == "Other") {
+                  othersChecked = true;
+                }
+                d.IsChecked = true;
+                data = d;
               }
-              d.IsChecked = true;
+              datas.push(data);
             });
             let otherComment = {
               isChecked: othersChecked,
@@ -349,7 +421,7 @@ export const RegulatoryExpertise: React.FunctionComponent<
               otherComment.comments = null;
             }
             setOthersComment({ ...otherComment });
-            setSelRegulatoryExpertises([...newValue]);
+            setSelRegulatoryExpertises([...datas]);
           }}
           renderOption={(option, { selected }) => (
             <React.Fragment>
@@ -389,10 +461,12 @@ export const RegulatoryExpertise: React.FunctionComponent<
       )}
 
       <div className={classes.bottomBtnSection}>
-       
-        <Button variant="contained" color="primary"
-           size="large"
-        onClick={submitData}>
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          onClick={submitData}
+        >
           Submit
         </Button>
       </div>
