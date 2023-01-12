@@ -176,17 +176,19 @@ export const PrimaryServicesOffered: React.FunctionComponent<
   };
 
   const addNewOffer = (event) => {
-    let allTickets = allTicketSizes;
-    let exists = allTickets.filter((c) => c.ID == newOffer["ID"]);
-    if (exists.length == 0) {
-      allTickets.push(newOffer);
-      setAllTicketSizes([...allTickets]);
-    } else {
-      setAlert({
-        open: true,
-        severity: "warning",
-        message: "Already added",
-      });
+    if (newOffer["PrimaryServicesMasterIDId"]) {
+      let allTickets = allTicketSizes;
+      let exists = allTickets.filter((c) => c.PrimaryServicesMasterIDId == newOffer["PrimaryServicesMasterIDId"]);
+      if (exists.length == 0) {
+        allTickets.push(newOffer);
+        setAllTicketSizes([...allTickets]);
+      } else {
+        setAlert({
+          open: true,
+          severity: "warning",
+          message: "Already added",
+        });
+      }
     }
   };
 
@@ -223,8 +225,12 @@ export const PrimaryServicesOffered: React.FunctionComponent<
         Fill in the number of projects in the last 3 years and select average
         ticket size range per project
       </h4>
-      <div>
-        <FormControl style={{ width: "250px" }} variant="outlined">
+      <div style={{ display: "flex", margin: "10px 0" }}>
+        <FormControl
+          style={{ width: "250px", margin: "0 10px 0 0" }}
+          variant="outlined"
+          size="small"
+        >
           <Select
             labelId="demo-controlled-open-select-label"
             id="demo-controlled-open-select"
@@ -240,6 +246,7 @@ export const PrimaryServicesOffered: React.FunctionComponent<
           <Button
             variant="contained"
             color="primary"
+            // size=""
             startIcon={<AddIcon />}
             onClick={addNewOffer}
           >
@@ -272,7 +279,6 @@ export const PrimaryServicesOffered: React.FunctionComponent<
                   value={ticket.Size}
                   name="Size"
                   onChange={(e) => inputChangeHandler(e, index)}
-
                 />
               </div>
             </div>

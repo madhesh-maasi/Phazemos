@@ -12,6 +12,7 @@ import AddIcon from "@material-ui/icons/Add";
 import ClearIcon from "@material-ui/icons/Clear";
 import { DataGrid } from "./DataGrid";
 import Modal from "@material-ui/core/Modal";
+import RefreshIcon from '@material-ui/icons/Refresh';
 import Fade from "@material-ui/core/Fade";
 import { makeStyles } from "@material-ui/core/styles";
 import classes from "./App.module.scss";
@@ -339,6 +340,9 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
               >
                 New
               </Button>
+              <RefreshIcon style={{fontSize:34,color:'#00589A',margin:'0 0 0 5px',cursor: "pointer"}} onClick={()=>{
+                setRender(!render);
+              }} />
             </div>
           </div>
           <DataGrid render={render} EditRecord={editRecord} />
