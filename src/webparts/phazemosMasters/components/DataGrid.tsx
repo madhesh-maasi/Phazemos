@@ -230,7 +230,7 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
                 </StyledTableCell>
                 <StyledTableCell>
                 <div style={{display:'flex',alignItems:'center'}}>
-                  <Persona
+                  {/* <Persona
                     styles={{
                       root: {
                         width: 32,
@@ -243,7 +243,7 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
                       // value.Assignee
                     }
                     size={PersonaSize.size32}
-                  />
+                  /> */}
                     <p>  {master.Author.Title}</p>
                     </div>
                  </StyledTableCell>

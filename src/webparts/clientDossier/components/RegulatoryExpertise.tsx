@@ -453,17 +453,15 @@ export const RegulatoryExpertise: React.FunctionComponent<
         />
       </div>
       {/* others checkbox */}
-      <div style={{display:'flex'}}>
+      {/* <div style={{display:'flex'}}>
         <FormControlLabel
           control={<Checkbox name="" disableRipple color="primary"  />}
           label="Others"
-          // className={classes.others}
         />
         {true?<>
           <div style={{display:'flex',alignItems:'center'}}> 
           <TextField  placeholder="" style={{width:'100%'}} variant='outlined' size="small"/>
           <AddCircleIcon
-                // onClick={addNewOffer}
                 style={{
                   fontSize: 34,
                   color: theme.palette.primary.main,
@@ -480,7 +478,7 @@ export const RegulatoryExpertise: React.FunctionComponent<
                 />
         </div></>:''}
       
-      </div>
+      </div> */}
 
       {othersComment.isChecked && (
         <div className={classes.companyDetails}>

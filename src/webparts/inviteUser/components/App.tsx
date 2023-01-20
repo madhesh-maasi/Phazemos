@@ -54,6 +54,8 @@ const useStyles = makeStyles((theme) => ({
 export const App: React.FunctionComponent<IInviteUserProps> = (
   props: IInviteUserProps
 ) => {
+  const [viewMode, setViewMode] = useState(false);
+
   var _commonService: CommonService = new CommonService();
 
   const _companyRegistration: string = "Company Registration";
@@ -234,6 +236,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
   }
 
   function init() {
+    setViewMode(false);
     let data: any = {};
     data.ID = 0;
     data.companyName = "";
@@ -261,19 +264,29 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
       filter: "CompanyIDId eq '" + company.CompanyIDId + "'",
     };
     _commonService.getList(customProperty, (res: any) => {
-      let data: any = {};
-      data.ID = company.ID;
-      data.CompanyProfile = company.CompanyProfile;
-      data.TherapeuticExpertise = company.TherapeuticExpertise;
-      data.RegulatoryExpertise = company.RegulatoryExpertise;
-      data.Geography = company.Geography;
-      data.ProjectWork = company.ProjectWork;
-      data.Uploads = company.Uploads;
-      data.users = res.map((u) => {
-        return u.UserEmailID;
+      customProperty = {
+        listName: _companyRegistration,
+        properties: "*",
+        filter: "ID eq '" + company.CompanyIDId + "'",
+      };
+      _commonService.getList(customProperty, (comres: any) => {
+        setViewMode(true);
+
+        let data: any = {};
+        data.ID = company.ID;
+        data.companyName = company.CompanyID.Title;
+        data.CompanyProfile = comres[0].CompanyProfile;
+        data.TherapeuticExpertise = comres[0].TherapeuticExpertise;
+        data.RegulatoryExpertise = comres[0].RegulatoryExpertise;
+        data.Geography = comres[0].Geography;
+        data.ProjectWork = comres[0].ProjectWork;
+        data.Uploads = comres[0].Uploads;
+        data.users = res.map((u) => {
+          return u.UserEmailID;
+        });
+        setFormData({ ...data });
+        setOpen(true);
       });
-      setFormData({ ...data });
-      setOpen(true);
     });
   }
 
@@ -372,7 +385,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
                   color="primary"
                   style={{ fontSize: "1.25rem", fontWeight: 600 }}
                 >
-                  New User
+                  {viewMode ? "User Details" : "New User"}
                 </Typography>
                 <ClearIcon
                   onClick={handleClose}
@@ -389,6 +402,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
                   name="companyName"
                   value={formData.companyName}
                   onChange={(e) => inputChangeHandler(e)}
+                  disabled={viewMode}
                 />
                 {formData.users.map((user: any, index: number) => {
                   return (
@@ -401,6 +415,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
                       name="user"
                       value={user}
                       onChange={(e) => userChangeHandler(e, index)}
+                      disabled={viewMode}
                     />
                   );
                 })}
@@ -455,6 +470,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
                           name="CompanyProfile"
                           color="primary"
                           onChange={(e) => checkboxChangeHandler(e)}
+                          disabled={viewMode}
                         />
                       }
                       label="Company Profile"
@@ -469,6 +485,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
                           name="TherapeuticExpertise"
                           color="primary"
                           onChange={(e) => checkboxChangeHandler(e)}
+                          disabled={viewMode}
                         />
                       }
                       label="Expertise - Therapeutic"
@@ -483,6 +500,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
                           name="RegulatoryExpertise"
                           color="primary"
                           onChange={(e) => checkboxChangeHandler(e)}
+                          disabled={viewMode}
                         />
                       }
                       label="Expertise - Regulatory"
@@ -497,6 +515,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
                           name="Geography"
                           color="primary"
                           onChange={(e) => checkboxChangeHandler(e)}
+                          disabled={viewMode}
                         />
                       }
                       label="Geography"
@@ -511,6 +530,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
                           name="ProjectWork"
                           color="primary"
                           onChange={(e) => checkboxChangeHandler(e)}
+                          disabled={viewMode}
                         />
                       }
                       label="Project Work"
@@ -525,6 +545,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
                           name="Uploads"
                           color="primary"
                           onChange={(e) => checkboxChangeHandler(e)}
+                          disabled={viewMode}
                         />
                       }
                       label="Uploads"
@@ -533,15 +554,17 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
                 </div>
               </div>
 
-              <div className={classes.btnSubmit}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={(e) => inviteNewUser()}
-                >
-                  Submit
-                </Button>
-              </div>
+              {!viewMode && (
+                <div className={classes.btnSubmit}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={(e) => inviteNewUser()}
+                  >
+                    Submit
+                  </Button>
+                </div>
+              )}
             </div>
           </Fade>
         </Modal>

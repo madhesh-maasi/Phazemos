@@ -14,11 +14,15 @@ import ClearIcon from "@material-ui/icons/Clear";
 import EditIcon from "@material-ui/icons/Edit";
 import classes from "./App.module.scss";
 
-
 import DoneIcon from "@material-ui/icons/Done";
+import { Link } from "@material-ui/core";
 
 import CommonService from "../services/CommonService";
-import { CollapseAllVisibility, Persona, PersonaSize } from "office-ui-fabric-react";
+import {
+  CollapseAllVisibility,
+  Persona,
+  PersonaSize,
+} from "office-ui-fabric-react";
 
 export interface IDataGrid {
   render: any;
@@ -105,8 +109,19 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
         <TableBody>
           {companyDetails.map((company) => (
             <StyledTableRow key={company.CompanyID.CompanyID}>
-              <StyledTableCell component="th" scope="row" style={{fontWeight:600}}>
-                {company.CompanyID.Title}
+              <StyledTableCell
+                component="th"
+                scope="row"
+                style={{ fontWeight: 600 }}
+              >
+                <Link
+                  style={{
+                    cursor: "pointer",
+                  }}
+                  onClick={(e) => props.EditRecord(company)}
+                >
+                  {company.CompanyID.Title}
+                </Link>
               </StyledTableCell>
               <StyledTableCell>{company.CompanyID.CompanyID}</StyledTableCell>
               <StyledTableCell>{company.UserEmailID}</StyledTableCell>
@@ -131,8 +146,8 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
                 )}
               </StyledTableCell>
 
-              <StyledTableCell >
-                <div style={{display:'flex',alignItems:'center'}}>
+              <StyledTableCell>
+                <div style={{ display: "flex", alignItems: "center" }}>
                   {/* <Persona
                     styles={{
                       root: {
@@ -147,9 +162,8 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
                     }
                     size={PersonaSize.size32}
                   /> */}
-                    <p>{company.Author.Title}</p> 
+                  <p>{company.Author.Title}</p>
                 </div>
-             
               </StyledTableCell>
               <StyledTableCell>
                 {_commonService.formattedDate(new Date(company.Created))}
