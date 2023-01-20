@@ -482,7 +482,7 @@ export const RegulatoryExpertise: React.FunctionComponent<
 
       {othersComment.isChecked && (
         <div className={classes.companyDetails}>
-          <TextField
+          <TextField required
             style={{ width: "40%", marginRight: 30 }}
             id="outlined-basic"
             label="Comments"

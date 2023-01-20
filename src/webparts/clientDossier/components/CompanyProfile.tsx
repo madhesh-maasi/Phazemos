@@ -420,7 +420,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
         />
       </div>
       <div className={classes.CompanyContactInfo}>
-        <TextField
+        <TextField required
           className={classes.CompanyContact}
           id="outlined-basic"
           size="small"
@@ -440,7 +440,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
           value={companyProfile.RFPContactEmail}
           onChange={(e) => inputChangeHandler(e)}
         />
-        <TextField
+        <TextField required
           className={classes.CompanyContact}
           id="outlined-basic"
           size="small"

@@ -214,7 +214,7 @@ export const Geography: React.FunctionComponent<IGeography> = (
         {geographyDetails.map((details: any, index: number) => {
           return (
             <div className={classes.NumberTypeSection}>
-              <TextField
+              <TextField required
                 className={classes.NTITitle}
                 id="outlined-basic"
                 label="Employee Title"
@@ -224,7 +224,7 @@ export const Geography: React.FunctionComponent<IGeography> = (
                 value={details.Title}
                 onChange={(e) => inputChangeHandler(e, index)}
               />
-              <TextField
+              <TextField required
                 className={classes.NTICountry}
                 id="outlined-basic"
                 label="Country of Residence"
@@ -234,7 +234,7 @@ export const Geography: React.FunctionComponent<IGeography> = (
                 value={details.CountryofResidence}
                 onChange={(e) => inputChangeHandler(e, index)}
               />
-              <TextField
+              <TextField required
                 className={classes.NTINum}
                 id="outlined-basic"
                 label="#"
@@ -244,7 +244,7 @@ export const Geography: React.FunctionComponent<IGeography> = (
                 value={details.Year}
                 onChange={(e) => inputChangeHandler(e, index)}
               />
-              <TextField
+              <TextField required
                 className={classes.NTIWork}
                 id="outlined-basic"
                 label="Countries Worked"

@@ -63,8 +63,15 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
 
   const _acceptInviteUrl: string =
     "https://douglas-phazemos.azurewebsites.net/Phazemos/Index?id=";
+
   // const _acceptInviteUrl: string =
   // "http://localhost:51130/Phazemos/Index?id=";
+
+  const clientDetailsURL =
+    "https://chandrudemo.sharepoint.com/sites/Douglas/SitePages/client1.aspx";
+
+  // const clientDetailsURL =
+  //   "https://chandrudemo.sharepoint.com/sites/Douglas/_layouts/15/workbench.aspx";
 
   const [formData, setFormData] = useState({
     ID: 0,
@@ -74,6 +81,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
     RegulatoryExpertise: true,
     Geography: true,
     ProjectWork: true,
+    PrimaryServicesOffered: true,
     Uploads: true,
     users: [""],
   });
@@ -154,6 +162,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
       RegulatoryExpertise: data.RegulatoryExpertise,
       Geography: data.Geography,
       ProjectWork: data.ProjectWork,
+      PrimaryServicesOffered: data.PrimaryServicesOffered,
       Uploads: data.Uploads,
     };
 
@@ -246,6 +255,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
     data.RegulatoryExpertise = true;
     data.Geography = true;
     data.ProjectWork = true;
+    data.PrimaryServicesOffered = true;
     data.Uploads = true;
     setFormData({ ...data });
   }
@@ -270,22 +280,28 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
         filter: "ID eq '" + company.CompanyIDId + "'",
       };
       _commonService.getList(customProperty, (comres: any) => {
-        setViewMode(true);
-
-        let data: any = {};
-        data.ID = company.ID;
-        data.companyName = company.CompanyID.Title;
-        data.CompanyProfile = comres[0].CompanyProfile;
-        data.TherapeuticExpertise = comres[0].TherapeuticExpertise;
-        data.RegulatoryExpertise = comres[0].RegulatoryExpertise;
-        data.Geography = comres[0].Geography;
-        data.ProjectWork = comres[0].ProjectWork;
-        data.Uploads = comres[0].Uploads;
-        data.users = res.map((u) => {
-          return u.UserEmailID;
+        res.map((u) => {
+          localStorage.setItem("_UserEmail_", u.UserEmailID);
         });
-        setFormData({ ...data });
-        setOpen(true);
+        window.open(clientDetailsURL, "_blank");
+
+        // setViewMode(true);
+
+        // let data: any = {};
+        // data.ID = company.ID;
+        // data.companyName = company.CompanyID.Title;
+        // data.CompanyProfile = comres[0].CompanyProfile;
+        // data.TherapeuticExpertise = comres[0].TherapeuticExpertise;
+        // data.RegulatoryExpertise = comres[0].RegulatoryExpertise;
+        // data.Geography = comres[0].Geography;
+        // data.ProjectWork = comres[0].ProjectWork;
+        // data.PrimaryServicesOffered = comres[0].PrimaryServicesOffered;
+        // data.Uploads = comres[0].Uploads;
+        // data.users = res.map((u) => {
+        //   return u.UserEmailID;
+        // });
+        // setFormData({ ...data });
+        // setOpen(true);
       });
     });
   }
@@ -302,6 +318,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
     data.RegulatoryExpertise = formData.RegulatoryExpertise;
     data.Geography = formData.Geography;
     data.ProjectWork = formData.ProjectWork;
+    data.PrimaryServicesOffered = formData.PrimaryServicesOffered;
     data.Uploads = formData.Uploads;
 
     _commonService.updateList(customProperty, data, (companyres: any) => {
@@ -534,6 +551,21 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
                         />
                       }
                       label="Project Work"
+                    />
+                  </div>
+
+                  <div className={classes.CheckBox}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={formData.PrimaryServicesOffered}
+                          name="PrimaryServicesOffered"
+                          color="primary"
+                          onChange={(e) => checkboxChangeHandler(e)}
+                          disabled={viewMode}
+                        />
+                      }
+                      label="Primary Services Offered"
                     />
                   </div>
 

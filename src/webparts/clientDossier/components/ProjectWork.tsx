@@ -409,7 +409,7 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
               </Select>
             </FormControl>
 
-            <TextField
+            <TextField required
               id="outlined-basic"
               size="small"
               label="Description"

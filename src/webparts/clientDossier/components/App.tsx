@@ -48,6 +48,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
     regulatoryExpertise: false,
     geography: false,
     projectWork: false,
+    primaryServicesOffered: false,
     uploads: false,
   });
 
@@ -82,13 +83,17 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
   }
 
   function init() {
+    let userEmail = props.CurrentContext.pageContext.user.loginName;
+
+    if (localStorage.getItem("_UserEmail_")) {
+      userEmail = localStorage.getItem("_UserEmail_");
+      localStorage.setItem("_UserEmail_", '');
+    }
+
     let _commonService = new CommonService();
     let customProperty = {
       listName: _userDetails,
-      filter:
-        "UserEmailID eq '" +
-        props.CurrentContext.pageContext.user.loginName +
-        "'",
+      filter: "UserEmailID eq '" + userEmail + "'",
     };
     _commonService.getList(customProperty, (userres: any) => {
       if (userres.length) {
@@ -106,6 +111,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
           data.regulatoryExpertise = res[0].RegulatoryExpertise;
           data.geography = res[0].Geography;
           data.projectWork = res[0].ProjectWork;
+          data.primaryServicesOffered = res[0].PrimaryServicesOffered;
           data.uploads = res[0].Uploads;
 
           let tab = tabIndex;
@@ -130,7 +136,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
             tab["projectWork"] = index;
             index++;
           }
-          if (data.companyProfile) {
+          if (data.primaryServicesOffered) {
             tab["primaryServicesOffered"] = index;
             index++;
           }
@@ -162,24 +168,40 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
           aria-label="scrollable force tabs example"
         >
           {formData.companyProfile && (
-            <Tab label="Company Profile" {...a11yProps(tabIndex["companyProfile"])} />
+            <Tab
+              label="Company Profile"
+              {...a11yProps(tabIndex["companyProfile"])}
+            />
           )}
           {formData.therapeuticExpertise && (
-            <Tab label="Expertise - Therapeutic" {...a11yProps(tabIndex["therapeuticExpertise"])} />
+            <Tab
+              label="Expertise - Therapeutic"
+              {...a11yProps(tabIndex["therapeuticExpertise"])}
+            />
           )}
           {formData.regulatoryExpertise && (
-            <Tab label="Expertise - Regulatory" {...a11yProps(tabIndex["regulatoryExpertise"])} />
+            <Tab
+              label="Expertise - Regulatory"
+              {...a11yProps(tabIndex["regulatoryExpertise"])}
+            />
           )}
-          {formData.geography && <Tab label="Geography" {...a11yProps(tabIndex["geography"])} />}
+          {formData.geography && (
+            <Tab label="Geography" {...a11yProps(tabIndex["geography"])} />
+          )}
           {formData.projectWork && (
             <Tab label="Project Work" {...a11yProps(tabIndex["projectWork"])} />
           )}
 
-          {formData.companyProfile && (
-            <Tab label="Primary Services Offered" {...a11yProps(tabIndex["primaryServicesOffered"])} />
+          {formData.primaryServicesOffered && (
+            <Tab
+              label="Primary Services Offered"
+              {...a11yProps(tabIndex["primaryServicesOffered"])}
+            />
           )}
 
-          {formData.uploads && <Tab label="Uploads" {...a11yProps(tabIndex["uploads"])} />}
+          {formData.uploads && (
+            <Tab label="Uploads" {...a11yProps(tabIndex["uploads"])} />
+          )}
         </Tabs>
       </AppBar>
       {formData.companyProfile && (
@@ -232,7 +254,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
         </TabPanel>
       )}
 
-      {formData.companyProfile && (
+      {formData.primaryServicesOffered && (
         <TabPanel value={value} index={tabIndex["primaryServicesOffered"]}>
           <PrimaryServicesOffered
             CompanyName={formData.companyName}
