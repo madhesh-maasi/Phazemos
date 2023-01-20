@@ -206,13 +206,13 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
       <div className={classes.App}>
         <div className={classes.AppSection}>
           <div className={classes.headerSection}>
-            <Typography variant="h5" color="primary">
+            <Typography variant="h5" color="primary" style={{fontSize:21}}>
               Masters
             </Typography>
 
             <div>
               <div className={classes.dropdownflex}>
-                <FormControl style={{ width: "250px" }} variant="outlined">
+                <FormControl style={{ width: "278px" }} variant="outlined" size='small'>
                   <Select
                     labelId="demo-controlled-open-select-label"
                     id="demo-controlled-open-select"
@@ -291,7 +291,6 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
           </Fade>
         </Modal>
       )} */}
-
       <CustomAlert
         open={cusalert.open}
         message={cusalert.message}

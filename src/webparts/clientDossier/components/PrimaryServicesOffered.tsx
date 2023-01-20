@@ -6,13 +6,13 @@ import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { Button } from "@material-ui/core";
 import classes from "./ProjectWork.module.scss";
 import AddIcon from "@material-ui/icons/Add";
 
 import CommonService from "../services/CommonService";
-import ClearIcon from "@material-ui/icons/Clear";
+import CancelIcon from '@material-ui/icons/Cancel';
 
 import { CustomAlert } from "./CustomAlert";
 
@@ -176,19 +176,17 @@ export const PrimaryServicesOffered: React.FunctionComponent<
   };
 
   const addNewOffer = (event) => {
-    if (newOffer["PrimaryServicesMasterIDId"]) {
-      let allTickets = allTicketSizes;
-      let exists = allTickets.filter((c) => c.PrimaryServicesMasterIDId == newOffer["PrimaryServicesMasterIDId"]);
-      if (exists.length == 0) {
-        allTickets.push(newOffer);
-        setAllTicketSizes([...allTickets]);
-      } else {
-        setAlert({
-          open: true,
-          severity: "warning",
-          message: "Already added",
-        });
-      }
+    let allTickets = allTicketSizes;
+    let exists = allTickets.filter((c) => c.ID == newOffer["ID"]);
+    if (exists.length == 0) {
+      allTickets.push(newOffer);
+      setAllTicketSizes([...allTickets]);
+    } else {
+      setAlert({
+        open: true,
+        severity: "warning",
+        message: "Already added",
+      });
     }
   };
 
@@ -199,10 +197,10 @@ export const PrimaryServicesOffered: React.FunctionComponent<
   return (
     <ThemeProvider theme={theme}>
       {" "}
-      <h3 className={classes.headerTitle}>Company Profile</h3>
-      <div className={classes.companyDetails}>
+      {/* <h3 className={classes.headerTitle}>Company Profile</h3> */}
+      <div className={`${classes.companyDetails} disableInput`}>
         <TextField
-          style={{ width: "40%", marginRight: 30 }}
+          style={{ width: "38%", marginRight: 32 }}
           id="outlined-basic"
           label="Company Name"
           size="small"
@@ -210,27 +208,25 @@ export const PrimaryServicesOffered: React.FunctionComponent<
           aria-readonly={true}
           name="CompanyName"
           value={props.CompanyName}
+          disabled
         />
         <TextField
           id="outlined-basic"
           size="small"
           label="ID"
           variant="outlined"
-          style={{ width: 100 }}
+          className={classes.idTextField}
           aria-readonly={true}
           value={props.CompanyCode}
+          disabled
         />
       </div>
       <h4 className={classes.headerTitle}>
         Fill in the number of projects in the last 3 years and select average
         ticket size range per project
       </h4>
-      <div style={{ display: "flex", margin: "10px 0" }}>
-        <FormControl
-          style={{ width: "250px", margin: "0 10px 0 0" }}
-          variant="outlined"
-          size="small"
-        >
+      <div style={{display:'flex',margin:'10px 0',alignItems:'center'}}>
+        <FormControl className={classes.smalltext} variant="outlined" size="small">
           <Select
             labelId="demo-controlled-open-select-label"
             id="demo-controlled-open-select"
@@ -243,15 +239,31 @@ export const PrimaryServicesOffered: React.FunctionComponent<
         </FormControl>
 
         <div>
-          <Button
+          {/* <Button
             variant="contained"
             color="primary"
             // size=""
             startIcon={<AddIcon />}
             onClick={addNewOffer}
-          >
-            New
-          </Button>
+          > */}
+           <AddCircleIcon
+                onClick={addNewOffer}
+                style={{
+                  fontSize: 34,
+                  color: theme.palette.primary.main,
+                  margin: "3px 8px 0px 8px",
+                  cursor: "pointer",
+                }}
+              />
+               <CancelIcon
+                style={{
+                  cursor: "pointer",
+                  fontSize: 34,
+                  color: theme.palette.error.main,
+                }}
+                // onClick={(e) => removeKeyCompanies(index)}
+              />
+          {/* </Button> */}
         </div>
       </div>
       <div className={classes.NoAndSizeSection}>
@@ -276,9 +288,11 @@ export const PrimaryServicesOffered: React.FunctionComponent<
                   size="small"
                   variant="outlined"
                   className={ticket.Size}
+                  style={{width:'24%'}}
                   value={ticket.Size}
                   name="Size"
                   onChange={(e) => inputChangeHandler(e, index)}
+
                 />
               </div>
             </div>

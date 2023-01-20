@@ -11,7 +11,7 @@
     p {
         color: #00589A;
         font-weight: 700;
-        margin: 12px 0;
+        margin: 8px 0;
     }
     .CheckboxSection {
         display: flex;
@@ -19,7 +19,7 @@
         margin: 6px;
         .Checkbox {
             width: 18%;
-            margin: 16px;
+            margin: 10px;
         }
     }
 }
@@ -35,4 +35,13 @@
 .bottomBtnSection {
     display: flex;
     justify-content: flex-end;
+    margin: 20px 0;
+}
+
+.idTextField{
+    width: 8%;
+    input{
+        padding: 0 13px;
+        height:40px;
+    }
 }

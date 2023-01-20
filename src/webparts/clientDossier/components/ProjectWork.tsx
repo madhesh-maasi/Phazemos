@@ -6,12 +6,12 @@ import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { Button } from "@material-ui/core";
 import classes from "./ProjectWork.module.scss";
 
 import CommonService from "../services/CommonService";
-import ClearIcon from "@material-ui/icons/Clear";
+import CancelIcon from '@material-ui/icons/Cancel';
 
 import { CustomAlert } from "./CustomAlert";
 
@@ -358,10 +358,10 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
   return (
     <ThemeProvider theme={theme}>
       {" "}
-      <h3 className={classes.headerTitle}>Company Profile</h3>
-      <div className={classes.companyDetails}>
+      {/* <h3 className={classes.headerTitle}>Company Profile</h3> */}
+      <div className={`${classes.companyDetails} disableInput`}>
         <TextField
-          style={{ width: "40%", marginRight: 30 }}
+          style={{ width: "38%", marginRight: 32 }}
           id="outlined-basic"
           label="Company Name"
           size="small"
@@ -369,15 +369,17 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
           aria-readonly={true}
           name="CompanyName"
           value={props.CompanyName}
+          disabled
         />
         <TextField
           id="outlined-basic"
           size="small"
           label="ID"
           variant="outlined"
-          style={{ width: 100 }}
+          className={classes.idTextField}
           aria-readonly={true}
           value={props.CompanyCode}
+          disabled
         />
       </div>
       <h4 className={classes.headerTitle}>
@@ -420,22 +422,22 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
             />
 
             {keyCompanies.length == index + 1 && (
-              <AddCircleOutlineIcon
+              <AddCircleIcon
                 onClick={(e) => addKeyCompanies()}
                 style={{
-                  fontSize: 40,
+                  fontSize: 34,
                   color: theme.palette.primary.main,
-                  margin: 8,
+                  // margin: 8,
                   cursor: "pointer",
                 }}
               />
             )}
 
             {keyCompanies.length > 1 && (
-              <ClearIcon
+              <CancelIcon
                 style={{
                   cursor: "pointer",
-                  fontSize: 32,
+                  fontSize: 34,
                   color: theme.palette.error.main,
                 }}
                 onClick={(e) => removeKeyCompanies(index)}

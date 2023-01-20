@@ -9,6 +9,8 @@ import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Button from "@material-ui/core/Button";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 import CommonService from "../services/CommonService";
 
@@ -358,10 +360,10 @@ export const RegulatoryExpertise: React.FunctionComponent<
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
   return (
     <ThemeProvider theme={theme}>
-      <h3 className={classes.headerTitle}>Expertise - Regulatory </h3>
-      <div className={classes.companyDetails}>
+      {/* <h3 className={classes.headerTitle}>Expertise - Regulatory </h3> */}
+      <div className={`${classes.companyDetails} disableInput`}>
         <TextField
-          style={{ width: "40%", marginRight: 30 }}
+          style={{ width: "38%", marginRight: 32 }}
           id="outlined-basic"
           label="Company Name"
           size="small"
@@ -369,21 +371,24 @@ export const RegulatoryExpertise: React.FunctionComponent<
           aria-readonly={true}
           name="CompanyName"
           value={props.CompanyName}
+          disabled
         />
         <TextField
           id="outlined-basic"
           size="small"
           label="ID"
           variant="outlined"
-          style={{ width: 100 }}
+          className={classes.idTextField}
           aria-readonly={true}
           value={props.CompanyCode}
+          disabled
         />
       </div>
 
-      <div style={{ marginTop: 12 }}>
+      <div style={{ margin: "20px 0px" }}>
         <Autocomplete
           multiple
+          style={{ width: "60%" }}
           freeSolo
           id="checkboxes-tags-demo"
           options={regulatoryExpertises}
@@ -430,6 +435,7 @@ export const RegulatoryExpertise: React.FunctionComponent<
                 checkedIcon={checkedIcon}
                 style={{ marginRight: 8 }}
                 checked={selected}
+                color="primary"
               />
               {option.Title}
             </React.Fragment>
@@ -443,7 +449,37 @@ export const RegulatoryExpertise: React.FunctionComponent<
               placeholder=""
             />
           )}
+          // disabled
         />
+      </div>
+      {/* others checkbox */}
+      <div style={{display:'flex'}}>
+        <FormControlLabel
+          control={<Checkbox name="" disableRipple color="primary"  />}
+          label="Others"
+          // className={classes.others}
+        />
+        {true?<>
+          <div style={{display:'flex',alignItems:'center'}}> 
+          <TextField  placeholder="" style={{width:'100%'}} variant='outlined' size="small"/>
+          <AddCircleIcon
+                // onClick={addNewOffer}
+                style={{
+                  fontSize: 34,
+                  color: theme.palette.primary.main,
+                  margin: "0px 8px 0px 8px",
+                  cursor: "pointer",
+                }}
+              />
+               <CancelIcon
+                style={{
+                  cursor: "pointer",
+                  fontSize: 34,
+                  color: theme.palette.error.main,
+                }}
+                />
+        </div></>:''}
+      
       </div>
 
       {othersComment.isChecked && (
@@ -456,6 +492,7 @@ export const RegulatoryExpertise: React.FunctionComponent<
             name="Comments"
             value={othersComment.comments}
             onChange={(e) => changeHandler(e)}
+            // disabled
           />
         </div>
       )}

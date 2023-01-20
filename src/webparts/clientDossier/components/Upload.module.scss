@@ -39,4 +39,13 @@
 .bottomBtnSection {
     display: flex;
     justify-content: flex-end;
+    margin: 20px 0;
+}
+
+.idTextField{
+    width: 8%;
+    input{
+        padding: 0 13px;
+        height:40px;
+    }
 }

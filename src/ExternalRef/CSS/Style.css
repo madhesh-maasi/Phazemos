@@ -1,6 +1,7 @@
 * {
     margin: 0;
     padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
 }
 
 #workbenchPageContent {
@@ -11,4 +12,15 @@
 .CanvasZone {
     padding: 0 !important;
     max-width: 100% !important;
+}
+
+/* disable field style */
+.disableInput fieldset{
+    border-color: rgba(0, 0, 0, 0.23) !important;
+}
+.disableInput input{
+    color: rgba(0, 0, 0, 0.87) !important;
+}
+.disableInput fieldset:hover{
+    border-color: rgba(0, 0, 0, 0.23) !important;
 }

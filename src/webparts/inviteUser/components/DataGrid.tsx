@@ -12,10 +12,13 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import ClearIcon from "@material-ui/icons/Clear";
 import EditIcon from "@material-ui/icons/Edit";
+import classes from "./App.module.scss";
+
 
 import DoneIcon from "@material-ui/icons/Done";
 
 import CommonService from "../services/CommonService";
+import { CollapseAllVisibility, Persona, PersonaSize } from "office-ui-fabric-react";
 
 export interface IDataGrid {
   render: any;
@@ -34,18 +37,17 @@ const StyledTableCell = withStyles((theme) => ({
   head: {
     // backgroundColor: theme.palette.primary.main,
     // color: theme.palette.common.white,
-    color:'#00589A',
-    fontSize:18,
-    fontWeight:600,
+    background: "#d3e5f4",
+    color: "#00589A",
+    fontSize: 16,
+    fontWeight: 600,
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important",
-
   },
   body: {
-    fontSize: 16,
-    color: "#636b7a",
-    padding:"5px 15px",
+    fontSize: 15,
+    color: "#303133",
+    padding: "5px 15px",
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important",
-
   },
 }))(TableCell);
 
@@ -98,13 +100,12 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
             <StyledTableCell>Created By</StyledTableCell>
             <StyledTableCell>Created Date</StyledTableCell>
             {/* <StyledTableCell>Action</StyledTableCell> */}
-
           </TableRow>
         </TableHead>
         <TableBody>
           {companyDetails.map((company) => (
             <StyledTableRow key={company.CompanyID.CompanyID}>
-              <StyledTableCell component="th" scope="row">
+              <StyledTableCell component="th" scope="row" style={{fontWeight:600}}>
                 {company.CompanyID.Title}
               </StyledTableCell>
               <StyledTableCell>{company.CompanyID.CompanyID}</StyledTableCell>
@@ -130,10 +131,28 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
                 )}
               </StyledTableCell>
 
-              <StyledTableCell>{company.Author.Title}</StyledTableCell>
+              <StyledTableCell >
+                <div style={{display:'flex',alignItems:'center'}}>
+                  {/* <Persona
+                    styles={{
+                      root: {
+                        width: 32,
+                        margin: "0 10px 0 0",
+                        objectFit:'cover'
+                      },
+                    }}
+                    imageUrl={
+                      "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                      // value.Assignee
+                    }
+                    size={PersonaSize.size32}
+                  /> */}
+                    <p>{company.Author.Title}</p> 
+                </div>
+             
+              </StyledTableCell>
               <StyledTableCell>
                 {_commonService.formattedDate(new Date(company.Created))}
-
               </StyledTableCell>
 
               {/* <StyledTableCell>
@@ -142,7 +161,6 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
                   onClick={(e) => props.EditRecord(company)}
                 />
               </StyledTableCell> */}
-
             </StyledTableRow>
           ))}
         </TableBody>

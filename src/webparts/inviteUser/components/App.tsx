@@ -12,7 +12,7 @@ import AddIcon from "@material-ui/icons/Add";
 import ClearIcon from "@material-ui/icons/Clear";
 import { DataGrid } from "./DataGrid";
 import Modal from "@material-ui/core/Modal";
-import RefreshIcon from '@material-ui/icons/Refresh';
+import RefreshIcon from "@material-ui/icons/Refresh";
 import Fade from "@material-ui/core/Fade";
 import { makeStyles } from "@material-ui/core/styles";
 import classes from "./App.module.scss";
@@ -44,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     backgroundColor: theme.palette.background.paper,
     border: "0px solid #000",
+    width: "600px",
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
     // width:'500px'
@@ -60,6 +61,8 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
 
   const _acceptInviteUrl: string =
     "https://douglas-phazemos.azurewebsites.net/Phazemos/Index?id=";
+  // const _acceptInviteUrl: string =
+  // "http://localhost:51130/Phazemos/Index?id=";
 
   const [formData, setFormData] = useState({
     ID: 0,
@@ -94,7 +97,6 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
   function inviteNewUser() {
     _commonService = new CommonService();
     if (formData.ID == 0) {
-      
       if (!formData.companyName) {
         setAlert({
           open: true,
@@ -117,31 +119,30 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
       }
 
       isEmailIDAlreadyExist();
-
     } else {
       edit();
     }
   }
 
-  function isEmailIDAlreadyExist(){
+  function isEmailIDAlreadyExist() {
     let customProperty = {
       listName: _userDetails,
       filter: "UserEmailID eq '" + formData.users[0] + "'",
     };
     _commonService.getList(customProperty, (res: any) => {
-      if(res.length){
+      if (res.length) {
         setAlert({
           open: true,
           severity: "warning",
           message: "Company with this EmailID already registered",
         });
-      }else{
+      } else {
         registerNewCompany();
       }
     });
   }
 
-  function registerNewCompany(){
+  function registerNewCompany() {
     let data = formData;
     var companyData = {
       Title: data.companyName,
@@ -154,7 +155,6 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
       Uploads: data.Uploads,
     };
 
-    
     let customProperty = {
       listName: _companyRegistration,
       ID: 0,
@@ -206,7 +206,6 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
         init();
       }
     );
-
   }
 
   function generateCompanyID(id: number) {
@@ -328,7 +327,11 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
         {/* App Section */}
         <div className={classes.AppSection}>
           <div className={classes.headerSection}>
-            <Typography variant="h5" color="primary">
+            <Typography
+              variant="h5"
+              color="primary"
+              style={{ fontSize: "1.25rem", fontWeight: 600 }}
+            >
               Invite User
             </Typography>
             <div className={classes.headerBtn}>
@@ -340,9 +343,17 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
               >
                 New
               </Button>
-              <RefreshIcon style={{fontSize:34,color:'#00589A',margin:'0 0 0 5px',cursor: "pointer"}} onClick={()=>{
-                setRender(!render);
-              }} />
+              <RefreshIcon
+                style={{
+                  fontSize: 28,
+                  color: "#00589A",
+                  margin: "0 0 0 5px",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  setRender(!render);
+                }}
+              />
             </div>
           </div>
           <DataGrid render={render} EditRecord={editRecord} />
@@ -356,7 +367,11 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
             <div className={styles.paper}>
               <div className={classes.modalHeader}>
                 {" "}
-                <Typography variant="h6" color="primary">
+                <Typography
+                  variant="h6"
+                  color="primary"
+                  style={{ fontSize: "1.25rem", fontWeight: 600 }}
+                >
                   New User
                 </Typography>
                 <ClearIcon
@@ -364,20 +379,19 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
                   style={{ cursor: "pointer" }}
                 />
               </div>
-              <TextField
-                size="small"
-                className={classes.modalTextbox}
-                id="outlined-basic"
-                label="Company Name"
-                variant="outlined"
-                name="companyName"
-                value={formData.companyName}
-                onChange={(e) => inputChangeHandler(e)}
-              />
-
-              {formData.users.map((user: any, index: number) => {
-                return (
-                  <div className={classes.EmailEntries}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <TextField
+                  size="small"
+                  className={classes.modalTextbox}
+                  id="outlined-basic"
+                  label="Company Name"
+                  variant="outlined"
+                  name="companyName"
+                  value={formData.companyName}
+                  onChange={(e) => inputChangeHandler(e)}
+                />
+                {formData.users.map((user: any, index: number) => {
+                  return (
                     <TextField
                       size="small"
                       className={classes.modalTextbox}
@@ -388,6 +402,23 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
                       value={user}
                       onChange={(e) => userChangeHandler(e, index)}
                     />
+                  );
+                })}
+              </div>
+
+              {formData.users.map((user: any, index: number) => {
+                return (
+                  <div className={classes.EmailEntries}>
+                    {/* <TextField
+                      size="small"
+                      className={classes.modalTextbox}
+                      id="outlined-basic"
+                      label="Email ID"
+                      variant="outlined"
+                      name="user"
+                      value={user}
+                      onChange={(e) => userChangeHandler(e, index)}
+                    /> */}
                     {/* {formData.users.length == index + 1 && (
                       <AddIcon
                         style={{

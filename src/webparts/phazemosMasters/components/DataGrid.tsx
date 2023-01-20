@@ -48,15 +48,16 @@ const StyledTableCell = withStyles((theme) => ({
   head: {
     // backgroundColor: theme.palette.primary.main,
     // color: theme.palette.common.white,
-    backgroundColor: "#fff",
+    backgroundColor: "#d3e5f4",
     color: "#00589A",
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 600,
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important",
   },
   body: {
-    fontSize: 16,
-    color: "#636b7a",
+    fontSize: 15,
+    // color: "#636b7a",
+    color:'#303133',
     // background:'#ffffff !important',
     padding: "5px 15px",
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important",
@@ -138,7 +139,7 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
           </TableHead>
           <TableBody>
             {props.AddOrEdit && (
-              <StyledTableRow>
+              <StyledTableRow style={{background:'#e1f4db'}}>
                 <StyledTableCell>
                   <TextField
                     placeholder="Title"
@@ -188,7 +189,7 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
 
             {masterData.map((master: any, index: number) => (
               <StyledTableRow key={master.ID}>
-                <StyledTableCell component="th" scope="row">
+                <StyledTableCell component="th" scope="row" style={{fontWeight:600}}>
                   {master.Title}
                 </StyledTableCell>
                 <StyledTableCell>
@@ -202,11 +203,12 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
                   {master.IsActive ? (
                     <p
                       style={{
-                        background: "#dcffff",
+                        background: "rgba(43, 214, 0, 0.3)",
                         width: "100px",
                         borderRadius: 10,
                         textAlign: "center",
-                        color: "#30544f",
+                        // color: "#30544f",
+                        color:'rgba(32, 157, 0, 1)'
                       }}
                     >
                       Active
@@ -214,18 +216,37 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
                   ) : (
                     <p
                       style={{
-                        background: "#eaf0f6",
+                        background: "rgba(255, 46, 46, 0.46)",
                         width: "100px",
                         borderRadius: 10,
                         textAlign: "center",
-                        color: "#20242e",
+                        // color: "#20242e",
+                        color:'#ed1b1b'
                       }}
                     >
                       InActive
                     </p>
                   )}
                 </StyledTableCell>
-                <StyledTableCell>{master.Author.Title}</StyledTableCell>
+                <StyledTableCell>
+                <div style={{display:'flex',alignItems:'center'}}>
+                  <Persona
+                    styles={{
+                      root: {
+                        width: 32,
+                        margin: "0 10px 0 0",
+                        objectFit:'cover'
+                      },
+                    }}
+                    imageUrl={
+                      "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                      // value.Assignee
+                    }
+                    size={PersonaSize.size32}
+                  />
+                    <p>  {master.Author.Title}</p>
+                    </div>
+                 </StyledTableCell>
                 <StyledTableCell>
                   {_commonService.formattedDate(new Date(master.Created))}
                 </StyledTableCell>

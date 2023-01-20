@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import classes from "./Geography.module.scss";
 import TextField from "@material-ui/core/TextField";
 import Icon from "@material-ui/core/Icon";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 import Button from "@material-ui/core/Button";
 import { green } from "@material-ui/core/colors";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 
 import CommonService from "../services/CommonService";
-import ClearIcon from "@material-ui/icons/Clear";
+import CancelIcon from '@material-ui/icons/Cancel';
 
 import { CustomAlert } from "./CustomAlert";
 
@@ -182,10 +182,10 @@ export const Geography: React.FunctionComponent<IGeography> = (
 
   return (
     <ThemeProvider theme={theme}>
-      <h3 className={classes.headerTitle}>Company Profile</h3>
-      <div className={classes.companyDetails}>
+      {/* <h3 className={classes.headerTitle}>Company Profile</h3> */}
+      <div className={`${classes.companyDetails} disableInput`}>
         <TextField
-          style={{ width: "40%", marginRight: 30 }}
+          style={{ width: "38%", marginRight: 32 }}
           id="outlined-basic"
           label="Company Name"
           size="small"
@@ -193,15 +193,17 @@ export const Geography: React.FunctionComponent<IGeography> = (
           aria-readonly={true}
           name="CompanyName"
           value={props.CompanyName}
+          disabled
         />
         <TextField
           id="outlined-basic"
           size="small"
           label="ID"
           variant="outlined"
-          style={{ width: 100 }}
+          className={classes.idTextField}
           aria-readonly={true}
           value={props.CompanyCode}
+          disabled
         />
       </div>
       <div>
@@ -213,7 +215,7 @@ export const Geography: React.FunctionComponent<IGeography> = (
           return (
             <div className={classes.NumberTypeSection}>
               <TextField
-                className={classes.NTItem}
+                className={classes.NTITitle}
                 id="outlined-basic"
                 label="Employee Title"
                 size="small"
@@ -223,7 +225,7 @@ export const Geography: React.FunctionComponent<IGeography> = (
                 onChange={(e) => inputChangeHandler(e, index)}
               />
               <TextField
-                className={classes.NTItem}
+                className={classes.NTICountry}
                 id="outlined-basic"
                 label="Country of Residence"
                 size="small"
@@ -233,7 +235,7 @@ export const Geography: React.FunctionComponent<IGeography> = (
                 onChange={(e) => inputChangeHandler(e, index)}
               />
               <TextField
-                className={classes.NTItem}
+                className={classes.NTINum}
                 id="outlined-basic"
                 label="#"
                 variant="outlined"
@@ -243,7 +245,7 @@ export const Geography: React.FunctionComponent<IGeography> = (
                 onChange={(e) => inputChangeHandler(e, index)}
               />
               <TextField
-                className={classes.NTItem}
+                className={classes.NTIWork}
                 id="outlined-basic"
                 label="Countries Worked"
                 variant="outlined"
@@ -254,19 +256,15 @@ export const Geography: React.FunctionComponent<IGeography> = (
               />
 
               {geographyDetails.length == index + 1 && (
-                <AddCircleOutlineIcon
+                <AddCircleIcon
                   onClick={(e) => addGeographyDetails()}
-                  style={{ fontSize: 40, color: theme.palette.primary.main,cursor:'pointer' }}
+                className={classes.addBtn}
                 />
               )}
 
               {geographyDetails.length > 1 && (
-                <ClearIcon
-                  style={{
-                    cursor: "pointer",
-                    fontSize: 32,
-                    color: theme.palette.error.main,
-                  }}
+                <CancelIcon
+                 className={classes.cancelBtn}
                   onClick={(e) => removeGeographyDetails(index)}
                 />
               )}
@@ -276,6 +274,7 @@ export const Geography: React.FunctionComponent<IGeography> = (
       </div>
       <div className={classes.bottomBtnSection}>
         <Button variant="contained" color="primary"
+          // disabled
            size="large"
         onClick={submitData}>
           Submit

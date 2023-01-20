@@ -10,7 +10,7 @@
 .CategorySection {
     display: flex;
     align-items: center;
-    margin: 20px 0;
+    margin: 10px 0;
     div{
         height: 40px !important;
         div{
@@ -27,25 +27,64 @@
 .bottomBtnSection {
     display: flex;
     justify-content: flex-end;
+    margin: 20px 0;
 }
 
 .NoAndSizeSection {
     display: flex;
     flex-wrap: wrap;
     .NoAndSizeItem {
-        width: 30%;
+        width: 18%;
         margin: 16px;
         p {
             color: #00589A;
         }
         .InputSection {
             display: flex;
-            justify-content: space-between;
+            // justify-content: space-between;
             margin: 8px 0;
             .TextInput {
-                width: 48%;
+                width: 24%;
                 margin: 0 10px 0 0;
             }
         }
+    }
+}
+
+.idTextField{
+    width: 8%;
+    input{
+        padding: 0 13px;
+        height:40px;
+    }
+}
+
+
+.smalltext{
+    margin: 0px 10px 0px 0px !important;
+    width: 250px;
+}
+
+@media only screen and (min-width:1280px){
+    .smalltext{
+        width: 173px;
+    }
+}
+
+@media only screen and (min-width:1536px){
+    .smalltext{
+        width: 227px;
+    }
+}
+
+@media only screen and (min-width:1745px){
+    .smalltext{
+        width: 258px;
+    }
+}
+
+@media only screen and (min-width:1920px){
+    .smalltext{
+        width: 284px;
     }
 }

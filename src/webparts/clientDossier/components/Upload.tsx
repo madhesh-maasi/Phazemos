@@ -187,14 +187,14 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
     init();
   }, []);
 
-  console.log('Init');
+  console.log("Init");
 
   return (
     <ThemeProvider theme={theme}>
-      <h3 className={classes.headerTitle}>Uploads</h3>
-      <div className={classes.companyDetails}>
+      {/* <h3 className={classes.headerTitle}>Uploads</h3> */}
+      <div className={`${classes.companyDetails} disableInput`}>
         <TextField
-          style={{ width: "40%", marginRight: 30 }}
+          style={{ width: "38%", marginRight: 32 }}
           id="outlined-basic"
           label="Company Name"
           variant="outlined"
@@ -202,15 +202,17 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
           aria-readonly={true}
           name="CompanyName"
           value={props.CompanyName}
+          disabled
         />
         <TextField
           id="outlined-basic"
           size="small"
           label="ID"
           variant="outlined"
-          style={{ width: 100 }}
+          className={classes.idTextField}
           aria-readonly={true}
           value={props.CompanyCode}
+          disabled
         />
       </div>
       <div className={classes.uploadSection}>
@@ -272,7 +274,7 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
       <div className={classes.bottomBtnSection}>
         <Button
           variant="contained"
-          color="primary"  
+          color="primary"
           size="large"
           onClick={(e) => submitFiles()}
         >

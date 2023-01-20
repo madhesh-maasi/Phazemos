@@ -27,6 +27,7 @@
 .bottomBtnSection {
     display: flex;
     justify-content: flex-end;
+    margin: 20px 0;
 }
 
 .NoAndSizeSection {
@@ -34,13 +35,12 @@
     flex-wrap: wrap;
     .NoAndSizeItem {
         width: 30%;
-        margin: 16px;
+        margin: 10px;
         p {
             color: #00589A;
         }
         .InputSection {
             display: flex;
-            justify-content: space-between;
             margin: 8px 0;
             .TextInput {
                 width: 48%;
@@ -49,3 +49,14 @@
         }
     }
 }
+
+.idTextField{
+    width: 8%;
+    input{
+        padding: 0 13px;
+        height:40px;
+    }
+}
+
+
+

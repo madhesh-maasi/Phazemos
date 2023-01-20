@@ -439,10 +439,10 @@ export const TherapeuticExpertise: React.FunctionComponent<
 
   return (
     <ThemeProvider theme={theme}>
-      <h3 className={classes.headerTitle}>Expertise - Therapeutic </h3>
-      <div className={classes.companyDetails}>
+      {/* <h3 className={classes.headerTitle}>Expertise - Therapeutic </h3> */}
+      <div className={`${classes.companyDetails} disableInput`}>
         <TextField
-          style={{ width: "40%", marginRight: 30 }}
+          style={{ width: "38%", marginRight: 32 }}
           id="outlined-basic"
           label="Company Name"
           size="small"
@@ -450,15 +450,17 @@ export const TherapeuticExpertise: React.FunctionComponent<
           aria-readonly={true}
           name="CompanyName"
           value={props.CompanyName}
+          disabled
         />
         <TextField
           id="outlined-basic"
           size="small"
           label="ID"
           variant="outlined"
-          style={{ width: 100 }}
+          className={classes.idTextField}
           aria-readonly={true}
           value={props.CompanyCode}
+          disabled
         />
       </div>
       <div className={classes.AreaExperience}>
@@ -488,6 +490,7 @@ export const TherapeuticExpertise: React.FunctionComponent<
         <p>Disease Area Experience</p>
         <Autocomplete
           multiple
+          style={{width:'60%'}}
           freeSolo
           id="checkboxes-tags-demo"
           size="small"
@@ -521,6 +524,7 @@ export const TherapeuticExpertise: React.FunctionComponent<
                 checkedIcon={checkedIcon}
                 style={{ marginRight: 8 }}
                 checked={selected}
+                color='primary'
               />
               {option.serviceName}
             </React.Fragment>
@@ -532,6 +536,7 @@ export const TherapeuticExpertise: React.FunctionComponent<
               label="Disease Area Experience"
             />
           )}
+          // disabled
         />
       </div>
       <div className={classes.bottomBtnSection} style={{ marginTop: 20 }}>

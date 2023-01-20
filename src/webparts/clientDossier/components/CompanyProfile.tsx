@@ -368,10 +368,10 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
 
   return (
     <ThemeProvider theme={theme}>
-      <h3 className={classes.headerTitle}>Company Profile</h3>
-      <div className={classes.companyDetails}>
+      {/* <h3 className={classes.headerTitle}>Company Profile</h3> */}
+      <div className={`${classes.companyDetails} disableInput`}>
         <TextField
-          style={{ width: "40%", marginRight: 30 }}
+          style={{ width: "38%", marginRight: 32 }}
           id="outlined-basic"
           label="Company Name"
           variant="outlined"
@@ -379,15 +379,18 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
           size="small"
           name="CompanyName"
           value={props.CompanyName}
+          disabled
         />
         <TextField
           id="outlined-basic"
           label="ID"
           size="small"
           variant="outlined"
-          style={{ width: 100 }}
+          className={classes.idTextField}
+          style={{ width: "8%" }}
           aria-readonly={true}
           value={props.CompanyCode}
+          disabled
         />
       </div>
       <div className={classes.CompanyContactInfo}>
@@ -422,11 +425,11 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
           variant="outlined"
         />
         <TextField
-          className={classes.CompanyContact}
+          className={classes.companyEmailTF}
           size="small"
           id="outlined-basic"
           label="Email"
-          style={{ margin: "16px 16px 16px 0" }}
+          // style={{ margin: "16px 16px 16px 16px" }}
           variant="outlined"
           name="InvoicingContactEmail"
           value={companyProfile.InvoicingContactEmail}
@@ -466,10 +469,9 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
           onChange={(e) => inputChangeHandler(e)}
         />
         <TextField
-          className={classes.CompanyContact}
+          className={classes.companyEmailTF}
           id="outlined-basic"
           label="Twitter"
-          style={{ margin: "16px 16px 16px 0" }}
           size="small"
           variant="outlined"
           name="Twitter"
@@ -477,7 +479,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
           onChange={(e) => inputChangeHandler(e)}
         />
       </div>
-      <h4 className={classes.headerTitle} style={{ marginBottom: 12 }}>
+      <h4 className={classes.headerTitle} >
         Primary Services Offered
       </h4>
       <div className={classes.PrimaryServices}>
