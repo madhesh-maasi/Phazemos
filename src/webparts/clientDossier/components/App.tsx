@@ -12,7 +12,7 @@ import TherapeuticExpertise from "./TherapeuticExpertise";
 import { RegulatoryExpertise } from "./RegulatoryExpertise";
 import { Geography } from "./Geography";
 import { ProjectWork } from "./ProjectWork";
-import {PrimaryServicesOffered} from './PrimaryServicesOffered';
+import { PrimaryServicesOffered } from "./PrimaryServicesOffered";
 import { Upload } from "./Upload";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 
@@ -37,6 +37,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
   var _companyRegistration: string = "Company Registration";
 
   const [value, setValue] = useState(0);
+  const [tabIndex, setTabIndex] = useState({});
 
   const [formData, setFormData] = useState({
     companyID: null,
@@ -106,6 +107,38 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
           data.geography = res[0].Geography;
           data.projectWork = res[0].ProjectWork;
           data.uploads = res[0].Uploads;
+
+          let tab = tabIndex;
+          let index = 0;
+          if (data.companyProfile) {
+            tab["companyProfile"] = index;
+            index++;
+          }
+          if (data.therapeuticExpertise) {
+            tab["therapeuticExpertise"] = index;
+            index++;
+          }
+          if (data.regulatoryExpertise) {
+            tab["regulatoryExpertise"] = index;
+            index++;
+          }
+          if (data.geography) {
+            tab["geography"] = index;
+            index++;
+          }
+          if (data.projectWork) {
+            tab["projectWork"] = index;
+            index++;
+          }
+          if (data.companyProfile) {
+            tab["primaryServicesOffered"] = index;
+            index++;
+          }
+          if (data.uploads) {
+            tab["uploads"] = index;
+            index++;
+          }
+          setTabIndex({ ...tab });
           setFormData({ ...data });
         });
       }
@@ -129,29 +162,28 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
           aria-label="scrollable force tabs example"
         >
           {formData.companyProfile && (
-            <Tab label="Company Profile" {...a11yProps(0)} />
+            <Tab label="Company Profile" {...a11yProps(tabIndex["companyProfile"])} />
           )}
           {formData.therapeuticExpertise && (
-            <Tab label="Expertise - Therapeutic" {...a11yProps(1)} />
+            <Tab label="Expertise - Therapeutic" {...a11yProps(tabIndex["therapeuticExpertise"])} />
           )}
           {formData.regulatoryExpertise && (
-            <Tab label="Expertise - Regulatory" {...a11yProps(2)} />
+            <Tab label="Expertise - Regulatory" {...a11yProps(tabIndex["regulatoryExpertise"])} />
           )}
-          {formData.geography && <Tab label="Geography" {...a11yProps(3)} />}
+          {formData.geography && <Tab label="Geography" {...a11yProps(tabIndex["geography"])} />}
           {formData.projectWork && (
-            <Tab label="Project Work" {...a11yProps(4)} />
+            <Tab label="Project Work" {...a11yProps(tabIndex["projectWork"])} />
           )}
 
-{formData.companyProfile && (
-            <Tab label="Primary Services Offered" {...a11yProps(5)} />
+          {formData.companyProfile && (
+            <Tab label="Primary Services Offered" {...a11yProps(tabIndex["primaryServicesOffered"])} />
           )}
 
-
-          {formData.uploads && <Tab label="Uploads" {...a11yProps(6)} />}
+          {formData.uploads && <Tab label="Uploads" {...a11yProps(tabIndex["uploads"])} />}
         </Tabs>
       </AppBar>
       {formData.companyProfile && (
-        <TabPanel value={value} index={0}>
+        <TabPanel value={value} index={tabIndex["companyProfile"]}>
           <CompanyProfile
             CompanyName={formData.companyName}
             CompanyID={formData.companyID}
@@ -161,7 +193,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
       )}
 
       {formData.therapeuticExpertise && (
-        <TabPanel value={value} index={1}>
+        <TabPanel value={value} index={tabIndex["therapeuticExpertise"]}>
           <TherapeuticExpertise
             CompanyName={formData.companyName}
             CompanyID={formData.companyID}
@@ -170,8 +202,8 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
         </TabPanel>
       )}
 
-      {formData.companyProfile && (
-        <TabPanel value={value} index={2}>
+      {formData.regulatoryExpertise && (
+        <TabPanel value={value} index={tabIndex["regulatoryExpertise"]}>
           <RegulatoryExpertise
             CompanyName={formData.companyName}
             CompanyID={formData.companyID}
@@ -181,7 +213,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
       )}
 
       {formData.geography && (
-        <TabPanel value={value} index={3}>
+        <TabPanel value={value} index={tabIndex["geography"]}>
           <Geography
             CompanyName={formData.companyName}
             CompanyID={formData.companyID}
@@ -191,7 +223,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
       )}
 
       {formData.projectWork && (
-        <TabPanel value={value} index={4}>
+        <TabPanel value={value} index={tabIndex["projectWork"]}>
           <ProjectWork
             CompanyName={formData.companyName}
             CompanyID={formData.companyID}
@@ -200,8 +232,8 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
         </TabPanel>
       )}
 
-{formData.companyProfile && (
-        <TabPanel value={value} index={5}>
+      {formData.companyProfile && (
+        <TabPanel value={value} index={tabIndex["primaryServicesOffered"]}>
           <PrimaryServicesOffered
             CompanyName={formData.companyName}
             CompanyID={formData.companyID}
@@ -210,9 +242,8 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
         </TabPanel>
       )}
 
-
       {formData.uploads && (
-        <TabPanel value={value} index={6}>
+        <TabPanel value={value} index={tabIndex["uploads"]}>
           <Upload
             CompanyName={formData.companyName}
             CompanyID={formData.companyID}

@@ -190,6 +190,32 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
       return;
     }
 
+    if (
+      companyPostData.RFPContactEmail &&
+      !_commonService.validateEmail(companyPostData.RFPContactEmail)
+    ) {
+      setAlert({
+        open: true,
+        severity: "warning",
+        message: "Invalid RFP Email",
+      });
+      return;
+    }
+
+
+    if (
+      companyPostData.InvoicingContactEmail &&
+      !_commonService.validateEmail(companyPostData.InvoicingContactEmail)
+    ) {
+      setAlert({
+        open: true,
+        severity: "warning",
+        message: "Invalid Invoicing Email",
+      });
+      return;
+    }
+
+
     if (!companyMappingEditData.companyProfile) {
       insertCompanyProfile();
     } else {
@@ -479,9 +505,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
           onChange={(e) => inputChangeHandler(e)}
         />
       </div>
-      <h4 className={classes.headerTitle} >
-        Primary Services Offered
-      </h4>
+      <h4 className={classes.headerTitle}>Primary Services Offered</h4>
       <div className={classes.PrimaryServices}>
         <div className={classes.CheckboxSection}>
           {primaryServices.map((service: any, index: number) => {
