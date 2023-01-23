@@ -227,21 +227,23 @@ export const PrimaryServicesOffered: React.FunctionComponent<
         ticket size range per project
       </h4>
       <div style={{ display: "flex", margin: "10px 0", alignItems: "center" }}>
-        <FormControl
-          className={classes.smalltext}
-          variant="outlined"
-          size="small"
-        >
-          <Select
-            labelId="demo-controlled-open-select-label"
-            id="demo-controlled-open-select"
-            onChange={selHandleChange}
+        {allPrimaryServicesOffers.length > 0 && (
+          <FormControl
+            className={classes.smalltext}
+            variant="outlined"
+            size="small"
           >
-            {allPrimaryServicesOffers.map((m) => {
-              return <MenuItem value={m}>{m.Title}</MenuItem>;
-            })}
-          </Select>
-        </FormControl>
+            <Select
+              labelId="demo-controlled-open-select-label"
+              id="demo-controlled-open-select"
+              onChange={selHandleChange}
+            >
+              {allPrimaryServicesOffers.map((m) => {
+                return <MenuItem value={m}>{m.Title}</MenuItem>;
+              })}
+            </Select>
+          </FormControl>
+        )}
 
         <div>
           {allPrimaryServicesOffers.length > 0 && (

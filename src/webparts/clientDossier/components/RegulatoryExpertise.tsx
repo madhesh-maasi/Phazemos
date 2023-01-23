@@ -453,7 +453,7 @@ export const RegulatoryExpertise: React.FunctionComponent<
         />
       </div>
       {/* others checkbox */}
-      {/* <div style={{display:'flex'}}>
+      <div style={{display:'flex'}}>
         <FormControlLabel
           control={<Checkbox name="" disableRipple color="primary"  />}
           label="Others"
@@ -476,9 +476,10 @@ export const RegulatoryExpertise: React.FunctionComponent<
                   color: theme.palette.error.main,
                 }}
                 />
-        </div></>:''}
+        </div>
+        </>:''}
       
-      </div> */}
+      </div>
 
       {othersComment.isChecked && (
         <div className={classes.companyDetails}>

@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import classes from "./Geography.module.scss";
 import TextField from "@material-ui/core/TextField";
 import Icon from "@material-ui/core/Icon";
-import AddCircleIcon from '@material-ui/icons/AddCircle';
+import AddCircleIcon from "@material-ui/icons/AddCircle";
 import Button from "@material-ui/core/Button";
 import { green } from "@material-ui/core/colors";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 
 import CommonService from "../services/CommonService";
-import CancelIcon from '@material-ui/icons/Cancel';
+import CancelIcon from "@material-ui/icons/Cancel";
 
 import { CustomAlert } from "./CustomAlert";
 
@@ -45,6 +45,8 @@ export const Geography: React.FunctionComponent<IGeography> = (
     let customProperty = {
       listName: _geography,
       filter: "CompanyIDId eq '" + props.CompanyID + "' and IsDeleted eq '0'",
+      orderby: "ID",
+      orderbyAsc: true,
     };
     _commonService.getList(customProperty, (res: any) => {
       setGeographyDetails([]);
@@ -109,18 +111,32 @@ export const Geography: React.FunctionComponent<IGeography> = (
           formKeys[index] != "IsDeleted" &&
           !geographyDetails[i][formKeys[index]]
         ) {
-          console.log(formKeys[index] + " is required");
+          let currentField = formKeys[index];
+          let label = currentField;
+          if (currentField == "CountryofResidence") {
+            label = "Country of Residence";
+          } else if (currentField == "CountriesWorked") {
+            label = "Countries Worked";
+          }
+          console.log(label + " is required");
+
+          setAlert({
+            open: true,
+            severity: "warning",
+            message: label + " is required",
+          });
+
           isValidForm = false;
           break;
         }
       }
     }
     if (!isValidForm) {
-      setAlert({
-        open: true,
-        severity: "warning",
-        message: "Invalid form",
-      });
+      // setAlert({
+      //   open: true,
+      //   severity: "warning",
+      //   message: "Invalid form",
+      // });
       return;
     }
 
@@ -214,7 +230,8 @@ export const Geography: React.FunctionComponent<IGeography> = (
         {geographyDetails.map((details: any, index: number) => {
           return (
             <div className={classes.NumberTypeSection}>
-              <TextField required
+              <TextField
+                required
                 className={classes.NTITitle}
                 id="outlined-basic"
                 label="Employee Title"
@@ -224,7 +241,8 @@ export const Geography: React.FunctionComponent<IGeography> = (
                 value={details.Title}
                 onChange={(e) => inputChangeHandler(e, index)}
               />
-              <TextField required
+              <TextField
+                required
                 className={classes.NTICountry}
                 id="outlined-basic"
                 label="Country of Residence"
@@ -234,7 +252,8 @@ export const Geography: React.FunctionComponent<IGeography> = (
                 value={details.CountryofResidence}
                 onChange={(e) => inputChangeHandler(e, index)}
               />
-              <TextField required
+              <TextField
+                required
                 className={classes.NTINum}
                 id="outlined-basic"
                 label="#"
@@ -244,7 +263,8 @@ export const Geography: React.FunctionComponent<IGeography> = (
                 value={details.Year}
                 onChange={(e) => inputChangeHandler(e, index)}
               />
-              <TextField required
+              <TextField
+                required
                 className={classes.NTIWork}
                 id="outlined-basic"
                 label="Countries Worked"
@@ -258,13 +278,13 @@ export const Geography: React.FunctionComponent<IGeography> = (
               {geographyDetails.length == index + 1 && (
                 <AddCircleIcon
                   onClick={(e) => addGeographyDetails()}
-                className={classes.addBtn}
+                  className={classes.addBtn}
                 />
               )}
 
               {geographyDetails.length > 1 && (
                 <CancelIcon
-                 className={classes.cancelBtn}
+                  className={classes.cancelBtn}
                   onClick={(e) => removeGeographyDetails(index)}
                 />
               )}
@@ -273,10 +293,13 @@ export const Geography: React.FunctionComponent<IGeography> = (
         })}
       </div>
       <div className={classes.bottomBtnSection}>
-        <Button variant="contained" color="primary"
+        <Button
+          variant="contained"
+          color="primary"
           // disabled
-           size="large"
-        onClick={submitData}>
+          size="large"
+          onClick={submitData}
+        >
           Submit
         </Button>
       </div>
