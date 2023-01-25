@@ -144,7 +144,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
         setAlert({
           open: true,
           severity: "warning",
-          message: "Company with this EmailID already registered",
+          message: "EmailID already registered",
         });
       } else {
         registerNewCompany();
@@ -411,6 +411,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
               </div>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <TextField
+                  required
                   size="small"
                   className={classes.modalTextbox}
                   id="outlined-basic"
@@ -424,6 +425,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
                 {formData.users.map((user: any, index: number) => {
                   return (
                     <TextField
+                      required
                       size="small"
                       className={classes.modalTextbox}
                       id="outlined-basic"

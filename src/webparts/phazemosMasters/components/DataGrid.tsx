@@ -57,7 +57,7 @@ const StyledTableCell = withStyles((theme) => ({
   body: {
     fontSize: 15,
     // color: "#636b7a",
-    color:'#303133',
+    color: "#303133",
     // background:'#ffffff !important',
     padding: "5px 15px",
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important",
@@ -120,6 +120,84 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
     );
   }
 
+  function editData(index: number) {
+    let allmasters = masterData;
+    allmasters[index].IsEdit = true;
+    setMasterData([...allmasters]);
+  }
+
+  function inputChangeHandler(event: any, index: number) {
+    let allmasters = masterData;
+    allmasters[index].Title = event.target.value;
+    setMasterData([...allmasters]);
+  }
+
+  function changeActive(event: any, index: number) {
+    let allmasters = masterData;
+    allmasters[index].IsActive = event.target.checked;
+    setMasterData([...allmasters]);
+  }
+
+  function closeAddOrEdit(index: number) {
+    let allmasters = masterData;
+    allmasters[index].IsEdit = false;
+    setMasterData([...allmasters]);
+  }
+
+  function submitData(index: number) {
+    let allmasters = masterData;
+    let record = {
+      ID: allmasters[index].ID,
+      Title: allmasters[index].Title,
+      IsActive: allmasters[index].IsActive,
+    };
+    if (!record.Title) {
+      setAlert({
+        open: true,
+        severity: "warning",
+        message: "Invalid Title",
+      });
+      return;
+    }
+    _commonService = new CommonService();
+    if (record.ID == 0) {
+      let customProperty = {
+        listName: props.ListName,
+      };
+      _commonService.insertIntoList(
+        customProperty,
+        { Title: record.Title, IsActive: true },
+        (res: any) => {
+          setAlert({
+            open: true,
+            severity: "success",
+            message: "Inserted successfully",
+          });
+          allmasters[index].IsEdit = false;
+          setMasterData([...allmasters]);
+        }
+      );
+    } else {
+      let customProperty = {
+        listName: props.ListName,
+        ID: record.ID,
+      };
+      _commonService.updateList(
+        customProperty,
+        { Title: record.Title, IsActive: record.IsActive },
+        (res: any) => {
+          setAlert({
+            open: true,
+            severity: "success",
+            message: "Updated successfully",
+          });
+          allmasters[index].IsEdit = false;
+          setMasterData([...allmasters]);
+        }
+      );
+    }
+  }
+
   useEffect((): any => {
     init();
   }, [props.ListName, props.Refresh]);
@@ -138,7 +216,7 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.AddOrEdit && (
+            {/* {props.AddOrEdit && (
               <StyledTableRow style={{background:'#e1f4db'}}>
                 <StyledTableCell>
                   <TextField
@@ -185,83 +263,116 @@ export const DataGrid: React.FunctionComponent<IDataGrid> = (
                   </div>
                 </StyledTableCell>
               </StyledTableRow>
-            )}
+            )} */}
 
-            {masterData.map((master: any, index: number) => (
-              <StyledTableRow key={master.ID}>
-                <StyledTableCell component="th" scope="row" style={{fontWeight:600}}>
-                  {master.Title}
-                </StyledTableCell>
-                <StyledTableCell>
-                  {" "}
-                  {/* <Checkbox
-                    checked={master.IsActive}
-                    onChange={(e) => changeActive(index, e)}
-                    color="primary"
-                    inputProps={{ "aria-label": "secondary checkbox" }}
-                  /> */}
-                  {master.IsActive ? (
-                    <p
-                      style={{
-                        background: "rgba(43, 214, 0, 0.3)",
-                        width: "100px",
-                        borderRadius: 10,
-                        textAlign: "center",
-                        // color: "#30544f",
-                        color:'rgba(32, 157, 0, 1)'
-                      }}
-                    >
-                      Active
-                    </p>
-                  ) : (
-                    <p
-                      style={{
-                        background: "rgba(255, 46, 46, 0.46)",
-                        width: "100px",
-                        borderRadius: 10,
-                        textAlign: "center",
-                        // color: "#20242e",
-                        color:'#ed1b1b'
-                      }}
-                    >
-                      InActive
-                    </p>
-                  )}
-                </StyledTableCell>
-                <StyledTableCell>
-                <div style={{display:'flex',alignItems:'center'}}>
-                  {/* <Persona
-                    styles={{
-                      root: {
-                        width: 32,
-                        margin: "0 10px 0 0",
-                        objectFit:'cover'
-                      },
-                    }}
-                    imageUrl={
-                      "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      // value.Assignee
-                    }
-                    size={PersonaSize.size32}
-                  /> */}
-                    <p>  {master.Author.Title}</p>
+            {masterData.map((master: any, index: number) =>
+              !master.IsEdit ? (
+                <StyledTableRow key={master.ID}>
+                  <StyledTableCell
+                    component="th"
+                    scope="row"
+                    style={{ fontWeight: 600 }}
+                  >
+                    {master.Title}
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    {master.IsActive ? (
+                      <p
+                        style={{
+                          background: "rgba(43, 214, 0, 0.3)",
+                          width: "100px",
+                          borderRadius: 10,
+                          textAlign: "center",
+                          // color: "#30544f",
+                          color: "rgba(32, 157, 0, 1)",
+                        }}
+                      >
+                        Active
+                      </p>
+                    ) : (
+                      <p
+                        style={{
+                          background: "rgba(255, 46, 46, 0.46)",
+                          width: "100px",
+                          borderRadius: 10,
+                          textAlign: "center",
+                          // color: "#20242e",
+                          color: "#ed1b1b",
+                        }}
+                      >
+                        InActive
+                      </p>
+                    )}
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <p> {master.Author.Title}</p>
                     </div>
-                 </StyledTableCell>
-                <StyledTableCell>
-                  {_commonService.formattedDate(new Date(master.Created))}
-                </StyledTableCell>
-                <StyledTableCell>
-                  <EditIcon
-                    style={{
-                      color: theme.palette.primary.main,
-                      fontSize: 24,
-                      cursor: "pointer",
-                    }}
-                    onClick={(e) => props.EditRecord(master)}
-                  />
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    {_commonService.formattedDate(new Date(master.Created))}
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <EditIcon
+                      style={{
+                        color: theme.palette.primary.main,
+                        fontSize: 24,
+                        cursor: "pointer",
+                      }}
+                      // onClick={(e) => props.EditRecord(master)}
+                      onClick={(e) => editData(index)}
+                    />
+                  </StyledTableCell>
+                </StyledTableRow>
+              ) : (
+                <StyledTableRow style={{ background: "#e1f4db" }}>
+                  <StyledTableCell>
+                    <TextField
+                      placeholder="Title"
+                      size="small"
+                      variant="outlined"
+                      style={{ width: "100%", backgroundColor: "#fff" }}
+                      onChange={(e) => inputChangeHandler(e, index)}
+                      value={master.Title}
+                    />
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    {" "}
+                    <Checkbox
+                      color="primary"
+                      style={{ background: "#fff" }}
+                      checked={master.IsActive}
+                      onChange={(e) => changeActive(e, index)}
+                    />{" "}
+                  </StyledTableCell>
+                  <StyledTableCell></StyledTableCell>
+                  <StyledTableCell></StyledTableCell>
+                  <StyledTableCell>
+                    <div>
+                      <CheckIcon
+                        onClick={(e) => submitData(index)}
+                        style={{
+                          width: 26,
+                          height: 26,
+                          marginRight: 10,
+                          color: "rgb(0, 88, 154)",
+                          cursor: "pointer",
+                        }}
+                      />
+                      <ClearIcon
+                        onClick={(e) => closeAddOrEdit(index)}
+                        style={{
+                          width: 26,
+                          height: 26,
+                          color: "red",
+                          cursor: "pointer",
+                        }}
+                      />
+                    </div>
+                  </StyledTableCell>
+                </StyledTableRow>
+              )
+            )}
           </TableBody>
         </Table>
       </TableContainer>

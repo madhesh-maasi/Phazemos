@@ -9,8 +9,8 @@ import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Button from "@material-ui/core/Button";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import CancelIcon from '@material-ui/icons/Cancel';
+import AddCircleIcon from "@material-ui/icons/AddCircle";
+import CancelIcon from "@material-ui/icons/Cancel";
 
 import CommonService from "../services/CommonService";
 
@@ -51,6 +51,9 @@ export const RegulatoryExpertise: React.FunctionComponent<
   const [selExpertises, setSelRegulatoryExpertises] = useState([]);
   const [editRegulatoryExpertises, setEditRegulatoryExpertises] = useState([]);
 
+  const [showOther, setShowOther] = useState(false);
+  const [others, setOthers] = useState([]);
+
   const [othersComment, setOthersComment] = useState({
     isChecked: false,
     comments: "",
@@ -62,6 +65,9 @@ export const RegulatoryExpertise: React.FunctionComponent<
   });
 
   function init() {
+    setShowOther(false);
+    setOthers([]);
+
     let customProperty = {
       listName: _regulatoryExpertise,
       filter: "CompanyIDId eq '" + props.CompanyID + "'",
@@ -206,7 +212,18 @@ export const RegulatoryExpertise: React.FunctionComponent<
           let newMasterData = allLocRegulatoryExpertises.filter(
             (c) => c.InHouseRegulatoryRegimeExperiencId == 0
           );
-          if (newMasterData.length) {
+          if (newMasterData.length || others.length) {
+            for (let k = 0; k < others.length; k++) {
+              if (others[k]) {
+                newMasterData.push({
+                  InHouseRegulatoryRegimeExperiencId: 0,
+                  IsChecked: true,
+                  RegulatoryExperienceMappingID: 0,
+                  RegulatoryExpertiseIDId: 0,
+                  Title: others[k],
+                });
+              }
+            }
             insertNewInHouseRegulatoryMaster(0, res.data.Id, newMasterData);
           }
 
@@ -255,7 +272,19 @@ export const RegulatoryExpertise: React.FunctionComponent<
     let newMasterData = allLocRegulatoryExpertises.filter(
       (c) => c.InHouseRegulatoryRegimeExperiencId == 0
     );
-    if (newMasterData.length) {
+    if (newMasterData.length || others.length) {
+      for (let k = 0; k < others.length; k++) {
+        if (others[k]) {
+          newMasterData.push({
+            InHouseRegulatoryRegimeExperiencId: 0,
+            IsChecked: true,
+            RegulatoryExperienceMappingID: 0,
+            RegulatoryExpertiseIDId: 0,
+            Title: others[k],
+          });
+        }
+      }
+
       insertNewInHouseRegulatoryMaster(
         0,
         companyRegulatoryExpertise.regulatoryExpertise.ID,
@@ -349,6 +378,35 @@ export const RegulatoryExpertise: React.FunctionComponent<
         }
       }
     );
+  }
+
+  function toggleOther(event) {
+    setShowOther(event.target.checked);
+    if (!event.target.checked) {
+      setOthers([]);
+    } else {
+      let allothers = others;
+      allothers = [""];
+      setOthers([...allothers]);
+    }
+  }
+
+  function otherFieldHandler(event: any, index: number): any {
+    let allothers = others;
+    allothers[index] = event.target.value;
+    setOthers([...allothers]);
+  }
+
+  function addOthers() {
+    let allothers = others;
+    allothers.push("");
+    setOthers([...allothers]);
+  }
+
+  function removeOthers(index: number) {
+    let allothers = others;
+    allothers.splice(index, 1);
+    setOthers([...allothers]);
   }
 
   useEffect((): any => {
@@ -453,37 +511,59 @@ export const RegulatoryExpertise: React.FunctionComponent<
         />
       </div>
       {/* others checkbox */}
-      <div style={{display:'flex'}}>
+      <div style={{ display: "flex" }}>
         <FormControlLabel
-          control={<Checkbox name="" disableRipple color="primary"  />}
+          control={<Checkbox name="" disableRipple color="primary" />}
+          onChange={(e) => toggleOther(e)}
+          value={showOther}
           label="Others"
         />
-        {true?<>
-          <div style={{display:'flex',alignItems:'center'}}> 
-          <TextField  placeholder="" style={{width:'100%'}} variant='outlined' size="small"/>
-          <AddCircleIcon
-                style={{
-                  fontSize: 34,
-                  color: theme.palette.primary.main,
-                  margin: "0px 8px 0px 8px",
-                  cursor: "pointer",
-                }}
-              />
-               <CancelIcon
-                style={{
-                  cursor: "pointer",
-                  fontSize: 34,
-                  color: theme.palette.error.main,
-                }}
-                />
-        </div>
-        </>:''}
-      
+        {others.length > 0
+          ? others.map((o, index) => {
+              return (
+                <>
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <TextField
+                      placeholder=""
+                      style={{ width: "100%" }}
+                      variant="outlined"
+                      size="small"
+                      onChange={(e) => otherFieldHandler(e, index)}
+                    />
+
+                    {others.length == index + 1 && (
+                      <AddCircleIcon
+                        style={{
+                          fontSize: 34,
+                          color: theme.palette.primary.main,
+                          margin: "0px 8px 0px 8px",
+                          cursor: "pointer",
+                        }}
+                        onClick={(e) => addOthers()}
+                      />
+                    )}
+
+                    {others.length > 1 && (
+                      <CancelIcon
+                        style={{
+                          cursor: "pointer",
+                          fontSize: 34,
+                          color: theme.palette.error.main,
+                        }}
+                        onClick={(e) => removeOthers(index)}
+                      />
+                    )}
+                  </div>
+                </>
+              );
+            })
+          : ""}
       </div>
 
       {othersComment.isChecked && (
         <div className={classes.companyDetails}>
-          <TextField required
+          <TextField
+            required
             style={{ width: "40%", marginRight: 30 }}
             id="outlined-basic"
             label="Comments"

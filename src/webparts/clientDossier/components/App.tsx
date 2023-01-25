@@ -87,7 +87,6 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
 
     if (localStorage.getItem("_UserEmail_")) {
       userEmail = localStorage.getItem("_UserEmail_");
-      localStorage.setItem("_UserEmail_", '');
     }
 
     let _commonService = new CommonService();

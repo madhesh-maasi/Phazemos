@@ -207,10 +207,6 @@ export const TherapeuticExpertise: React.FunctionComponent<
   //   setDiseaseArea([...diseaseArea]);
   // }
 
-  function diseaseAreaChangeHandler(event: any) {
-    debugger;
-  }
-
   function submitData() {
     _commonService = new CommonService();
 
@@ -258,7 +254,9 @@ export const TherapeuticExpertise: React.FunctionComponent<
           _commonService.bulkInsert(
             { listName: _therapeuticAreaMap },
             therapeuticAreaPostData,
-            (bulkres: any) => {}
+            (bulkres: any) => {
+              init();
+            }
           );
         }
 
@@ -296,7 +294,9 @@ export const TherapeuticExpertise: React.FunctionComponent<
     _commonService.bulkInsert(
       { listName: _diseaseAreaMap },
       diseaseAreaPostData,
-      (bulkres: any) => {}
+      (bulkres: any) => {
+        init();
+      }
     );
   }
 
@@ -322,6 +322,8 @@ export const TherapeuticExpertise: React.FunctionComponent<
         index++;
         if (index != newDisease.length) {
           insertNewDieaseMaterData(index, therapeuticExpertiseIDId, newDisease);
+        } else {
+          init();
         }
       }
     );
@@ -335,7 +337,6 @@ export const TherapeuticExpertise: React.FunctionComponent<
       severity: "success",
       message: "Updated successfully",
     });
-    init();
   }
 
   function updateTherapeuticArea() {
@@ -358,7 +359,9 @@ export const TherapeuticExpertise: React.FunctionComponent<
       _commonService.bulkInsert(
         { listName: _therapeuticAreaMap },
         addTherapetic,
-        (bulkres: any) => {}
+        (bulkres: any) => {
+          init();
+        }
       );
     }
     if (removedTherapetic.length) {
@@ -370,7 +373,9 @@ export const TherapeuticExpertise: React.FunctionComponent<
       _commonService.bulkUpdate(
         { listName: _therapeuticAreaMap },
         removedTherapetic,
-        (bulkres: any) => {}
+        (bulkres: any) => {
+          init();
+        }
       );
     }
   }
@@ -412,7 +417,9 @@ export const TherapeuticExpertise: React.FunctionComponent<
       _commonService.bulkInsert(
         { listName: _diseaseAreaMap },
         addDiseaseArea,
-        (bulkres: any) => {}
+        (bulkres: any) => {
+          init();
+        }
       );
     }
     if (removedDiseaseArea.length) {
@@ -424,7 +431,9 @@ export const TherapeuticExpertise: React.FunctionComponent<
       _commonService.bulkUpdate(
         { listName: _diseaseAreaMap },
         removedDiseaseArea,
-        (bulkres: any) => {}
+        (bulkres: any) => {
+          init();
+        }
       );
     }
   }
@@ -490,7 +499,7 @@ export const TherapeuticExpertise: React.FunctionComponent<
         <p>Disease Area Experience</p>
         <Autocomplete
           multiple
-          style={{width:'60%'}}
+          style={{ width: "60%" }}
           freeSolo
           id="checkboxes-tags-demo"
           size="small"
@@ -524,7 +533,7 @@ export const TherapeuticExpertise: React.FunctionComponent<
                 checkedIcon={checkedIcon}
                 style={{ marginRight: 8 }}
                 checked={selected}
-                color='primary'
+                color="primary"
               />
               {option.serviceName}
             </React.Fragment>

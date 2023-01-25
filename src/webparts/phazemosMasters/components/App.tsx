@@ -212,7 +212,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
 
             <div>
               <div className={classes.dropdownflex}>
-                <FormControl style={{ width: "278px" }} variant="outlined" size='small'>
+                <FormControl style={{ width: "400px" }} variant="outlined" size='small'>
                   <Select
                     labelId="demo-controlled-open-select-label"
                     id="demo-controlled-open-select"
