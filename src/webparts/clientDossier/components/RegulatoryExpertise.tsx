@@ -179,6 +179,19 @@ export const RegulatoryExpertise: React.FunctionComponent<
         return;
       }
     }
+    if (others.length) {
+      for (let index = 0; index < others.length; index++) {
+        if (!others[index]) {
+          setAlert({
+            open: true,
+            severity: "warning",
+            message: "Please enter the value",
+          });
+          return;
+        }
+      }
+    }
+
     if (!companyRegulatoryExpertise.regulatoryExpertise) {
       insertNewRegulatoryExpertise();
     } else {
@@ -510,24 +523,29 @@ export const RegulatoryExpertise: React.FunctionComponent<
           // disabled
         />
       </div>
-      {/* others checkbox */}
-      <div style={{ display: "flex" }}>
+
+      {/* <div style={{ display: "flex" }}> */}
+      <div>
         <FormControlLabel
           control={<Checkbox name="" disableRipple color="primary" />}
           onChange={(e) => toggleOther(e)}
-          value={showOther}
+          checked={showOther}
           label="Others"
         />
-        {others.length > 0
-          ? others.map((o, index) => {
-              return (
-                <>
-                  <div style={{ display: "flex", alignItems: "center" }}>
+
+        <div style={{ alignItems: "center" }}>
+          {others.length > 0
+            ? others.map((o, index) => {
+                return (
+                  <>
+                    <br />
                     <TextField
+                      required
                       placeholder=""
-                      style={{ width: "100%" }}
+                      style={{ width: "20%" }}
                       variant="outlined"
                       size="small"
+                      label="Title"
                       onChange={(e) => otherFieldHandler(e, index)}
                     />
 
@@ -553,11 +571,13 @@ export const RegulatoryExpertise: React.FunctionComponent<
                         onClick={(e) => removeOthers(index)}
                       />
                     )}
-                  </div>
-                </>
-              );
-            })
-          : ""}
+                    <br />
+
+                  </>
+                );
+              })
+            : ""}
+        </div>
       </div>
 
       {othersComment.isChecked && (
