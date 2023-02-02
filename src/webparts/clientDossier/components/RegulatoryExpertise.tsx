@@ -546,6 +546,7 @@ export const RegulatoryExpertise: React.FunctionComponent<
                       variant="outlined"
                       size="small"
                       label="Title"
+                      value={o}
                       onChange={(e) => otherFieldHandler(e, index)}
                     />
 
@@ -566,6 +567,7 @@ export const RegulatoryExpertise: React.FunctionComponent<
                         style={{
                           cursor: "pointer",
                           fontSize: 34,
+                          margin:"0 8px",
                           color: theme.palette.error.main,
                         }}
                         onClick={(e) => removeOthers(index)}

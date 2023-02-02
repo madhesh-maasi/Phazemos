@@ -219,56 +219,60 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
         <p className={classes.infoTitleSection}>
           Please upload any of the following (pdf, xls, doc, ppt)
         </p>
+        {/* <div className={classes.uploadSection}> */}
+        <div style={{ display: "flex", width: "100%", flexWrap: "wrap" }}>
+          {Object.keys(allFile).map((module) => {
+            return (
+              <div className={classes.upload} style={{ width: "20%" }}>
+                <p>{allFile[module].title}</p>
+                <div className={classes.uploadItem}>
+                  <label htmlFor={module}>
+                    <input
+                      style={{ display: "none" }}
+                      id={module}
+                      name={module}
+                      type="file"
+                      multiple
+                      onChange={(e) => {
+                        handleFileChange(e, allFile[module].objectName);
+                      }}
+                    />
+                    <Button
+                      color="secondary"
+                      variant="contained"
+                      component="span"
+                    >
+                      Upload File
+                    </Button>
+                  </label>
 
-        {Object.keys(allFile).map((module) => {
-          return (
-            <div className={classes.upload}>
-              <p>{allFile[module].title}</p>
-              <div className={classes.uploadItem}>
-                <label htmlFor={module}>
-                  <input
-                    style={{ display: "none" }}
-                    id={module}
-                    name={module}
-                    type="file"
-                    multiple
-                    onChange={(e) => {
-                      handleFileChange(e, allFile[module].objectName);
-                    }}
-                  />
-                  <Button
-                    color="secondary"
-                    variant="contained"
-                    component="span"
-                  >
-                    Upload File
-                  </Button>
-                </label>
-
-                {allFile[module].data.map((file: any, index: number) => {
-                  return (
-                    <div className={classes.SelectedFiles}>
-                      <div className={classes.File}>
-                        <span>{file.Name ? file.Name : file.name}</span>
-                        <span
-                          className={classes.fileDelete}
-                          onClick={(e) =>
-                            deleteConfirmation(
-                              index,
-                              allFile[module].objectName
-                            )
-                          }
-                        >
-                          x
-                        </span>
+                  {allFile[module].data.map((file: any, index: number) => {
+                    return (
+                      <div className={classes.SelectedFiles}>
+                        <div>
+                          <span className={classes.File}>
+                            <span>{file.Name ? file.Name : file.name}</span>
+                            <span
+                              className={classes.fileDelete}
+                              onClick={(e) =>
+                                deleteConfirmation(
+                                  index,
+                                  allFile[module].objectName
+                                )
+                              }
+                            >
+                              x
+                            </span>
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
 
       <div className={classes.bottomBtnSection}>

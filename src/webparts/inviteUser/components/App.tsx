@@ -556,7 +556,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
                     />
                   </div>
 
-                  <div className={classes.CheckBox}>
+                  {/* <div className={classes.CheckBox}>
                     <FormControlLabel
                       control={
                         <Checkbox
@@ -569,7 +569,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
                       }
                       label="Primary Services Offered"
                     />
-                  </div>
+                  </div> */}
 
                   <div className={classes.CheckBox}>
                     <FormControlLabel

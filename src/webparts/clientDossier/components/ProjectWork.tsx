@@ -389,6 +389,7 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
       {keyCompanies.map((company: any, index: number) => {
         return (
           <div className={classes.CategorySection}>
+            <div>
             <FormControl
               variant="outlined"
               style={{ width: "30%", margin: "8px 8px 8px 0" }}
@@ -408,6 +409,7 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
                 })}
               </Select>
             </FormControl>
+            </div>
 
             <TextField required
               id="outlined-basic"
@@ -415,19 +417,18 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
               label="Description"
               variant="outlined"
               multiline
-              style={{ width: "30%", margin: 8 }}
+              className={classes.multiText}
               value={company.Description}
               name="Description"
               onChange={(e) => inputChangeHandler(e, index)}
             />
-
             {keyCompanies.length == index + 1 && (
               <AddCircleIcon
                 onClick={(e) => addKeyCompanies()}
                 style={{
                   fontSize: 34,
                   color: theme.palette.primary.main,
-                  // margin: 8,
+                  marginLeft: 8,
                   cursor: "pointer",
                 }}
               />
@@ -438,6 +439,7 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
                 style={{
                   cursor: "pointer",
                   fontSize: 34,
+                  margin:'0px 8px',
                   color: theme.palette.error.main,
                 }}
                 onClick={(e) => removeKeyCompanies(index)}

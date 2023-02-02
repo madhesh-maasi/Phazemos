@@ -8,8 +8,8 @@
 }
 
 .CategorySection {
-    display: flex;
-    align-items: center;
+    // display: flex;
+    // align-items: center;
     margin: 10px 0;
     div{
         height: 40px !important;
@@ -21,7 +21,18 @@
             }
         }
     }
-
+    .multiText{
+        width: 30%;
+        margin: 25px 0 20px 0;
+        height: 90px !important; 
+        div{
+            height: 90px !important;
+            textarea{
+                height: 60px !important;
+                overflow: auto !important;
+            }
+        }
+    }
 }
 
 .bottomBtnSection {

@@ -222,7 +222,9 @@ export const PrimaryServicesOffered: React.FunctionComponent<
           disabled
         />
       </div>
-      <h4 className={classes.headerTitle}>
+      
+      
+      {/* <h4 className={classes.headerTitle}>
         Fill in the number of projects in the last 3 years and select average
         ticket size range per project
       </h4>
@@ -258,7 +260,10 @@ export const PrimaryServicesOffered: React.FunctionComponent<
             />
           )}
         </div>
-      </div>
+      </div> */}
+
+
+      
       <div className={classes.NoAndSizeSection}>
         {allTicketSizes.map((ticket: any, index: number) => {
           return (

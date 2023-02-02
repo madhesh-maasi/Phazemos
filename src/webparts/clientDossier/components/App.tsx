@@ -191,7 +191,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
             <Tab label="Project Work" {...a11yProps(tabIndex["projectWork"])} />
           )}
 
-          {formData.primaryServicesOffered && (
+          {formData.companyProfile && (
             <Tab
               label="Primary Services Offered"
               {...a11yProps(tabIndex["primaryServicesOffered"])}
@@ -253,7 +253,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
         </TabPanel>
       )}
 
-      {formData.primaryServicesOffered && (
+      {formData.companyProfile && (
         <TabPanel value={value} index={tabIndex["primaryServicesOffered"]}>
           <PrimaryServicesOffered
             CompanyName={formData.companyName}

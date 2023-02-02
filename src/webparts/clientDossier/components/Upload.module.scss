@@ -10,6 +10,7 @@
 .uploadSection {
     margin: 20px 0;
     .upload {
+        margin: 15px 0;
         p {
             color: #00589A
         }
@@ -20,13 +21,21 @@
         font-weight: 700;
     }
     .uploadItem {
-        display: flex;
-        align-items: center;
+        // display: flex;
+        // align-items: center;
         margin: 10px 0;
     }
     .SelectedFiles {
-        margin: 0 10px;
+        // margin: 0 10px;
+        width: auto;
+        margin: 8px 0;
         .File {
+            // display: flex;
+            // justify-content: space-between;
+            background: #bdffc2;
+            color: #1e6b24;
+            padding: 3px 10px;
+            border-radius: 13px;
             .fileDelete {
                 color: red;
                 margin-left: 8px;

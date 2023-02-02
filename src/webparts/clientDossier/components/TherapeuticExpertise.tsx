@@ -9,6 +9,8 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
+import CancelIcon from "@material-ui/icons/Cancel";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 // Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
 
@@ -57,6 +59,9 @@ export const TherapeuticExpertise: React.FunctionComponent<
     therapeuticAreaMapping: [],
     diseaseAreaMapping: [],
   });
+
+  const [showOther, setShowOther] = useState(false);
+  const [others, setOthers] = useState([]);
 
   function loadActiveTherapeuticAreaExperience(editData: any) {
     let customProperty = {
@@ -184,6 +189,9 @@ export const TherapeuticExpertise: React.FunctionComponent<
   }
 
   function init() {
+    setShowOther(false);
+    setOthers([]);
+
     setTherapeuticArea([]);
     setDiseaseArea([]);
     setSelDiseaseArea([]);
@@ -266,7 +274,18 @@ export const TherapeuticExpertise: React.FunctionComponent<
             (c) => c.DiseaseAreaExperienceIDId == 0
           );
 
-          if (newDisease.length > 0) {
+          if (newDisease.length > 0 || others.length) {
+            for (let k = 0; k < others.length; k++) {
+              if (others[k]) {
+                newDisease.push({
+                  DiseaseAreaExperienceIDId: 0,
+                  ID: 0,
+                  IsChecked: true,
+                  TherapeuticExpertiseIDId: 0,
+                  serviceName: others[k],
+                });
+              }
+            }
             insertNewDieaseMaterData(0, res.data.Id, newDisease);
           }
 
@@ -394,7 +413,19 @@ export const TherapeuticExpertise: React.FunctionComponent<
       (c) => c.DiseaseAreaExperienceIDId == 0 && c.IsChecked == true
     );
 
-    if (newDiseases.length > 0) {
+    if (newDiseases.length > 0 || others.length) {
+      for (let k = 0; k < others.length; k++) {
+        if (others[k]) {
+          newDiseases.push({
+            DiseaseAreaExperienceIDId: 0,
+            ID: 0,
+            IsChecked: true,
+            TherapeuticExpertiseIDId: 0,
+            serviceName: others[k],
+          });
+        }
+      }
+
       insertNewDieaseMaterData(
         0,
         locCompanyTherapeuticArea.therapeuticExpertise.ID,
@@ -436,6 +467,35 @@ export const TherapeuticExpertise: React.FunctionComponent<
         }
       );
     }
+  }
+
+  function toggleOther(event) {
+    setShowOther(event.target.checked);
+    if (!event.target.checked) {
+      setOthers([]);
+    } else {
+      let allothers = others;
+      allothers = [""];
+      setOthers([...allothers]);
+    }
+  }
+
+  function otherFieldHandler(event: any, index: number): any {
+    let allothers = others;
+    allothers[index] = event.target.value;
+    setOthers([...allothers]);
+  }
+
+  function addOthers() {
+    let allothers = others;
+    allothers.push("");
+    setOthers([...allothers]);
+  }
+
+  function removeOthers(index: number) {
+    let allothers = others;
+    allothers.splice(index, 1);
+    setOthers([...allothers]);
   }
 
   useEffect((): any => {
@@ -548,6 +608,64 @@ export const TherapeuticExpertise: React.FunctionComponent<
           // disabled
         />
       </div>
+
+      {/* Other CheckBox */}
+      <div style={{ marginTop: 20 }}>
+        <FormControlLabel
+          control={<Checkbox name="" disableRipple color="primary" />}
+          onChange={(e) => toggleOther(e)}
+          checked={showOther}
+          label="Others"
+        />
+
+        <div style={{ alignItems: "center" }}>
+          {others.length > 0
+            ? others.map((o, index) => {
+                return (
+                  <>
+                    <br />
+                    <TextField
+                      required
+                      placeholder=""
+                      style={{ width: "20%" }}
+                      variant="outlined"
+                      size="small"
+                      label="Title"
+                      value={o}
+                      onChange={(e) => otherFieldHandler(e, index)}
+                    />
+
+                    {others.length == index + 1 && (
+                      <AddCircleIcon
+                        style={{
+                          fontSize: 34,
+                          color: theme.palette.primary.main,
+                          margin: "0px 8px 0px 8px",
+                          cursor: "pointer",
+                        }}
+                        onClick={(e) => addOthers()}
+                      />
+                    )}
+
+                    {others.length > 1 && (
+                      <CancelIcon
+                        style={{
+                          cursor: "pointer",
+                          fontSize: 34,
+                          margin: "0 8px",
+                          color: theme.palette.error.main,
+                        }}
+                        onClick={(e) => removeOthers(index)}
+                      />
+                    )}
+                    <br />
+                  </>
+                );
+              })
+            : ""}
+        </div>
+      </div>
+
       <div className={classes.bottomBtnSection} style={{ marginTop: 20 }}>
         <Button
           variant="contained"
