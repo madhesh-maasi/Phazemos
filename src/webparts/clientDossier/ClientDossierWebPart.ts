@@ -40,10 +40,10 @@ export default class ClientDossierWebPart extends BaseClientSideWebPart<IClientD
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
         userDisplayName: this.context.pageContext.user.displayName,
 
-        
+
         currentContext: currentContext,
         siteUrl: this.context.pageContext.web.absoluteUrl,
-
+        domain: this.context.pageContext.web.absoluteUrl.split('/')[0] + '//' + this.context.pageContext.web.absoluteUrl.split('/')[2]
       }
     );
 

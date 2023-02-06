@@ -58,6 +58,8 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
     primaryServiceMapping: [],
   });
 
+  const [readOnly, setReadOnly] = useState(false);
+
   function loadActivePrimaryServicesOfferedMaster(editData) {
     let customProperty = {
       listName: _primaryMaster,
@@ -155,6 +157,11 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
   }
 
   function init() {
+    if (localStorage.getItem("_IsReadOnly_")) {
+      setReadOnly(true);
+    } else {
+      setReadOnly(false);
+    }
     loadCompanyProfile();
   }
 
@@ -202,7 +209,6 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
       return;
     }
 
-
     if (
       companyPostData.InvoicingContactEmail &&
       !_commonService.validateEmail(companyPostData.InvoicingContactEmail)
@@ -214,7 +220,6 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
       });
       return;
     }
-
 
     if (!companyMappingEditData.companyProfile) {
       insertCompanyProfile();
@@ -420,7 +425,8 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
         />
       </div>
       <div className={classes.CompanyContactInfo}>
-        <TextField required
+        <TextField
+          required
           className={classes.CompanyContact}
           id="outlined-basic"
           size="small"
@@ -429,6 +435,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
           name="RFPContact"
           value={companyProfile.RFPContact}
           onChange={(e) => inputChangeHandler(e)}
+          disabled={readOnly}
         />
         <TextField
           className={classes.CompanyContact}
@@ -439,8 +446,10 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
           name="RFPContactEmail"
           value={companyProfile.RFPContactEmail}
           onChange={(e) => inputChangeHandler(e)}
+          disabled={readOnly}
         />
-        <TextField required
+        <TextField
+          required
           className={classes.CompanyContact}
           id="outlined-basic"
           size="small"
@@ -449,6 +458,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
           value={companyProfile.InvoicingContact}
           onChange={(e) => inputChangeHandler(e)}
           variant="outlined"
+          disabled={readOnly}
         />
         <TextField
           className={classes.companyEmailTF}
@@ -460,6 +470,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
           name="InvoicingContactEmail"
           value={companyProfile.InvoicingContactEmail}
           onChange={(e) => inputChangeHandler(e)}
+          disabled={readOnly}
         />
       </div>
       <h4 className={classes.headerTitle}>Digital Media Links</h4>
@@ -473,6 +484,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
           name="WebsiteURL"
           value={companyProfile.WebsiteURL}
           onChange={(e) => inputChangeHandler(e)}
+          disabled={readOnly}
         />
         <TextField
           className={classes.CompanyContact}
@@ -483,6 +495,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
           name="LinkedIn"
           value={companyProfile.LinkedIn}
           onChange={(e) => inputChangeHandler(e)}
+          disabled={readOnly}
         />
         <TextField
           className={classes.CompanyContact}
@@ -493,6 +506,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
           name="Facebook"
           value={companyProfile.Facebook}
           onChange={(e) => inputChangeHandler(e)}
+          disabled={readOnly}
         />
         <TextField
           className={classes.companyEmailTF}
@@ -503,6 +517,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
           name="Twitter"
           value={companyProfile.Twitter}
           onChange={(e) => inputChangeHandler(e)}
+          disabled={readOnly}
         />
       </div>
       <h4 className={classes.headerTitle}>Primary Services Offered</h4>
@@ -519,6 +534,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
                       onChange={(e) => checkboxChangeHandler(index, e)}
                       name="Home"
                       color="primary"
+                      disabled={readOnly}
                     />
                   }
                   label="In-House"
@@ -530,6 +546,7 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
                       onChange={(e) => checkboxChangeHandler(index, e)}
                       name="Sub"
                       color="primary"
+                      disabled={readOnly}
                     />
                   }
                   label="Sub"
@@ -539,16 +556,18 @@ export const CompanyProfile: React.FunctionComponent<ICompanyProfile> = (
           })}
         </div>
       </div>
-      <div className={classes.bottomBtnSection}>
-        <Button
-          variant="contained"
-          size="large"
-          color="primary"
-          onClick={(e) => submitData()}
-        >
-          Submit
-        </Button>
-      </div>
+      {!readOnly && (
+        <div className={classes.bottomBtnSection}>
+          <Button
+            variant="contained"
+            size="large"
+            color="primary"
+            onClick={(e) => submitData()}
+          >
+            Submit
+          </Button>
+        </div>
+      )}
 
       <CustomAlert
         open={cusalert.open}

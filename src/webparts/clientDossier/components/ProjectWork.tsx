@@ -6,12 +6,12 @@ import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import AddCircleIcon from '@material-ui/icons/AddCircle';
+import AddCircleIcon from "@material-ui/icons/AddCircle";
 import { Button } from "@material-ui/core";
 import classes from "./ProjectWork.module.scss";
 
 import CommonService from "../services/CommonService";
-import CancelIcon from '@material-ui/icons/Cancel';
+import CancelIcon from "@material-ui/icons/Cancel";
 
 import { CustomAlert } from "./CustomAlert";
 
@@ -43,6 +43,8 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
 
   const [keyCompanies, setKeyCompanies] = useState([]);
   const [deleteKeyCompanies, setDeleteKeyCompanies] = useState([]);
+
+  const [readOnly, setReadOnly] = useState(false);
 
   var _commonService: CommonService;
 
@@ -187,6 +189,12 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
   }
 
   function init() {
+    if (localStorage.getItem("_IsReadOnly_")) {
+      setReadOnly(true);
+    } else {
+      setReadOnly(false);
+    }
+
     setDeleteKeyCompanies([]);
     _commonService = new CommonService();
     loadCompanyData();
@@ -390,28 +398,30 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
         return (
           <div className={classes.CategorySection}>
             <div>
-            <FormControl
-              variant="outlined"
-              style={{ width: "30%", margin: "8px 8px 8px 0" }}
-            >
-              <InputLabel id="demo-simple-select-outlined-label">
-                Category
-              </InputLabel>
-              <Select
-                labelId="demo-controlled-open-select-label"
-                id="demo-controlled-open-select"
-                label="Category"
-                value={company.CategoryIDId}
-                onChange={(e) => selHandleChange(e, index)}
+              <FormControl
+                variant="outlined"
+                style={{ width: "30%", margin: "8px 8px 8px 0" }}
               >
-                {allCategories.map((m) => {
-                  return <MenuItem value={m.ID}>{m.Title}</MenuItem>;
-                })}
-              </Select>
-            </FormControl>
+                <InputLabel id="demo-simple-select-outlined-label">
+                  Category
+                </InputLabel>
+                <Select
+                  disabled={readOnly}
+                  labelId="demo-controlled-open-select-label"
+                  id="demo-controlled-open-select"
+                  label="Category"
+                  value={company.CategoryIDId}
+                  onChange={(e) => selHandleChange(e, index)}
+                >
+                  {allCategories.map((m) => {
+                    return <MenuItem value={m.ID}>{m.Title}</MenuItem>;
+                  })}
+                </Select>
+              </FormControl>
             </div>
 
-            <TextField required
+            <TextField
+              required
               id="outlined-basic"
               size="small"
               label="Description"
@@ -421,8 +431,9 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
               value={company.Description}
               name="Description"
               onChange={(e) => inputChangeHandler(e, index)}
+              disabled={readOnly}
             />
-            {keyCompanies.length == index + 1 && (
+            {keyCompanies.length == index + 1 && !readOnly && (
               <AddCircleIcon
                 onClick={(e) => addKeyCompanies()}
                 style={{
@@ -434,12 +445,12 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
               />
             )}
 
-            {keyCompanies.length > 1 && (
+            {keyCompanies.length > 1 && !readOnly && (
               <CancelIcon
                 style={{
                   cursor: "pointer",
                   fontSize: 34,
-                  margin:'0px 8px',
+                  margin: "0px 8px",
                   color: theme.palette.error.main,
                 }}
                 onClick={(e) => removeKeyCompanies(index)}
@@ -448,46 +459,18 @@ export const ProjectWork: React.FunctionComponent<IProjectWork> = (
           </div>
         );
       })}
-      {/* <h4 className={classes.headerTitle}>
-        Fill in the number of projects in the last 3 years and select average
-        ticket size range per project
-      </h4>
-       <div className={classes.NoAndSizeSection}>
-        {allTicketSizes.map((ticket: any, index: number) => {
-          return (
-            <div className={classes.NoAndSizeItem}>
-              <p>{ticket.Title}</p>
-              <div className={classes.InputSection}>
-                <TextField
-                  id="outlined-basic"
-                  size="small"
-                  label="#"
-                  variant="outlined"
-                  className={classes.TextInput}
-                  value={ticket.Year}
-                />
-                <TextField
-                  id="outlined-basic"
-                  label="Size"
-                  size="small"
-                  variant="outlined"
-                  className={ticket.Size}
-                />
-              </div>
-            </div>
-          );
-        })}
-      </div> */}
-      <div className={classes.bottomBtnSection}>
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          onClick={(e) => submitData()}
-        >
-          Submit
-        </Button>
-      </div>
+      {!readOnly && (
+        <div className={classes.bottomBtnSection}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            onClick={(e) => submitData()}
+          >
+            Submit
+          </Button>
+        </div>
+      )}
       <CustomAlert
         open={cusalert.open}
         message={cusalert.message}

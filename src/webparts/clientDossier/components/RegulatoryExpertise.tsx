@@ -64,7 +64,15 @@ export const RegulatoryExpertise: React.FunctionComponent<
     regimeExperienceMapping: [],
   });
 
+  const [readOnly, setReadOnly] = useState(false);
+
   function init() {
+    if (localStorage.getItem("_IsReadOnly_")) {
+      setReadOnly(true);
+    } else {
+      setReadOnly(false);
+    }
+
     setShowOther(false);
     setOthers([]);
 
@@ -520,7 +528,7 @@ export const RegulatoryExpertise: React.FunctionComponent<
               placeholder=""
             />
           )}
-          // disabled
+          disabled={readOnly}
         />
       </div>
 
@@ -531,6 +539,7 @@ export const RegulatoryExpertise: React.FunctionComponent<
           onChange={(e) => toggleOther(e)}
           checked={showOther}
           label="Others"
+          disabled={readOnly}
         />
 
         <div style={{ alignItems: "center" }}>
@@ -548,6 +557,7 @@ export const RegulatoryExpertise: React.FunctionComponent<
                       label="Title"
                       value={o}
                       onChange={(e) => otherFieldHandler(e, index)}
+                      disabled={readOnly}
                     />
 
                     {others.length == index + 1 && (
@@ -567,14 +577,13 @@ export const RegulatoryExpertise: React.FunctionComponent<
                         style={{
                           cursor: "pointer",
                           fontSize: 34,
-                          margin:"0 8px",
+                          margin: "0 8px",
                           color: theme.palette.error.main,
                         }}
                         onClick={(e) => removeOthers(index)}
                       />
                     )}
                     <br />
-
                   </>
                 );
               })
@@ -593,21 +602,23 @@ export const RegulatoryExpertise: React.FunctionComponent<
             name="Comments"
             value={othersComment.comments}
             onChange={(e) => changeHandler(e)}
-            // disabled
+            disabled={readOnly}
           />
         </div>
       )}
 
-      <div className={classes.bottomBtnSection}>
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          onClick={submitData}
-        >
-          Submit
-        </Button>
-      </div>
+      {!readOnly && (
+        <div className={classes.bottomBtnSection}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            onClick={submitData}
+          >
+            Submit
+          </Button>
+        </div>
+      )}
 
       <CustomAlert
         open={cusalert.open}

@@ -15,6 +15,7 @@ export interface IUpload {
   CompanyID: string;
   CompanyCode: string;
   SiteUrl: string;
+  Domain: any;
 }
 
 const theme = createTheme({
@@ -42,12 +43,14 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
     objectName: "",
   });
 
+  const [readOnly, setReadOnly] = useState(false);
+
   var _commonService: CommonService;
 
   const [allFile, setAllFile] = useState({
     experienceSpreadsheets: {
       title: "Experience spreadsheets",
-      path: props.CompanyName + "/Experience Spreadsheets",
+      path: props.CompanyName + "/Experience spreadsheets",
       data: [],
       objectName: "experienceSpreadsheets",
     },
@@ -175,11 +178,23 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
   }
 
   function init() {
+    if (localStorage.getItem("_IsReadOnly_")) {
+      setReadOnly(true);
+    } else {
+      setReadOnly(false);
+    }
+
     _commonService = new CommonService();
     let modules = Object.keys(allFile);
     modules.forEach((module) => {
       loadFiles(module);
     });
+  }
+
+  function openFile(file) {
+    if (file.ServerRelativeUrl) {
+      window.open(props.Domain + file.ServerRelativeUrl, "_blank");
+    }
   }
 
   useEffect((): any => {
@@ -236,11 +251,13 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
                       onChange={(e) => {
                         handleFileChange(e, allFile[module].objectName);
                       }}
+                      disabled={readOnly}
                     />
                     <Button
                       color="secondary"
                       variant="contained"
                       component="span"
+                      disabled={readOnly}
                     >
                       Upload File
                     </Button>
@@ -251,18 +268,28 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
                       <div className={classes.SelectedFiles}>
                         <div>
                           <span className={classes.File}>
-                            <span>{file.Name ? file.Name : file.name}</span>
                             <span
-                              className={classes.fileDelete}
-                              onClick={(e) =>
-                                deleteConfirmation(
-                                  index,
-                                  allFile[module].objectName
-                                )
-                              }
+                              className="link"
+                              onClick={(e) => {
+                                openFile(file);
+                              }}
                             >
-                              x
+                              {file.Name ? file.Name : file.name}
                             </span>
+
+                            {!readOnly && (
+                              <span
+                                className={classes.fileDelete}
+                                onClick={(e) =>
+                                  deleteConfirmation(
+                                    index,
+                                    allFile[module].objectName
+                                  )
+                                }
+                              >
+                                x
+                              </span>
+                            )}
                           </span>
                         </div>
                       </div>
@@ -275,17 +302,19 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
         </div>
       </div>
 
-      <div className={classes.bottomBtnSection}>
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          onClick={(e) => submitFiles()}
-        >
-          Submit
-        </Button>
-        {loader && <CircularProgress />}
-      </div>
+      {!readOnly && (
+        <div className={classes.bottomBtnSection}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            onClick={(e) => submitFiles()}
+          >
+            Submit
+          </Button>
+          {loader && <CircularProgress />}
+        </div>
+      )}
 
       <CustomAlert
         open={cusalert.open}

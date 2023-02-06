@@ -42,6 +42,8 @@ export const PrimaryServicesOffered: React.FunctionComponent<
   const [allPrimaryServicesOffers, setAllPrimaryServicesOffers] = useState([]);
   const [newOffer, setNewOffer] = useState({});
 
+  const [readOnly, setReadOnly] = useState(false);
+
   var _commonService: CommonService;
 
   const _projectWorkTicketDetails: string = "Project Work Ticket Details";
@@ -105,6 +107,12 @@ export const PrimaryServicesOffered: React.FunctionComponent<
   }
 
   function init() {
+    if (localStorage.getItem("_IsReadOnly_")) {
+      setReadOnly(true);
+    } else {
+      setReadOnly(false);
+    }
+
     _commonService = new CommonService();
 
     loadCompanyProjectServicesOfferedMapping();
@@ -222,48 +230,6 @@ export const PrimaryServicesOffered: React.FunctionComponent<
           disabled
         />
       </div>
-      
-      
-      {/* <h4 className={classes.headerTitle}>
-        Fill in the number of projects in the last 3 years and select average
-        ticket size range per project
-      </h4>
-      <div style={{ display: "flex", margin: "10px 0", alignItems: "center" }}>
-        {allPrimaryServicesOffers.length > 0 && (
-          <FormControl
-            className={classes.smalltext}
-            variant="outlined"
-            size="small"
-          >
-            <Select
-              labelId="demo-controlled-open-select-label"
-              id="demo-controlled-open-select"
-              onChange={selHandleChange}
-            >
-              {allPrimaryServicesOffers.map((m) => {
-                return <MenuItem value={m}>{m.Title}</MenuItem>;
-              })}
-            </Select>
-          </FormControl>
-        )}
-
-        <div>
-          {allPrimaryServicesOffers.length > 0 && (
-            <AddCircleIcon
-              onClick={addNewOffer}
-              style={{
-                fontSize: 34,
-                color: theme.palette.primary.main,
-                margin: "3px 8px 0px 8px",
-                cursor: "pointer",
-              }}
-            />
-          )}
-        </div>
-      </div> */}
-
-
-      
       <div className={classes.NoAndSizeSection}>
         {allTicketSizes.map((ticket: any, index: number) => {
           return (
@@ -279,6 +245,7 @@ export const PrimaryServicesOffered: React.FunctionComponent<
                   value={ticket.Year}
                   name="Year"
                   onChange={(e) => inputChangeHandler(e, index)}
+                  disabled={readOnly}
                 />
                 <TextField
                   id="outlined-basic"
@@ -290,22 +257,25 @@ export const PrimaryServicesOffered: React.FunctionComponent<
                   value={ticket.Size}
                   name="Size"
                   onChange={(e) => inputChangeHandler(e, index)}
+                  disabled={readOnly}
                 />
               </div>
             </div>
           );
         })}
       </div>
-      <div className={classes.bottomBtnSection}>
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          onClick={(e) => submitData()}
-        >
-          Submit
-        </Button>
-      </div>
+      {!readOnly && (
+        <div className={classes.bottomBtnSection}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            onClick={(e) => submitData()}
+          >
+            Submit
+          </Button>
+        </div>
+      )}
       <CustomAlert
         open={cusalert.open}
         message={cusalert.message}

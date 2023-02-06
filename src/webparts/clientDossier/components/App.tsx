@@ -30,6 +30,7 @@ const theme = createTheme({
 export interface IApp {
   CurrentContext: any;
   SiteUrl: string;
+  Domain: any;
 }
 
 export const App: React.FunctionComponent<IApp> = (props: IApp) => {
@@ -83,10 +84,18 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
   }
 
   function init() {
-    let userEmail = props.CurrentContext.pageContext.user.loginName;
-
+    let curuser = props.CurrentContext.pageContext.user.loginName;
+    let userEmail = curuser;
     if (localStorage.getItem("_UserEmail_")) {
-      userEmail = localStorage.getItem("_UserEmail_");
+      let locuser = localStorage.getItem("_UserEmail_");
+      userEmail = locuser;
+      if (curuser != locuser) {
+        localStorage.setItem("_IsReadOnly_", "1");
+      } else {
+        localStorage.setItem("_IsReadOnly_", "");
+      }
+    } else {
+      localStorage.setItem("_IsReadOnly_", "");
     }
 
     let _commonService = new CommonService();
@@ -270,6 +279,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
             CompanyID={formData.companyID}
             CompanyCode={formData.companyCode}
             SiteUrl={props.SiteUrl}
+            Domain={props.Domain}
           />
         </TabPanel>
       )}

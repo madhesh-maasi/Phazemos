@@ -43,6 +43,8 @@ export const TherapeuticExpertise: React.FunctionComponent<
     severity: "error",
   });
 
+  const [readOnly, setReadOnly] = useState(false);
+
   const _therapeuticExpertise: string = "Therapeutic Expertise";
   const _therapeuticAreaMap: string = "Therapeutic Area Experience Mapping";
   const _therapeuticAreaMaster: string = "Therapeutic Area Experience Master";
@@ -189,6 +191,12 @@ export const TherapeuticExpertise: React.FunctionComponent<
   }
 
   function init() {
+    if (localStorage.getItem("_IsReadOnly_")) {
+      setReadOnly(true);
+    } else {
+      setReadOnly(false);
+    }
+
     setShowOther(false);
     setOthers([]);
 
@@ -546,6 +554,7 @@ export const TherapeuticExpertise: React.FunctionComponent<
                       onChange={(e) => therapeuticAreaChangeHandler(index, e)}
                       name="IsChecked"
                       color="primary"
+                      disabled={readOnly}
                     />
                   }
                   label={service.serviceName}
@@ -605,7 +614,7 @@ export const TherapeuticExpertise: React.FunctionComponent<
               label="Disease Area Experience"
             />
           )}
-          // disabled
+          disabled={readOnly}
         />
       </div>
 
@@ -616,6 +625,7 @@ export const TherapeuticExpertise: React.FunctionComponent<
           onChange={(e) => toggleOther(e)}
           checked={showOther}
           label="Others"
+          disabled={readOnly}
         />
 
         <div style={{ alignItems: "center" }}>
@@ -633,6 +643,7 @@ export const TherapeuticExpertise: React.FunctionComponent<
                       label="Title"
                       value={o}
                       onChange={(e) => otherFieldHandler(e, index)}
+                      disabled={readOnly}
                     />
 
                     {others.length == index + 1 && (
@@ -666,16 +677,18 @@ export const TherapeuticExpertise: React.FunctionComponent<
         </div>
       </div>
 
-      <div className={classes.bottomBtnSection} style={{ marginTop: 20 }}>
-        <Button
-          variant="contained"
-          size="large"
-          color="primary"
-          onClick={(e) => submitData()}
-        >
-          Submit
-        </Button>
-      </div>
+      {!readOnly && (
+        <div className={classes.bottomBtnSection} style={{ marginTop: 20 }}>
+          <Button
+            variant="contained"
+            size="large"
+            color="primary"
+            onClick={(e) => submitData()}
+          >
+            Submit
+          </Button>
+        </div>
+      )}
 
       <CustomAlert
         open={cusalert.open}

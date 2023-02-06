@@ -255,7 +255,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
         </div>
       </div>
 
-      {/* {open && (
+      {open && (
         <Modal open={open} onClose={handleClose} className={styles.modal}>
           <Fade in={open}>
             <div className={styles.paper}>
@@ -290,7 +290,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
             </div>
           </Fade>
         </Modal>
-      )} */}
+      )}
       <CustomAlert
         open={cusalert.open}
         message={cusalert.message}

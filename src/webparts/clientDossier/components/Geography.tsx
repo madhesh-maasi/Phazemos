@@ -41,7 +41,15 @@ export const Geography: React.FunctionComponent<IGeography> = (
 
   const [deleteGeographyDetails, setDeleteGeographyDetails] = useState([]);
 
+  const [readOnly, setReadOnly] = useState(false);
+
   function init() {
+    if (localStorage.getItem("_IsReadOnly_")) {
+      setReadOnly(true);
+    } else {
+      setReadOnly(false);
+    }
+
     let customProperty = {
       listName: _geography,
       filter: "CompanyIDId eq '" + props.CompanyID + "' and IsDeleted eq '0'",
@@ -240,6 +248,7 @@ export const Geography: React.FunctionComponent<IGeography> = (
                 name="Title"
                 value={details.Title}
                 onChange={(e) => inputChangeHandler(e, index)}
+                disabled={readOnly}
               />
               <TextField
                 required
@@ -251,6 +260,7 @@ export const Geography: React.FunctionComponent<IGeography> = (
                 name="CountryofResidence"
                 value={details.CountryofResidence}
                 onChange={(e) => inputChangeHandler(e, index)}
+                disabled={readOnly}
               />
               <TextField
                 required
@@ -262,6 +272,7 @@ export const Geography: React.FunctionComponent<IGeography> = (
                 name="Year"
                 value={details.Year}
                 onChange={(e) => inputChangeHandler(e, index)}
+                disabled={readOnly}
               />
               <TextField
                 required
@@ -273,16 +284,17 @@ export const Geography: React.FunctionComponent<IGeography> = (
                 name="CountriesWorked"
                 value={details.CountriesWorked}
                 onChange={(e) => inputChangeHandler(e, index)}
+                disabled={readOnly}
               />
 
-              {geographyDetails.length == index + 1 && (
+              {geographyDetails.length == index + 1 && !readOnly && (
                 <AddCircleIcon
                   onClick={(e) => addGeographyDetails()}
                   className={classes.addBtn}
                 />
               )}
 
-              {geographyDetails.length > 1 && (
+              {geographyDetails.length > 1 && !readOnly && (
                 <CancelIcon
                   className={classes.cancelBtn}
                   onClick={(e) => removeGeographyDetails(index)}
@@ -292,17 +304,19 @@ export const Geography: React.FunctionComponent<IGeography> = (
           );
         })}
       </div>
-      <div className={classes.bottomBtnSection}>
-        <Button
-          variant="contained"
-          color="primary"
-          // disabled
-          size="large"
-          onClick={submitData}
-        >
-          Submit
-        </Button>
-      </div>
+
+      {!readOnly && (
+        <div className={classes.bottomBtnSection}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            onClick={submitData}
+          >
+            Submit
+          </Button>
+        </div>
+      )}
 
       <CustomAlert
         open={cusalert.open}
