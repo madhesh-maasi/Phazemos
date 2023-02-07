@@ -113,10 +113,10 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
       title: "Primary Services Offered Master",
       listName: "Primary Services Offered Master",
     },
-    // {
-    //   title: "Project Work Master",
-    //   listName: "Project Work Master",
-    // },
+    {
+      title: "Expertise Platform Master",
+      listName: "Expertise Platform Master",
+    },
     {
       title: "Therapeutic Area Experience Master",
       listName: "Therapeutic Area Experience Master",

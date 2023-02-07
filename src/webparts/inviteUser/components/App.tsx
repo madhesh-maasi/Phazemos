@@ -83,6 +83,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
     ProjectWork: true,
     PrimaryServicesOffered: true,
     Uploads: true,
+    ExpertisePlatform: true,
     users: [""],
   });
 
@@ -163,6 +164,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
       Geography: data.Geography,
       ProjectWork: data.ProjectWork,
       PrimaryServicesOffered: data.PrimaryServicesOffered,
+      ExpertisePlatform: data.ExpertisePlatform,
       Uploads: data.Uploads,
     };
 
@@ -256,6 +258,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
     data.Geography = true;
     data.ProjectWork = true;
     data.PrimaryServicesOffered = true;
+    data.ExpertisePlatform = true;
     data.Uploads = true;
     setFormData({ ...data });
   }
@@ -319,6 +322,7 @@ export const App: React.FunctionComponent<IInviteUserProps> = (
     data.Geography = formData.Geography;
     data.ProjectWork = formData.ProjectWork;
     data.PrimaryServicesOffered = formData.PrimaryServicesOffered;
+    data.ExpertisePlatform = formData.ExpertisePlatform;
     data.Uploads = formData.Uploads;
 
     _commonService.updateList(customProperty, data, (companyres: any) => {

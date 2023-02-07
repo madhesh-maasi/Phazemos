@@ -16,6 +16,8 @@ import { PrimaryServicesOffered } from "./PrimaryServicesOffered";
 import { Upload } from "./Upload";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 
+import ExpertisePlatform from "./ExpertisePlatform";
+
 import CommonService from "../services/CommonService";
 import { UserCustomActionRegistrationType } from "@pnp/sp/user-custom-actions";
 
@@ -51,6 +53,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
     projectWork: false,
     primaryServicesOffered: false,
     uploads: false,
+    expertisePlatform: false,
   });
 
   const handleChange = (event, newValue) => {
@@ -121,6 +124,7 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
           data.projectWork = res[0].ProjectWork;
           data.primaryServicesOffered = res[0].PrimaryServicesOffered;
           data.uploads = res[0].Uploads;
+          data.expertisePlatform = res[0].ExpertisePlatform;
 
           let tab = tabIndex;
           let index = 0;
@@ -134,6 +138,10 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
           }
           if (data.regulatoryExpertise) {
             tab["regulatoryExpertise"] = index;
+            index++;
+          }
+          if (data.expertisePlatform) {
+            tab["expertisePlatform"] = index;
             index++;
           }
           if (data.geography) {
@@ -193,6 +201,14 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
               {...a11yProps(tabIndex["regulatoryExpertise"])}
             />
           )}
+
+          {formData.expertisePlatform && (
+            <Tab
+              label="Expertise - Platform"
+              {...a11yProps(tabIndex["expertisePlatform"])}
+            />
+          )}
+
           {formData.geography && (
             <Tab label="Geography" {...a11yProps(tabIndex["geography"])} />
           )}
@@ -235,6 +251,16 @@ export const App: React.FunctionComponent<IApp> = (props: IApp) => {
       {formData.regulatoryExpertise && (
         <TabPanel value={value} index={tabIndex["regulatoryExpertise"]}>
           <RegulatoryExpertise
+            CompanyName={formData.companyName}
+            CompanyID={formData.companyID}
+            CompanyCode={formData.companyCode}
+          />
+        </TabPanel>
+      )}
+
+      {formData.expertisePlatform && (
+        <TabPanel value={value} index={tabIndex["expertisePlatform"]}>
+          <ExpertisePlatform
             CompanyName={formData.companyName}
             CompanyID={formData.companyID}
             CompanyCode={formData.companyCode}
