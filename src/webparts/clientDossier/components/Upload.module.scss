@@ -58,3 +58,50 @@
         height:40px;
     }
 }
+
+// modal Styles
+.modalContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    .modalSize{
+        height: 485px;
+        width: 30%;
+        background-color: #fff;
+        // padding: 20px;
+        border-radius: 5px;
+        h3{
+            color: #00589A;
+        }
+        .header{
+            height: 42px;
+         display: flex;
+        //  justify-content: space-between;
+         align-items: center;
+         border-radius: 5px;
+         background: gainsboro;
+         button{
+            padding: 0 5px 0 0;
+         }
+        }
+        .section{
+            h3{
+                font-size: 18px;
+                margin: 8px 0 0 0;
+            }
+        }
+        .footerSection{
+            display: flex;
+            justify-content: flex-end;
+        }
+    }
+}
+
+// Table Design
+.iconBtnStyle{
+    background-color: transparent !important;
+    svg{
+        margin: 0px 6px;
+    }
+}

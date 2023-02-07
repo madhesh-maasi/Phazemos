@@ -5,10 +5,32 @@ import Button from "@material-ui/core/Button";
 import { useState, useEffect, useRef } from "react";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Modal from "@material-ui/core/Modal";
+import CloseIcon from "@material-ui/icons/Close";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
+import CheckIcon from "@material-ui/icons/Check";
+import ClearIcon from "@material-ui/icons/Clear";
 
 import { CustomAlert } from "./CustomAlert";
 import { CustomDialog } from "./CustomDialog";
 import CommonService from "../services/CommonService";
+import {
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  styled,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  withStyles,
+} from "@material-ui/core";
 
 export interface IUpload {
   CompanyName: string;
@@ -29,6 +51,35 @@ const theme = createTheme({
   },
 });
 
+// table design
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    // backgroundColor: theme.palette.primary.main,
+    // color: theme.palette.common.white,
+    background: "#d3e5f4",
+    color: "#00589A",
+    fontSize: 16,
+    fontWeight: 600,
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important",
+    minWidth: 150,
+  },
+  body: {
+    fontSize: 15,
+    color: "#303133",
+    padding: "5px 15px",
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important",
+    minWidth: 150,
+  },
+}))(TableCell);
+
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    "&:nth-of-type(odd)": {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+}))(TableRow);
+
 export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
   const [cusalert, setAlert] = useState({
     open: false,
@@ -45,7 +96,9 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
 
   const [readOnly, setReadOnly] = useState(false);
 
-  var _commonService: CommonService;
+  const [open, setOpen] = useState(false);
+
+  var _commonService: CommonService = new CommonService();
 
   const [allFile, setAllFile] = useState({
     experienceSpreadsheets: {
@@ -94,14 +147,151 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
 
   const [loader, setLoader] = useState(false);
 
-  const handleFileChange = (e: any, objectName: string) => {
-    let objAllFile = allFile;
-    const files = e.target.files;
-    for (let index = 0; index < files.length; index++) {
-      objAllFile[objectName].data.push(files[index]);
-    }
-    setAllFile({ ...objAllFile });
-  };
+  const _otherUploadMetadata: string = "Other Upload Metadata";
+  const [otherUploadMetadata, setOtherUploadMetadata] = useState([]);
+  const [deleteDialog, setDeleteDialog] = useState(false);
+  const [deleteMeta, setDeleteMeta] = useState({});
+  const [metadata, setMetadata] = useState({});
+
+  const [masterData, setMasterData] = useState({
+    expertiseTherapeutic: [],
+    expertiseRegulatory: [],
+    expertisePlatform: [],
+    geography: [],
+  });
+
+  const _therapeuticExpertise = "Therapeutic Expertise";
+  const _therapeuticExpertiseMap = "Therapeutic Area Experience Mapping";
+
+  const _regulatoryExpertise = "Regulatory Expertise";
+  const _regulatoryExpertiseMap =
+    "In House Regulatory Regime Experience Mapping";
+
+  const _expertisePlatform = "ExpertisePlatform";
+  const _expertisePlatformMap = "Expertise Platform Mapping";
+
+  const _geographic = "Geographic";
+
+  function loadExpertiseTherapeutic() {
+    let customProperty = {
+      listName: _therapeuticExpertise,
+      filter: "CompanyIDId eq '" + props.CompanyID + "'",
+    };
+    _commonService.getList(customProperty, (res: any) => {
+      if (res.length) {
+        let mapProperty = {
+          listName: _therapeuticExpertiseMap,
+          filter:
+            "TherapeuticExpertiseIDId eq '" +
+            res[0].ID +
+            "'  and IsDeleted eq '0'",
+          expand: "TherapeuticAreaExpMasterID",
+          properties: "*,TherapeuticAreaExpMasterID/Title",
+        };
+        _commonService.getList(mapProperty, (mapres: any) => {
+          let data = masterData;
+          data.expertiseTherapeutic = [];
+          for (let index = 0; index < mapres.length; index++) {
+            if (mapres[index].TherapeuticAreaExpMasterID.Title) {
+              data.expertiseTherapeutic.push({
+                ID: mapres[index].TherapeuticAreaExpMasterIDId,
+                Title: mapres[index].TherapeuticAreaExpMasterID.Title,
+              });
+            }
+          }
+          setMasterData({ ...data });
+        });
+      }
+    });
+  }
+
+  function loadRegulatoryExpertise() {
+    let customProperty = {
+      listName: _regulatoryExpertise,
+      filter: "CompanyIDId eq '" + props.CompanyID + "'",
+    };
+    _commonService.getList(customProperty, (res: any) => {
+      if (res.length) {
+        let mapProperty = {
+          listName: _regulatoryExpertiseMap,
+          filter:
+            "RegulatoryExpertiseIDId eq '" +
+            res[0].ID +
+            "'  and IsDeleted eq '0'",
+          expand: "InHouseRegulatoryRegimeExperienc",
+          properties: "*,InHouseRegulatoryRegimeExperienc/Title",
+        };
+        _commonService.getList(mapProperty, (mapres: any) => {
+          let data = masterData;
+          data.expertiseRegulatory = [];
+          for (let index = 0; index < mapres.length; index++) {
+            if (mapres[index].InHouseRegulatoryRegimeExperienc.Title) {
+              data.expertiseRegulatory.push({
+                ID: mapres[index].InHouseRegulatoryRegimeExperiencId,
+                Title: mapres[index].InHouseRegulatoryRegimeExperienc.Title,
+              });
+            }
+          }
+          setMasterData({ ...data });
+        });
+      }
+    });
+  }
+
+  function loadExpertisePlatform() {
+    let customProperty = {
+      listName: _expertisePlatform,
+      filter: "CompanyIDId eq '" + props.CompanyID + "'",
+    };
+    _commonService.getList(customProperty, (res: any) => {
+      if (res.length) {
+        let mapProperty = {
+          listName: _expertisePlatformMap,
+          filter:
+            "ExpertisePlatformIDId eq '" +
+            res[0].ID +
+            "'  and IsDeleted eq '0'",
+          expand: "ExpertisePlatformMasterID",
+          properties: "*,ExpertisePlatformMasterID/Title",
+        };
+        _commonService.getList(mapProperty, (mapres: any) => {
+          let data = masterData;
+          data.expertisePlatform = [];
+          for (let index = 0; index < mapres.length; index++) {
+            if (mapres[index].ExpertisePlatformMasterID.Title) {
+              data.expertisePlatform.push({
+                ID: mapres[index].ExpertisePlatformMasterIDId,
+                Title: mapres[index].ExpertisePlatformMasterID.Title,
+              });
+            }
+          }
+          setMasterData({ ...data });
+        });
+      }
+    });
+  }
+
+  function loadGeographic() {
+    let customProperty = {
+      listName: _geographic,
+      filter: "CompanyIDId eq '" + props.CompanyID + "'",
+    };
+    _commonService.getList(customProperty, (res: any) => {
+      if (res.length) {
+        let data = masterData;
+        data.geography = [];
+        for (let index = 0; index < res.length; index++) {
+          if (res[index].Title) {
+            data.geography.push({
+              ID: res[index].ID,
+              Title: res[index].Title,
+            });
+          }
+        }
+        setMasterData({ ...data });
+      }
+    });
+  }
 
   function deleteConfirmation(index: number, objectName: string) {
     let objdelete = {
@@ -183,7 +373,6 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
     } else {
       setReadOnly(false);
     }
-
     _commonService = new CommonService();
     let modules = Object.keys(allFile);
     modules.forEach((module) => {
@@ -197,12 +386,140 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
     }
   }
 
+  function selHandleChange(event: any) {
+    let data = metadata;
+    data[event.target.name] = event.target.value;
+    setMetadata({ ...data });
+  }
+
+  function editMetadata(obj) {
+    let data = metadata;
+    data["ID"] = obj.ID;
+    data["Title"] = obj.Title;
+    data["ExpertiseTherapeutic"] = obj.ExpertiseTherapeutic;
+    data["ExpertiseRegulatory"] = obj.ExpertiseRegulatory;
+    data["ExpertisePlatform"] = obj.ExpertisePlatform;
+    data["Geography"] = obj.Geography;
+    data["CompanyIDId"] = props.CompanyID;
+    setMetadata({ ...data });
+    setOpen(true);
+  }
+
+  const handleFileChange = (e: any, objectName: string) => {
+    let objAllFile = allFile;
+    const files = e.target.files;
+    for (let index = 0; index < files.length; index++) {
+      objAllFile[objectName].data.push(files[index]);
+    }
+    setAllFile({ ...objAllFile });
+    if (objectName == "others") {
+      setOpen(true);
+      let data = metadata;
+      data = {};
+      data["Title"] = files[0].name;
+      data["ExpertiseTherapeutic"] = "";
+      data["ExpertiseRegulatory"] = "";
+      data["ExpertisePlatform"] = "";
+      data["Geography"] = "";
+      data["CompanyIDId"] = props.CompanyID;
+      setMetadata({ ...data });
+    }
+  };
+
+  function loadMasterData() {
+    loadExpertiseTherapeutic();
+    loadRegulatoryExpertise();
+    loadExpertisePlatform();
+    loadGeographic();
+  }
+
+  function loadOtherUploadMetadata() {
+    let customProperty = {
+      listName: _otherUploadMetadata,
+      filter: "CompanyIDId eq '" + props.CompanyID + "'  and IsDeleted eq '0'",
+    };
+    _commonService.getList(customProperty, (res: any[]) => {
+      setOtherUploadMetadata([...res]);
+    });
+  }
+
+  function showDeleteDialog(metadata) {
+    setDeleteMeta({ ...metadata });
+    setDeleteDialog(true);
+  }
+
+  function deleteMetadata() {
+    _commonService = new CommonService();
+    if (deleteMeta["ID"]) {
+      deleteMeta["IsDeleted"] = true;
+      _commonService.updateList(
+        {
+          listName: _otherUploadMetadata,
+          ID: deleteMeta["ID"],
+        },
+        deleteMeta,
+        (res: any) => {
+          loadOtherUploadMetadata();
+          setAlert({
+            open: true,
+            severity: "success",
+            message: "Deleted successfully",
+          });
+          let delData = deleteMeta;
+          delData = {};
+          setDeleteMeta({ ...delData });
+          setDeleteDialog(false);
+        }
+      );
+    }
+  }
+
+  function submitMetadata() {
+    _commonService = new CommonService();
+    let postData = metadata;
+    if (!postData["ID"]) {
+      _commonService.insertIntoList(
+        {
+          listName: _otherUploadMetadata,
+        },
+        metadata,
+        (res: any) => {
+          setAlert({
+            open: true,
+            severity: "success",
+            message: "Saved Successfully",
+          });
+          loadOtherUploadMetadata();
+          setOpen(false);
+        }
+      );
+    } else {
+      _commonService.updateList(
+        {
+          listName: _otherUploadMetadata,
+          ID: postData["ID"],
+        },
+        postData,
+        (res: any) => {
+          setAlert({
+            open: true,
+            severity: "success",
+            message: "Updated Successfully",
+          });
+          loadOtherUploadMetadata();
+          setOpen(false);
+        }
+      );
+    }
+  }
+
   useEffect((): any => {
+    _commonService = new CommonService();
     console.log("Loaded");
     init();
+    loadMasterData();
+    loadOtherUploadMetadata();
   }, []);
-
-  console.log("Init");
 
   return (
     <ThemeProvider theme={theme}>
@@ -247,7 +564,7 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
                       id={module}
                       name={module}
                       type="file"
-                      multiple
+                      // multiple
                       onChange={(e) => {
                         handleFileChange(e, allFile[module].objectName);
                       }}
@@ -302,6 +619,168 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
         </div>
       </div>
 
+      {/* Modal design */}
+      <Modal
+        open={open}
+        // onClose={()=>[<
+        //   setOpen(false);
+        // ]}
+      >
+        <div className={classes.modalContainer}>
+          <div></div>
+          <div className={classes.modalSize}>
+            {/* header section */}
+            <div>
+              <div className={classes.header}>
+                <h3
+                  style={{
+                    margin: "0px 5px",
+                    width: "92%",
+                    textAlign: "center",
+                  }}
+                >
+                  Meta Data Mapping
+                </h3>
+                <IconButton>
+                  <CloseIcon
+                    onClick={() => {
+                      setOpen(false);
+                    }}
+                  />
+                </IconButton>
+              </div>
+            </div>
+
+            <div style={{ padding: 20 }}>
+              {/* Dropdown Section starts*/}
+              {/* Expertise Therapeutic */}
+              <div className={classes.section}>
+                <h3>Expertise Therapeutic</h3>
+                <div>
+                  <FormControl
+                    variant="outlined"
+                    style={{ width: "100%", margin: "6px 0px" }}
+                  >
+                    <InputLabel id="demo-simple-select-outlined-label">
+                      Expertise Therapeutic
+                    </InputLabel>
+                    <Select
+                      disabled={readOnly}
+                      labelId="demo-controlled-open-select-label"
+                      id="demo-controlled-open-select"
+                      label="Category"
+                      name="ExpertiseTherapeutic"
+                      value={metadata["ExpertiseTherapeutic"]}
+                      onChange={(e) => selHandleChange(e)}
+                    >
+                      {masterData.expertiseTherapeutic.map((m) => {
+                        return <MenuItem value={m.Title}>{m.Title}</MenuItem>;
+                      })}
+                    </Select>
+                  </FormControl>
+                </div>
+              </div>
+
+              {/* Regulatory section */}
+              <div className={classes.section}>
+                <h3>Regulatory</h3>
+                <div>
+                  <FormControl
+                    variant="outlined"
+                    style={{ width: "100%", margin: "6px 0px" }}
+                  >
+                    <InputLabel id="demo-simple-select-outlined-label">
+                      Regulatory
+                    </InputLabel>
+                    <Select
+                      disabled={readOnly}
+                      labelId="demo-controlled-open-select-label"
+                      id="demo-controlled-open-select"
+                      label="Category"
+                      name="ExpertiseRegulatory"
+                      value={metadata["ExpertiseRegulatory"]}
+                      onChange={(e) => selHandleChange(e)}
+                    >
+                      {masterData.expertiseRegulatory.map((m) => {
+                        return <MenuItem value={m.Title}>{m.Title}</MenuItem>;
+                      })}
+                    </Select>
+                  </FormControl>
+                </div>
+              </div>
+
+              {/* Platform section */}
+              <div className={classes.section}>
+                <h3>Platform</h3>
+                <div>
+                  <FormControl
+                    variant="outlined"
+                    style={{ width: "100%", margin: "6px 0px" }}
+                  >
+                    <InputLabel id="demo-simple-select-outlined-label">
+                      Platform
+                    </InputLabel>
+                    <Select
+                      disabled={readOnly}
+                      labelId="demo-controlled-open-select-label"
+                      id="demo-controlled-open-select"
+                      label="Category"
+                      name="ExpertisePlatform"
+                      value={metadata["ExpertisePlatform"]}
+                      onChange={(e) => selHandleChange(e)}
+                    >
+                      {masterData.expertisePlatform.map((m) => {
+                        return <MenuItem value={m.Title}>{m.Title}</MenuItem>;
+                      })}
+                    </Select>
+                  </FormControl>
+                </div>
+              </div>
+
+              {/* Geography section */}
+              <div className={classes.section}>
+                <h3>Geography</h3>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <FormControl
+                    variant="outlined"
+                    style={{ width: "100%", margin: "6px 0px" }}
+                  >
+                    <InputLabel id="demo-simple-select-outlined-label">
+                      Geography
+                    </InputLabel>
+                    <Select
+                      disabled={readOnly}
+                      labelId="demo-controlled-open-select-label"
+                      id="demo-controlled-open-select"
+                      label="Category"
+                      name="Geography"
+                      value={metadata["Geography"]}
+                      onChange={(e) => selHandleChange(e)}
+                    >
+                      {masterData.geography.map((m) => {
+                        return <MenuItem value={m.Title}>{m.Title}</MenuItem>;
+                      })}
+                    </Select>
+                  </FormControl>
+                </div>
+              </div>
+              {/* Dropdown section ends */}
+
+              <div className={classes.footerSection}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  onClick={(e) => submitMetadata()}
+                >
+                  Submit
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
+
       {!readOnly && (
         <div className={classes.bottomBtnSection}>
           <Button
@@ -314,6 +793,58 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
           </Button>
           {loader && <CircularProgress />}
         </div>
+      )}
+
+      {otherUploadMetadata.length > 0 && (
+        <TableContainer component={Paper}>
+          <Table aria-label="customized table">
+            <TableHead>
+              <StyledTableRow>
+                <StyledTableCell>Document Name</StyledTableCell>
+                <StyledTableCell>Expertise-Therapeutic</StyledTableCell>
+                <StyledTableCell>Regulatory</StyledTableCell>
+                <StyledTableCell>Platform</StyledTableCell>
+                <StyledTableCell>Geography</StyledTableCell>
+                <StyledTableCell>Created On</StyledTableCell>
+                <StyledTableCell>Action</StyledTableCell>
+              </StyledTableRow>
+            </TableHead>
+
+            <TableBody>
+              {otherUploadMetadata.map((res) => {
+                return (
+                  <StyledTableRow>
+                    <StyledTableCell>{res.Title}</StyledTableCell>
+                    <StyledTableCell>
+                      {res.ExpertiseTherapeutic}
+                    </StyledTableCell>
+                    <StyledTableCell>{res.ExpertiseRegulatory}</StyledTableCell>
+                    <StyledTableCell>{res.ExpertisePlatform}</StyledTableCell>
+                    <StyledTableCell>{res.Geography}</StyledTableCell>
+
+                    <StyledTableCell>
+                      {_commonService.formattedDate(new Date(res.Created))}
+                    </StyledTableCell>
+
+                    <StyledTableCell>
+                      <Button disableRipple className={classes.iconBtnStyle}>
+                        <EditIcon
+                          color="primary"
+                          style={{ margin: 0 }}
+                          onClick={(e) => editMetadata(res)}
+                        />
+                        <DeleteIcon
+                          color="error"
+                          onClick={(e) => showDeleteDialog(res)}
+                        />
+                      </Button>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
 
       <CustomAlert
@@ -351,6 +882,24 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
         agree={(e) => {
           deleteFile();
           setCusDialog(false);
+        }}
+      ></CustomDialog>
+
+      <CustomDialog
+        open={deleteDialog}
+        message={"Are you sure? Do you want to delete this meta data?"}
+        title="Delete"
+        closeDialog={(e) => {
+          setDeleteDialog(false);
+        }}
+        disagree={(e) => {
+          let delData = metadata;
+          delData = {};
+          setDeleteMeta({ ...delData });
+          setDeleteDialog(false);
+        }}
+        agree={(e) => {
+          deleteMetadata();
         }}
       ></CustomDialog>
     </ThemeProvider>

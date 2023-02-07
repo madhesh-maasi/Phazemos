@@ -17,6 +17,7 @@ import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import CommonService from "../services/CommonService";
 
 import { CustomAlert } from "./CustomAlert";
+import { CustomDialog } from "./CustomDialog";
 
 export interface IExpertisePlatform {
   CompanyName: string;
@@ -32,9 +33,9 @@ const theme = createTheme({
   },
 });
 
-export const ExpertisePlatform: React.FunctionComponent<
-  IExpertisePlatform
-> = (props: IExpertisePlatform) => {
+export const ExpertisePlatform: React.FunctionComponent<IExpertisePlatform> = (
+  props: IExpertisePlatform
+) => {
   var _commonService: any = {};
 
   const [cusalert, setAlert] = useState({
@@ -48,15 +49,13 @@ export const ExpertisePlatform: React.FunctionComponent<
   const _expertisePlatform: string = "ExpertisePlatform";
   const _expertisePlatformMap: string = "Expertise Platform Mapping";
   const _expertisePlatformMaster: string = "Expertise Platform Master";
-  
 
-  const [expertisePlatform, setExpertisePlatform] = useState([]); 
+  const [expertisePlatform, setExpertisePlatform] = useState([]);
 
   const [companyExpertisePlatform, setCompanyExpertisePlatform] = useState({
     expertisePlatform: null,
-    expertisePlatformMapping: []
+    expertisePlatformMapping: [],
   });
-
 
   function loadActiveExpertisePlatformExperience(editData: any) {
     let customProperty = {
@@ -102,7 +101,7 @@ export const ExpertisePlatform: React.FunctionComponent<
       } else {
         loadActiveExpertisePlatformExperience({
           expertisePlatform: null,
-          expertisePlatformMapping: []
+          expertisePlatformMapping: [],
         });
       }
     });
@@ -124,7 +123,6 @@ export const ExpertisePlatform: React.FunctionComponent<
     });
   }
 
-
   function init() {
     if (localStorage.getItem("_IsReadOnly_")) {
       setReadOnly(true);
@@ -132,11 +130,10 @@ export const ExpertisePlatform: React.FunctionComponent<
       setReadOnly(false);
     }
 
-
     setExpertisePlatform([]);
     setCompanyExpertisePlatform({
       expertisePlatform: null,
-      expertisePlatformMapping: []
+      expertisePlatformMapping: [],
     });
     loadCompanyExpertisePlatform();
   }
@@ -165,19 +162,17 @@ export const ExpertisePlatform: React.FunctionComponent<
       },
       { CompanyIDId: props.CompanyID },
       (res: any) => {
-        
         let locExpertisePlatform = expertisePlatform.slice();
         locExpertisePlatform.forEach((expertisePlatform: any) => {
           if (expertisePlatform.IsChecked) {
             expertisePlatformPostData.push({
               ExpertisePlatformIDId: res.data.Id,
               ExpertisePlatformMasterIDId:
-              expertisePlatform.ExpertisePlatformMasterIDId,
+                expertisePlatform.ExpertisePlatformMasterIDId,
             });
           }
         });
 
-        
         if (expertisePlatformPostData.length > 0) {
           _commonService.bulkInsert(
             { listName: _expertisePlatformMap },
@@ -187,7 +182,6 @@ export const ExpertisePlatform: React.FunctionComponent<
             }
           );
         }
-
       }
     );
     setAlert({
@@ -199,7 +193,6 @@ export const ExpertisePlatform: React.FunctionComponent<
       init();
     }, 3000);
   }
- 
 
   function updateExpertisePlatform() {
     updateExpertisePlatformMap();
@@ -222,7 +215,7 @@ export const ExpertisePlatform: React.FunctionComponent<
     if (addExpertise.length) {
       addExpertise.forEach((v) => {
         v.ExpertisePlatformIDId =
-        locCompanyExpertisePlatform.expertisePlatform.ID;
+          locCompanyExpertisePlatform.expertisePlatform.ID;
         delete v.serviceName;
         delete v.ID;
         delete v.IsChecked;
@@ -250,18 +243,20 @@ export const ExpertisePlatform: React.FunctionComponent<
       );
     }
   }
-   
+
   useEffect((): any => {
     _commonService = new CommonService();
     init();
   }, []);
+
 
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
   return (
     <ThemeProvider theme={theme}>
-      
+     
+
       <div className={`${classes.companyDetails} disableInput`}>
         <TextField
           style={{ width: "38%", marginRight: 32 }}
@@ -285,7 +280,6 @@ export const ExpertisePlatform: React.FunctionComponent<
           disabled
         />
       </div>
-
 
       <div className={classes.AreaExperience}>
         <p>Platform Area Experience (check "x" all that apply)</p>
@@ -311,7 +305,6 @@ export const ExpertisePlatform: React.FunctionComponent<
           })}
         </div>
       </div>
-      
 
       {!readOnly && (
         <div className={classes.bottomBtnSection} style={{ marginTop: 20 }}>

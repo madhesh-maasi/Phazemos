@@ -206,16 +206,20 @@ export default class CommonService {
         sp.web.getFolderByServerRelativeUrl(folderPath).files.add(filename, filecontent, true);
     }
 
-    
+
     validateEmail(input) {
         var validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-        if(!input){
+        if (!input) {
             return false;
         }
         if (!input.match(validRegex)) {
             return false;
         }
         return true;
+    }
+
+    public formattedDate(date) {
+        return ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear();
     }
 
 }
