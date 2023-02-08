@@ -153,11 +153,14 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
   const [deleteMeta, setDeleteMeta] = useState({});
   const [metadata, setMetadata] = useState({});
 
+  const [metaDatatoSubmit, setMetaDatatoSubmit] = useState([]);
+
   const [masterData, setMasterData] = useState({
     expertiseTherapeutic: [],
     expertiseRegulatory: [],
     expertisePlatform: [],
-    geography: [],
+    countryofResidence: [],
+    countriesWorked: [],
   });
 
   const _therapeuticExpertise = "Therapeutic Expertise";
@@ -279,12 +282,19 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
     _commonService.getList(customProperty, (res: any) => {
       if (res.length) {
         let data = masterData;
-        data.geography = [];
+        data.countryofResidence = [];
+        data.countriesWorked = [];
         for (let index = 0; index < res.length; index++) {
-          if (res[index].Title) {
-            data.geography.push({
+          if (res[index].CountryofResidence) {
+            data.countryofResidence.push({
               ID: res[index].ID,
-              Title: res[index].Title,
+              Title: res[index].CountryofResidence,
+            });
+          }
+          if (res[index].CountriesWorked) {
+            data.countriesWorked.push({
+              ID: res[index].ID,
+              Title: res[index].CountriesWorked,
             });
           }
         }
@@ -329,6 +339,7 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
   }
 
   function submitFiles() {
+    processMetaData();
     setLoader(true);
     _commonService = new CommonService();
     let objAllFile = allFile;
@@ -368,6 +379,20 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
   }
 
   function init() {
+    setDeleteMeta({});
+    setMetadata({});
+    setMetaDatatoSubmit([]);
+    setMasterData({
+      expertiseTherapeutic: [],
+      expertiseRegulatory: [],
+      expertisePlatform: [],
+      countryofResidence: [],
+      countriesWorked: [],
+    });
+
+    loadMasterData();
+    loadOtherUploadMetadata();
+
     if (localStorage.getItem("_IsReadOnly_")) {
       setReadOnly(true);
     } else {
@@ -399,7 +424,8 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
     data["ExpertiseTherapeutic"] = obj.ExpertiseTherapeutic;
     data["ExpertiseRegulatory"] = obj.ExpertiseRegulatory;
     data["ExpertisePlatform"] = obj.ExpertisePlatform;
-    data["Geography"] = obj.Geography;
+    data["CountryofResidence"] = obj.CountryofResidence;
+    data["CountriesWorked"] = obj.CountriesWorked;
     data["CompanyIDId"] = props.CompanyID;
     setMetadata({ ...data });
     setOpen(true);
@@ -420,7 +446,8 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
       data["ExpertiseTherapeutic"] = "";
       data["ExpertiseRegulatory"] = "";
       data["ExpertisePlatform"] = "";
-      data["Geography"] = "";
+      data["CountryofResidence"] = "";
+      data["CountriesWorked"] = "";
       data["CompanyIDId"] = props.CompanyID;
       setMetadata({ ...data });
     }
@@ -471,43 +498,161 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
           setDeleteDialog(false);
         }
       );
+    } else {
+      let index = -1;
+      for (let k = 0; k < otherUploadMetadata.length; k++) {
+        if (
+          !otherUploadMetadata[k].ID &&
+          otherUploadMetadata[k].Title == deleteMeta["Title"]
+        ) {
+          index = k;
+          break;
+        }
+      }
+      let alldata = otherUploadMetadata;
+      alldata.splice(index, 1);
+      setOtherUploadMetadata([...alldata]);
+      setDeleteDialog(false);
     }
   }
 
   function submitMetadata() {
-    _commonService = new CommonService();
+    let index = -1;
+    for (let k = 0; k < otherUploadMetadata.length; k++) {
+      if (
+        !otherUploadMetadata[k].ID &&
+        otherUploadMetadata[k].Title == metadata["Title"]
+      ) {
+        index = k;
+        break;
+      }
+    }
+
+    let editindex = -1;
+
+    for (let l = 0; l < otherUploadMetadata.length; l++) {
+      if (
+        otherUploadMetadata[l].ID > 0 &&
+        otherUploadMetadata[l].Title == metadata["Title"]
+      ) {
+        editindex = l;
+        break;
+      }
+    }
+
+    let alldata = otherUploadMetadata;
     let postData = metadata;
-    if (!postData["ID"]) {
-      _commonService.insertIntoList(
+    postData["CompanyIDId"] = props.CompanyID;
+
+    if (index >= 0) {
+      alldata[index]["ExpertiseTherapeutic"] = postData["ExpertiseTherapeutic"];
+      alldata[index]["ExpertiseRegulatory"] = postData["ExpertiseRegulatory"];
+      alldata[index]["ExpertisePlatform"] = postData["ExpertisePlatform"];
+      alldata[index]["CountryofResidence"] = postData["CountryofResidence"];
+      alldata[index]["CountriesWorked"] = postData["CountriesWorked"];
+      alldata[index]["CompanyIDId"] = props.CompanyID;
+      setOtherUploadMetadata([...alldata]);
+    } else if (editindex >= 0) {
+      alldata[editindex]["ExpertiseTherapeutic"] =
+        postData["ExpertiseTherapeutic"];
+      alldata[editindex]["ExpertiseRegulatory"] =
+        postData["ExpertiseRegulatory"];
+      alldata[editindex]["ExpertisePlatform"] = postData["ExpertisePlatform"];
+      alldata[editindex]["CountryofResidence"] = postData["CountryofResidence"];
+      alldata[editindex]["CountriesWorked"] = postData["CountriesWorked"];
+      alldata[editindex]["CompanyIDId"] = props.CompanyID;
+      setOtherUploadMetadata([...alldata]);
+    } else {
+      alldata.push(postData);
+      setOtherUploadMetadata([...alldata]);
+    }
+
+    if (index > 0) {
+      let sdata = metaDatatoSubmit;
+      let j = -1;
+      for (let l = 0; l < sdata.length; l++) {
+        if (!sdata[l].ID && sdata[l].Title == metadata["Title"]) {
+          j = l;
+          break;
+        }
+      }
+      sdata[j] = postData;
+      setMetaDatatoSubmit([...sdata]);
+    } else {
+      let sdata = metaDatatoSubmit;
+      sdata.push(postData);
+      setMetaDatatoSubmit([...sdata]);
+    }
+
+    setOpen(false);
+
+    // if (!postData["ID"]) {
+    //   _commonService.insertIntoList(
+    //     {
+    //       listName: _otherUploadMetadata,
+    //     },
+    //     metadata,
+    //     (res: any) => {
+    //       setAlert({
+    //         open: true,
+    //         severity: "success",
+    //         message: "Saved Successfully",
+    //       });
+    //       loadOtherUploadMetadata();
+    //       setOpen(false);
+    //     }
+    //   );
+    // } else {
+    //   _commonService.updateList(
+    //     {
+    //       listName: _otherUploadMetadata,
+    //       ID: postData["ID"],
+    //     },
+    //     postData,
+    //     (res: any) => {
+    //       setAlert({
+    //         open: true,
+    //         severity: "success",
+    //         message: "Updated Successfully",
+    //       });
+    //       loadOtherUploadMetadata();
+    //       setOpen(false);
+    //     }
+    //   );
+    // }
+  }
+
+  function processMetaData() {
+    let newMetadata = [];
+    let updateMetadata = [];
+    for (let index = 0; index < metaDatatoSubmit.length; index++) {
+      let data = metaDatatoSubmit[index];
+      delete data.Created;
+      if (data.ID) {
+        updateMetadata.push(data);
+      } else {
+        newMetadata.push(data);
+      }
+    }
+    if (newMetadata.length) {
+      _commonService.bulkInsert(
         {
           listName: _otherUploadMetadata,
         },
-        metadata,
-        (res: any) => {
-          setAlert({
-            open: true,
-            severity: "success",
-            message: "Saved Successfully",
-          });
-          loadOtherUploadMetadata();
-          setOpen(false);
+        newMetadata,
+        (res) => {
+          init();
         }
       );
-    } else {
-      _commonService.updateList(
+    }
+    if (updateMetadata.length) {
+      _commonService.bulkUpdate(
         {
           listName: _otherUploadMetadata,
-          ID: postData["ID"],
         },
-        postData,
-        (res: any) => {
-          setAlert({
-            open: true,
-            severity: "success",
-            message: "Updated Successfully",
-          });
-          loadOtherUploadMetadata();
-          setOpen(false);
+        updateMetadata,
+        (res) => {
+          init();
         }
       );
     }
@@ -517,8 +662,6 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
     _commonService = new CommonService();
     console.log("Loaded");
     init();
-    loadMasterData();
-    loadOtherUploadMetadata();
   }, []);
 
   return (
@@ -635,7 +778,7 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
                 <h3
                   style={{
                     margin: "0px 5px",
-                    width: "92%",
+                    width: "100%",
                     textAlign: "center",
                   }}
                 >
@@ -739,31 +882,59 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
 
               {/* Geography section */}
               <div className={classes.section}>
-                <h3>Geography</h3>
+                <h3>Country of Residence</h3>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <FormControl
                     variant="outlined"
                     style={{ width: "100%", margin: "6px 0px" }}
                   >
                     <InputLabel id="demo-simple-select-outlined-label">
-                      Geography
+                      Country of Residence
                     </InputLabel>
                     <Select
                       disabled={readOnly}
                       labelId="demo-controlled-open-select-label"
                       id="demo-controlled-open-select"
                       label="Category"
-                      name="Geography"
-                      value={metadata["Geography"]}
+                      name="CountryofResidence"
+                      value={metadata["CountryofResidence"]}
                       onChange={(e) => selHandleChange(e)}
                     >
-                      {masterData.geography.map((m) => {
+                      {masterData.countryofResidence.map((m) => {
                         return <MenuItem value={m.Title}>{m.Title}</MenuItem>;
                       })}
                     </Select>
                   </FormControl>
                 </div>
               </div>
+
+              <div className={classes.section}>
+                <h3>Countries Worked</h3>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <FormControl
+                    variant="outlined"
+                    style={{ width: "100%", margin: "6px 0px" }}
+                  >
+                    <InputLabel id="demo-simple-select-outlined-label">
+                      Countries Worked
+                    </InputLabel>
+                    <Select
+                      disabled={readOnly}
+                      labelId="demo-controlled-open-select-label"
+                      id="demo-controlled-open-select"
+                      label="Category"
+                      name="CountriesWorked"
+                      value={metadata["CountriesWorked"]}
+                      onChange={(e) => selHandleChange(e)}
+                    >
+                      {masterData.countriesWorked.map((m) => {
+                        return <MenuItem value={m.Title}>{m.Title}</MenuItem>;
+                      })}
+                    </Select>
+                  </FormControl>
+                </div>
+              </div>
+
               {/* Dropdown section ends */}
 
               <div className={classes.footerSection}>
@@ -804,7 +975,8 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
                 <StyledTableCell>Expertise-Therapeutic</StyledTableCell>
                 <StyledTableCell>Regulatory</StyledTableCell>
                 <StyledTableCell>Platform</StyledTableCell>
-                <StyledTableCell>Geography</StyledTableCell>
+                <StyledTableCell>Country of Residence</StyledTableCell>
+                <StyledTableCell>Countries Worked</StyledTableCell>
                 <StyledTableCell>Created On</StyledTableCell>
                 <StyledTableCell>Action</StyledTableCell>
               </StyledTableRow>
@@ -820,7 +992,8 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
                     </StyledTableCell>
                     <StyledTableCell>{res.ExpertiseRegulatory}</StyledTableCell>
                     <StyledTableCell>{res.ExpertisePlatform}</StyledTableCell>
-                    <StyledTableCell>{res.Geography}</StyledTableCell>
+                    <StyledTableCell>{res.CountryofResidence}</StyledTableCell>
+                    <StyledTableCell>{res.CountriesWorked}</StyledTableCell>
 
                     <StyledTableCell>
                       {_commonService.formattedDate(new Date(res.Created))}
