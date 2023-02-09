@@ -880,7 +880,7 @@ export const Upload: React.FunctionComponent<IUpload> = (props: IUpload) => {
                 </div>
               </div>
 
-              {/* Geography section */}
+              
               <div className={classes.section}>
                 <h3>Country of Residence</h3>
                 <div style={{ display: "flex", alignItems: "center" }}>
